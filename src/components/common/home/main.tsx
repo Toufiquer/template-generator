@@ -31,7 +31,11 @@ const InterfaceInputComponent: React.FC = () => {
   return (
     <div className="w-full flex flex-col">
       {preViewPath && (
-        <Link href={preViewPath} className="w-full text-center py-6" target="_blank">
+        <Link
+          href={preViewPath}
+          className="w-[220px] text-center py-1 px-4 rounded-full pb-2 text-sm font-semibold mb-6 mx-auto hover:bg-slate-600 bg-slate-400 "
+          target="_blank"
+        >
           View Generate Template
         </Link>
       )}
