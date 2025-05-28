@@ -1,0 +1,5 @@
+{
+  "editor.inlayHints.maximumLength": 120,
+  "html.format.wrapLineLength": 0,
+  "cSpell.blockCheckingWhenAverageChunkSizeGreaterThan": 200
+}

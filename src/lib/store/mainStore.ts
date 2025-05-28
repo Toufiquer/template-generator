@@ -6,13 +6,14 @@ export interface SavedInterface {
   id: number;
   content: string;
   timestamp: string;
+  title: string;
 }
 
 export interface InterfaceStore {
-  interfaceString: string;
-  setInterfaceString: (value: string) => void;
+  currentInterface: SavedInterface | null;
+  setCurrentInterface: (value: SavedInterface | null) => void;
   savedInterfaces: SavedInterface[];
-  addInterface: (interfaceData: string) => void;
+  addInterface: (interfaceData: SavedInterface, interfaceTitle: string) => void;
   removeInterface: (id: number) => void;
   clearInterfaces: () => void;
 }
@@ -20,29 +21,31 @@ export interface InterfaceStore {
 // Zustand store with localStorage persistence
 export const useInterfaceStore = create<InterfaceStore>()(
   persist(
-    (set) => ({
-      interfaceString: '',
-      setInterfaceString: (value: string) => set({ interfaceString: value }),
+    set => ({
+      currentInterface: null,
+      setCurrentInterface: (value: SavedInterface | null) => set({ currentInterface: value }),
       savedInterfaces: [],
-      addInterface: (interfaceData: string) => set((state) => ({
-        savedInterfaces: [...state.savedInterfaces, {
-          id: Date.now(),
-          content: interfaceData,
-          timestamp: new Date().toISOString()
-        }]
-      })),
-      removeInterface: (id: number) => set((state) => ({
-        savedInterfaces: state.savedInterfaces.filter(item => item.id !== id)
-      })),
-      clearInterfaces: () => set({ savedInterfaces: [] })
+      addInterface: (interfaceData: SavedInterface, interfaceTitle: string) =>
+        set(state => ({
+          savedInterfaces: [
+            {
+              ...interfaceData,
+            },
+            ...state.savedInterfaces,
+          ],
+        })),
+      removeInterface: (id: number) =>
+        set(state => ({
+          savedInterfaces: state.savedInterfaces.filter(item => item.id !== id),
+        })),
+      clearInterfaces: () => set({ savedInterfaces: [] }),
     }),
     {
       name: 'interface-store', // localStorage key
       // Optional: customize what gets persisted
-      partialize: (state) => ({
+      partialize: state => ({
         savedInterfaces: state.savedInterfaces,
-        interfaceString: state.interfaceString
-      })
-    }
-  )
+      }),
+    },
+  ),
 );

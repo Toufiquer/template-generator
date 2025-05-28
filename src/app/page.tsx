@@ -1,4 +1,4 @@
-import InterfaceInputComponent from "@/components/common/main";
+import InterfaceInputComponent from "@/components/common/home/main";
 
 
 
