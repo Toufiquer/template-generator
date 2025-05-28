@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 // TypeScript interfaces for type safety
 export interface SavedInterface {
-  id: number;
+  id: string;
   content: string;
   timestamp: string;
   title: string;
@@ -13,8 +13,8 @@ export interface InterfaceStore {
   currentInterface: SavedInterface | null;
   setCurrentInterface: (value: SavedInterface | null) => void;
   savedInterfaces: SavedInterface[];
-  addInterface: (interfaceData: SavedInterface, interfaceTitle: string) => void;
-  removeInterface: (id: number) => void;
+  updateInterface: (interfaceData: SavedInterface[]) => void;
+  removeInterface: (id: string) => void;
   clearInterfaces: () => void;
 }
 
@@ -25,16 +25,8 @@ export const useInterfaceStore = create<InterfaceStore>()(
       currentInterface: null,
       setCurrentInterface: (value: SavedInterface | null) => set({ currentInterface: value }),
       savedInterfaces: [],
-      addInterface: (interfaceData: SavedInterface, interfaceTitle: string) =>
-        set(state => ({
-          savedInterfaces: [
-            {
-              ...interfaceData,
-            },
-            ...state.savedInterfaces,
-          ],
-        })),
-      removeInterface: (id: number) =>
+      updateInterface: (interfaceData: SavedInterface[]) => set({ savedInterfaces: interfaceData }),
+      removeInterface: (id: string) =>
         set(state => ({
           savedInterfaces: state.savedInterfaces.filter(item => item.id !== id),
         })),
