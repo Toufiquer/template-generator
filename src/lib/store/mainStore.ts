@@ -10,6 +10,8 @@ export interface SavedInterface {
 }
 
 export interface InterfaceStore {
+  preViewPath: string | null;
+  setPreViewPath: (value: string) => void;
   currentInterface: SavedInterface | null;
   setCurrentInterface: (value: SavedInterface | null) => void;
   savedInterfaces: SavedInterface[];
@@ -22,6 +24,8 @@ export interface InterfaceStore {
 export const useInterfaceStore = create<InterfaceStore>()(
   persist(
     set => ({
+      preViewPath: '',
+      setPreViewPath: (value: string) => set({ preViewPath: value }),
       currentInterface: null,
       setCurrentInterface: (value: SavedInterface | null) => set({ currentInterface: value }),
       savedInterfaces: [],

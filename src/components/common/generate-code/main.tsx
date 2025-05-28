@@ -1,15 +1,17 @@
 import { Button } from '@/components/ui/button';
-import { SavedInterface } from '@/lib/store/mainStore';
+import { SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const GenerateCode = ({ currentInterface }: { currentInterface: SavedInterface }) => {
+  const { setPreViewPath } = useInterfaceStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async (): Promise<void> => {
     setIsLoading(true);
 
     try {
+      const title = currentInterface.title.toLowerCase().replace(/ /g, '-') || 'default';
       const response = await fetch('/api/generate-model', {
         method: 'POST',
         headers: {
@@ -17,15 +19,15 @@ const GenerateCode = ({ currentInterface }: { currentInterface: SavedInterface }
         },
         body: JSON.stringify({
           content: currentInterface.content,
-          folderName: currentInterface.title.toLowerCase().replace(/ /g, '-') || 'default',
+          folderName: title,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('model.ts file created successfully!');
-        console.log('File created:', data.filePath);
+        toast.success(`file for ${title} created successfully!`);
+        setPreViewPath(`/generate/${title}`);
       } else {
         toast.error(`Error: ${data.message}`);
         console.error('Error creating file:', data.message);

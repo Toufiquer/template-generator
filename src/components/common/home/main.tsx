@@ -7,7 +7,7 @@ import ViewCurrentInterface from './ViewCurrentInterface';
 import Link from 'next/link';
 const InterfaceInputComponent: React.FC = () => {
   const [textareaValue, setTextareaValue] = useState<string>('');
-  const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface } = useInterfaceStore();
+  const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface, preViewPath } = useInterfaceStore();
 
   const handleSave = (): void => {
     if (textareaValue.trim()) {
@@ -30,9 +30,11 @@ const InterfaceInputComponent: React.FC = () => {
   };
   return (
     <div className="w-full flex flex-col">
-      <Link href="/generate-template" className="w-full text-center py-6" target="_blank">
-        View Generate Template
-      </Link>
+      {preViewPath && (
+        <Link href={preViewPath} className="w-full text-center py-6" target="_blank">
+          View Generate Template
+        </Link>
+      )}
       <div className="mx-auto p-6 bg-slate-700 text-slate-200 rounded-lg shadow-lg min-w-7xl">
         <h2 className="text-2xl font-bold mb-4 text-gray-50">Interface Generator</h2>
         {/* Textarea for interface input */}
