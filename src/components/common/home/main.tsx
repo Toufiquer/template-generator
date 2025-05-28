@@ -7,11 +7,11 @@ import ViewCurrentInterface from './ViewCurrentInterface';
 import Link from 'next/link';
 const InterfaceInputComponent: React.FC = () => {
   const [textareaValue, setTextareaValue] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
   const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface, preViewPath } = useInterfaceStore();
 
   const handleSave = (): void => {
     if (textareaValue.trim()) {
-      const title = textareaValue.split(' ')[2] || `T-${Date.now()}`;
       const newInterfaceValue: SavedInterface = {
         id: new Date().toString(),
         title,
@@ -53,6 +53,13 @@ const InterfaceInputComponent: React.FC = () => {
             placeholder="Enter your interface definition here..."
             className="w-full h-40 p-3 border border-gray-300 rounded-md resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
             rows={8}
+          />
+          <input
+            type="text"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="Enter Title"
+            className="border-1 w-full mt-4 p-4 rounded-md py-2"
           />
         </div>
         <button
