@@ -48,7 +48,12 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
             </button>
             <div className="w-full flex items-center justify-end gap-4">
               {currentValue && (
-                <Button variant="secondary" size="sm" className="cursor-pointer" onClick={() => setCurrentInterface(currentValue)}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="min-w-[80px] bg-green-600 cursor-pointer hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200"
+                  onClick={() => setCurrentInterface(currentValue)}
+                >
                   Use
                 </Button>
               )}

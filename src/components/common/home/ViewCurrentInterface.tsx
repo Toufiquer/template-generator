@@ -10,6 +10,8 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useInterfaceStore } from '@/lib/store/mainStore';
+import GenerateCode from '../generate-code/main';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const ViewCurrentInterface = () => {
   const [isContentVisible, setIsContentVisible] = useState(true);
@@ -42,9 +44,23 @@ const ViewCurrentInterface = () => {
                 </h3>
               </div>
             </button>
-            <Button variant="destructive" size="sm" className="cursor-pointer" onClick={() => setCurrentInterface(null)}>
-              Delete
-            </Button>
+            <div className="flex items-center justify-end gap-2">
+              <GenerateCode currentInterface={currentInterface} />
+              <div className="w-full flex items-center justify-end gap-4">
+                <Dialog>
+                  <DialogTrigger className="bg-rose-500 hover:bg-rose-600 cursor-pointer p-2 rounded py-1 text-sm">Delete</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-slate-50">Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>You want to delete this interface.</DialogDescription>
+                      <Button variant="destructive" size="sm" className="cursor-pointer" onClick={() => setCurrentInterface(null)}>
+                        Delete
+                      </Button>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
           </div>
 
           {isContentVisible && (

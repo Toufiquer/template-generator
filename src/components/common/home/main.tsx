@@ -4,13 +4,12 @@ import React, { useState } from 'react';
 import { SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
 import ViewInterface from './viewInterface';
 import ViewCurrentInterface from './ViewCurrentInterface';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 const InterfaceInputComponent: React.FC = () => {
   const [textareaValue, setTextareaValue] = useState<string>('');
   const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface } = useInterfaceStore();
 
-  const handleGenerate = (): void => {
+  const handleSave = (): void => {
     if (textareaValue.trim()) {
       const title = textareaValue.split(' ')[2] || `T-${Date.now()}`;
       const newInterfaceValue: SavedInterface = {
@@ -50,16 +49,14 @@ const InterfaceInputComponent: React.FC = () => {
             rows={8}
           />
         </div>
-        {/* Generate button */}
         <button
-          onClick={handleGenerate}
+          onClick={handleSave}
           disabled={!textareaValue.trim()}
-          className="w-full bg-green-600 cursor-pointer hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200"
+          className="mt-4 w-full bg-green-600 cursor-pointer hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200"
         >
-          Generate
+          Save
         </button>
         <ViewCurrentInterface />
-
         {savedInterfaces.length > 0 && currentInterface && <hr className="my-6" />}
         {savedInterfaces.length > 0 && (
           <div className="mt-5">
