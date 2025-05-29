@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 import { ToastContainer } from 'react-toastify';
 import { ReduxProvider } from '@/redux/provider';
 import { ThemeProvider } from '@/components/common/theme-provider';
+import MenuBarNextComponent from '@/components/common/menu/menu';
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +29,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>
+            <div className="w-full flex flex-col gap-4">
+              <MenuBarNextComponent />
+              <div className="py-4 centralized-center">{children}</div>
+            </div>
+          </ReduxProvider>
         </ThemeProvider>
         <ToastContainer />
       </body>
