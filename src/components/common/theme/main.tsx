@@ -15,6 +15,7 @@ import BadgeNextComponent from './component/badge/badge';
 import SelectNextComponent from './component/select/select';
 import TextAreaNextComponent from './component/text-area/text-area';
 import CheckboxNextComponent from './component/checkbox/checkbox';
+import TextBoxNextComponent from './component/text-box/text-box';
 
 const MainThemeDemoNextComponents = () => {
   return (
@@ -28,6 +29,7 @@ const MainThemeDemoNextComponents = () => {
       <SelectNextComponent />
       <TextAreaNextComponent />
       <CheckboxNextComponent />
+      <TextBoxNextComponent />
     </div>
   );
 };
