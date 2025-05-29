@@ -16,6 +16,7 @@ import SelectNextComponent from './component/select/select';
 import TextAreaNextComponent from './component/text-area/text-area';
 import CheckboxNextComponent from './component/checkbox/checkbox';
 import TextBoxNextComponent from './component/text-box/text-box';
+import TableNextComponent from './component/table/table';
 
 const MainThemeDemoNextComponents = () => {
   return (
@@ -30,6 +31,7 @@ const MainThemeDemoNextComponents = () => {
       <TextAreaNextComponent />
       <CheckboxNextComponent />
       <TextBoxNextComponent />
+      <TableNextComponent />
     </div>
   );
 };
