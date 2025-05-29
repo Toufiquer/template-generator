@@ -8,31 +8,32 @@
 
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { useInterfaceStore } from '@/lib/store/mainStore';
 import GenerateCode from '../generate-code/main';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import ConfirmDeleteNextComponent from '../theme/component/confirm-delete/confirm-delete';
 
 const ViewCurrentInterface = () => {
   const [isContentVisible, setIsContentVisible] = useState(true);
   const { setCurrentInterface, currentInterface } = useInterfaceStore();
-
+  const handleClick = () => {
+    setCurrentInterface(null);
+  };
   return (
     <main>
       {currentInterface && (
-        <div className="mt-2 p-4 bg-gray-800 rounded-md">
+        <div className="mt-2 p-4 rounded-md">
           <div className="w-full flex items-center justify-between">
             <button onClick={() => setIsContentVisible(!isContentVisible)} className="w-full cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
                 <svg
-                  className={`w-4 h-4 text-gray-300 transition-transform duration-200 ${isContentVisible ? 'rotate-90' : ''}`}
+                  className={`w-4 h-4 transition-transform duration-200 ${isContentVisible ? 'rotate-90' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-                <h3 className="text-sm font-semibold text-gray-100">
+                <h3 className="text-sm font-semibold">
                   Current Interface: - {currentInterface.title} -{' '}
                   {new Date(currentInterface.timestamp).toLocaleString('en-US', {
                     year: 'numeric',
@@ -46,20 +47,7 @@ const ViewCurrentInterface = () => {
             </button>
             <div className="flex items-center justify-end gap-2">
               <GenerateCode currentInterface={currentInterface} />
-              <div className="w-full flex items-center justify-end gap-4">
-                <Dialog>
-                  <DialogTrigger className="bg-rose-500 hover:bg-rose-600 cursor-pointer p-2 rounded py-1 text-sm">Delete</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-slate-50">Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>You want to delete this interface.</DialogDescription>
-                      <Button variant="destructive" size="sm" className="cursor-pointer" onClick={() => setCurrentInterface(null)}>
-                        Delete
-                      </Button>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </div>
+              <ConfirmDeleteNextComponent onClickFunction={handleClick} />
             </div>
           </div>
 
