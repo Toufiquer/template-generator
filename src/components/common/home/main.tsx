@@ -59,9 +59,11 @@ const InterfaceInputComponent: React.FC = () => {
             className="border-1 w-full mt-4 p-4 rounded-md py-2"
           />
         </div>
-        <Button onClick={handleSave} disabled={!textareaValue.trim()} variant="outlineGarden">
-          Save
-        </Button>
+        <div className="centralized-end">
+          <Button onClick={handleSave} disabled={!textareaValue.trim()} variant="outlineGarden" className="w-[180px]">
+            Save
+          </Button>
+        </div>
         <ViewCurrentInterface />
         {savedInterfaces.length > 0 && currentInterface && <hr className="my-6" />}
         {savedInterfaces.length > 0 && (

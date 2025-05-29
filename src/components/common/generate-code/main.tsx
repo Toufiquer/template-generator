@@ -43,13 +43,7 @@ const GenerateCode = ({ currentInterface }: { currentInterface: SavedInterface }
   return (
     <main>
       {/* Generate button */}
-      <Button
-        type="button"
-        size="sm"
-        onClick={handleGenerate}
-        disabled={!currentInterface.content.trim() || isLoading}
-        className="w-full bg-green-600 cursor-pointer hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200"
-      >
+      <Button type="button" variant="garden" size="sm" onClick={handleGenerate} disabled={!currentInterface.content.trim() || isLoading} className="w-[180px]">
         {isLoading ? 'Generating...' : 'Generate'}
       </Button>
     </main>

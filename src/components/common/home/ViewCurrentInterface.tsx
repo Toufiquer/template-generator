@@ -10,7 +10,6 @@ import { useState } from 'react';
 
 import { useInterfaceStore } from '@/lib/store/mainStore';
 import GenerateCode from '../generate-code/main';
-import ConfirmDeleteNextComponent from '../theme/component/confirm-delete/confirm-delete';
 
 const ViewCurrentInterface = () => {
   const [isContentVisible, setIsContentVisible] = useState(true);
@@ -21,7 +20,7 @@ const ViewCurrentInterface = () => {
   return (
     <main>
       {currentInterface && (
-        <div className="mt-2 p-4 rounded-md">
+        <div className="mt-2 rounded-md">
           <div className="w-full flex items-center justify-between">
             <button onClick={() => setIsContentVisible(!isContentVisible)} className="w-full cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
@@ -47,13 +46,12 @@ const ViewCurrentInterface = () => {
             </button>
             <div className="flex items-center justify-end gap-2">
               <GenerateCode currentInterface={currentInterface} />
-              <ConfirmDeleteNextComponent onClickFunction={handleClick} />
             </div>
           </div>
 
           {isContentVisible && (
             <div className="mt-3">
-              <pre className="text-sm text-gray-100 whitespace-pre-wrap bg-gray-700 p-3 rounded border">{currentInterface.content.trim()}</pre>
+              <pre className="text-sm whitespace-pre-wrap p-3 rounded border">{currentInterface.content.trim()}</pre>
             </div>
           )}
         </div>
