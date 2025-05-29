@@ -18,15 +18,18 @@ export const metadata: Metadata = {
 };
 import { ToastContainer } from 'react-toastify';
 import { ReduxProvider } from '@/redux/provider';
+import { ThemeProvider } from '@/components/common/theme-provider';
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="class">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ReduxProvider>{children}</ReduxProvider>
+        </ThemeProvider>
         <ToastContainer />
       </body>
     </html>
