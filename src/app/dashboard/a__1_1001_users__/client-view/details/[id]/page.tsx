@@ -25,7 +25,7 @@ const Page = () => {
           return;
         }
 
-        const url = `https://b-varse.vercel.app/dashboard/a__1_1001_users__/all/api/v1?id=${id}`;
+        const url = `https://b-varse.vercel.app/dashboard/template-demo/all/api/v1?id=${id}`;
         if (url) {
           try {
             const response = await fetch(url, {
@@ -50,7 +50,7 @@ const Page = () => {
       <div className="w-full hover:bg-slate-400 bg-slate-300 block p-1 border-1 border-slate-400 ">
         Name: {data.name} <sup className="text-green-500">Done</sup>
       </div>
-      <Link href="/dashboard/a__1_1001_users__/all" className="w-full hover:bg-slate-400 bg-slate-300 p-1 border-1 border-slate-400 ">
+      <Link href="/dashboard/template-demo/all" className="w-full hover:bg-slate-400 bg-slate-300 p-1 border-1 border-slate-400 ">
         Back to Home
       </Link>
     </div>

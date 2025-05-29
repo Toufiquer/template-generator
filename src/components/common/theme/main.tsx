@@ -17,6 +17,7 @@ import TextAreaNextComponent from './component/text-area/text-area';
 import CheckboxNextComponent from './component/checkbox/checkbox';
 import TextBoxNextComponent from './component/text-box/text-box';
 import TableNextComponent from './component/table/table';
+import MainConfirmNextComponent from './component/confirm-delete/main';
 
 const MainThemeDemoNextComponents = () => {
   return (
@@ -32,6 +33,7 @@ const MainThemeDemoNextComponents = () => {
       <CheckboxNextComponent />
       <TextBoxNextComponent />
       <TableNextComponent />
+      <MainConfirmNextComponent />
     </div>
   );
 };

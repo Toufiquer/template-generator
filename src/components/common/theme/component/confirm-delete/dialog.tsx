@@ -115,6 +115,24 @@ function DialogDescription({ className, ...props }: React.ComponentProps<typeof 
   return <DialogPrimitive.Description data-slot="dialog-description" className={cn('text-muted-foreground text-sm', className)} {...props} />;
 }
 
+export interface interFateConfirmDeleteVariant {
+  variant?:
+    | 'link'
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'garden'
+    | 'fire'
+    | 'water'
+    | 'outlineGarden'
+    | 'outlineFire'
+    | 'outlineWater'
+    | null
+    | undefined;
+}
+
 export {
   Dialog,
   DialogClose,

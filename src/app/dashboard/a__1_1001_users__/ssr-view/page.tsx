@@ -16,7 +16,7 @@ const Page = async () => {
       return;
     }
 
-    const url = 'https://b-varse.vercel.app/dashboard/a__1_1001_users__/all/api/v1?page=1&limit=4';
+    const url = 'https://b-varse.vercel.app/dashboard/template-demo/all/api/v1?page=1&limit=4';
 
     try {
       const response = await fetch(url, {
@@ -40,7 +40,7 @@ const Page = async () => {
         data.length > 0 &&
         data.map((i: { name: string; _id: string }, idx: number) => (
           <div key={idx + i?.name}>
-            <CustomLInk name={i.name} url={`/dashboard/a__1_1001_users__/ssr-view/details/${i._id}`} />
+            <CustomLInk name={i.name} url={`/dashboard/template-demo/ssr-view/details/${i._id}`} />
           </div>
         ))}
     </main>

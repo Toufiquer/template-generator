@@ -21,7 +21,7 @@ const Page = () => {
         console.error('Authentication token not found. Unable to fetch data.');
         return;
       }
-      const url = 'https://b-varse.vercel.app/dashboard/a__1_1001_users__/all/api/v1?page=1&limit=4';
+      const url = 'https://b-varse.vercel.app/dashboard/template-demo/all/api/v1?page=1&limit=4';
 
       try {
         const response = await fetch(url, {
@@ -43,7 +43,7 @@ const Page = () => {
     <main className="w-full flex flex-col gap-2 p-1 md:p-4">
       {data?.map((i: { name: string; _id: string }, idx: number) => (
         <div key={idx + i?.name}>
-          <CustomLInk name={i.name} url={`/dashboard/a__1_1001_users__/client-view/details/${i._id}`} />
+          <CustomLInk name={i.name} url={`/dashboard/template-demo/client-view/details/${i._id}`} />
         </div>
       ))}
     </main>
