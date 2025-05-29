@@ -12,6 +12,8 @@ import HeadingNextComponent from './component/heading/heading';
 import ButtonNextComponent from './component/button/button';
 import TextNextComponent from './component/text/text';
 import BadgeNextComponent from './component/badge/badge';
+import SelectNextComponent from './component/select/select';
+import TextAreaNextComponent from './component/text-area/text-area';
 
 const MainThemeDemoNextComponents = () => {
   return (
@@ -22,6 +24,8 @@ const MainThemeDemoNextComponents = () => {
       <CardNextComponent />
       <TextNextComponent />
       <BadgeNextComponent />
+      <SelectNextComponent />
+      <TextAreaNextComponent />
     </div>
   );
 };
