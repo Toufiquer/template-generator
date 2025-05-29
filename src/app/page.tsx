@@ -1,5 +1,6 @@
 import InterfaceInputComponent from '@/components/common/home/main';
 import { ModeToggle } from '@/components/common/mode-toggle';
+import MainThemeDemoNextComponents from '@/components/common/theme/main';
 
 export default function Home() {
   return (
@@ -7,8 +8,7 @@ export default function Home() {
       <div className="w-full flex items-center justify-center">
         <ModeToggle />
       </div>
-
-      <div className="w-full min-h-screen border-1 max-w-7xl"></div>
+      <MainThemeDemoNextComponents />
       {/* <InterfaceInputComponent /> */}
     </div>
   );
