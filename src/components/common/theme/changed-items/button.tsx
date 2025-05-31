@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer min-w-[80px]",
   {
     variants: {
       variant: {
@@ -20,11 +20,13 @@ const buttonVariants = cva(
         fire: 'text-slate-700 hover:text-slate-800 bg-rose-400 hover:bg-rose-500',
         water: 'text-slate-700 hover:text-slate-800 bg-blue-400 hover:bg-blue-500',
         outlineGarden:
-          'border-1 border-green-400 dark:text-green-50 shadow-xl bg-green-300/20 shadow-xs hover:bg-green-400 transition-all duration-300 text-black/80',
+          'border-1 border-green-400 text-green-500 hover:text-green-50 shadow-xl bg-green-300/20 shadow-xs hover:bg-green-400 transition-all duration-300',
         outlineFire:
-          'border-1 border-rose-400 dark:text-rose-50 shadow-xl bg-rose-300/20 shadow-xs hover:bg-rose-400 transition-all duration-300 text-black/80',
+          'border-1 border-rose-400 shadow-xl bg-rose-300/20 shadow-xs hover:bg-rose-400 transition-all duration-300 text-rose-500 hover:text-rose-50',
         outlineWater:
-          'border-1 border-blue-400 dark:text-blue-50 shadow-xl bg-blue-300/20 shadow-xs hover:bg-blue-400 transition-all duration-300 text-black/80',
+          'border-1 border-blue-400 shadow-xl bg-blue-300/20 shadow-xs hover:bg-blue-400 transition-all duration-300 text-blue-500 hover:text-blue-50',
+        outlineDefault:
+          'border-1 border-gray-400 shadow-xl bg-gray-300/20 shadow-xs hover:bg-gray-400 transition-all duration-300 text-gray-500 hover:text-gray-50',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

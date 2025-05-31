@@ -19,6 +19,7 @@ const BadgeNextComponent = () => {
       <Badge variant="garden">Garden</Badge>
       <Badge variant="fire">Fire</Badge>
       <Badge variant="water">Water</Badge>
+      <Badge variant="outlineDefault">Water</Badge>
       <Badge variant="outlineGarden">Outline Garden</Badge>
       <Badge variant="outlineFire">Outline Fire</Badge>
       <Badge variant="outlineWater">Outline Water</Badge>

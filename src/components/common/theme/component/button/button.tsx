@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 const ButtonNextComponent = () => {
   return (
-    <div className="w-full flex items-center justify-center gap-4">
+    <div className="w-full flex items-center justify-center gap-4 flex-wrap">
       <Button variant="default">Default</Button>
       <Button variant="destructive">Destructive</Button>
       <Button variant="ghost">Ghost</Button>
@@ -20,6 +20,7 @@ const ButtonNextComponent = () => {
       <Button variant="garden">Garden</Button>
       <Button variant="fire">Fire</Button>
       <Button variant="water">Water</Button>
+      <Button variant="outlineDefault">O Default</Button>
       <Button variant="outlineGarden">O Garden</Button>
       <Button variant="outlineFire">O Fire</Button>
       <Button variant="outlineWater">O Water</Button>

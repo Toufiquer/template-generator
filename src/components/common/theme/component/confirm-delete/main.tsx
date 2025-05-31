@@ -23,6 +23,13 @@ const MainConfirmNextComponent = () => {
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="garden" title="garden" confirmTitle="garden" />
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="fire" title="fire" confirmTitle="fire" />
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="water" title="water" confirmTitle="water" />
+      <ConfirmDeleteNextComponent
+        className="grow-1"
+        onClickFunction={handleClick}
+        variant="outlineDefault"
+        title="outlineDefault"
+        confirmTitle="outlineDefault"
+      />
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="outlineGarden" title="outlineGarden" confirmTitle="outlineGarden" />
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="outlineFire" title="outlineFire" confirmTitle="outlineFire" />
       <ConfirmDeleteNextComponent className="grow-1" onClickFunction={handleClick} variant="outlineWater" title="outlineWater" confirmTitle="outlineWater" />

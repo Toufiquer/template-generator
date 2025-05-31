@@ -23,6 +23,8 @@ const badgeVariants = cva(
           'border-1 border-rose-400 shadow-xl bg-rose-300/20 shadow-xs hover:bg-rose-400 transition-all duration-300 text-rose-500 hover:text-rose-50',
         outlineWater:
           'border-1 border-blue-400 shadow-xl bg-blue-300/20 shadow-xs hover:bg-blue-400 transition-all duration-300 text-blue-500 hover:text-blue-50',
+        outlineDefault:
+          'border-1 border-gray-400 shadow-xl bg-gray-300/20 shadow-xs hover:bg-gray-400 transition-all duration-300 text-gray-500 hover:text-gray-50',
       },
     },
     defaultVariants: {
