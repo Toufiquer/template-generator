@@ -78,11 +78,19 @@ const ViewTableNextComponents: React.FC = () => {
   const sortedUsers_1_000___Data = useMemo(() => {
     if (!sortConfig) return getAllUsers_1_000___Data;
     return [...getAllUsers_1_000___Data].sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+      // Ensure values exist for comparison, treat undefined/null as "lesser" or handle based on type
+      const valA = a[sortConfig.key];
+      const valB = b[sortConfig.key];
+
+      if (valA === undefined || valA === null) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valB === undefined || valB === null) return sortConfig.direction === 'asc' ? 1 : -1;
+
+      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
   }, [getAllUsers_1_000___Data, sortConfig]);
+
   const handleSelectAll = (isChecked: boolean) => setBulkData(isChecked ? getAllUsers_1_000___Data : []);
   const handleSelectRow = (isChecked: boolean, Users_1_000___: IUsers_1_000___) =>
     setBulkData(isChecked ? [...bulkData, Users_1_000___] : bulkData.filter(item => item.email !== Users_1_000___.email));
@@ -90,7 +98,7 @@ const ViewTableNextComponents: React.FC = () => {
     handleSuccess('Reload Successful');
   };
   const renderActions = (Users_1_000___: IUsers_1_000___) => (
-    <div className="flex flex-col sm:flex-row gap-2">
+    <div className="flex flex-col md:flex-row gap-2">
       <Button
         variant="outlineDefault"
         size="sm"
@@ -132,14 +140,16 @@ const ViewTableNextComponents: React.FC = () => {
             checked={bulkData.some(item => item.email === Users_1_000___.email)}
           />
         </TableCell>
-        <TableCell className="font-medium">{(Users_1_000___.name as string) || ''}</TableCell>
-        <TableCell className="hidden md:table-cell">{(Users_1_000___.email as string) || ''}</TableCell>
-        <TableCell className="hidden lg:table-cell">{(Users_1_000___.passCode as string) || ''}</TableCell>
-        <TableCell className="hidden md:table-cell">{(Users_1_000___.alias as string) || ''}</TableCell>
+        <TableCell className="font-medium whitespace-nowrap">{(Users_1_000___.name as string) || ''}</TableCell>
+        <TableCell className="whitespace-nowrap">{(Users_1_000___.email as string) || ''}</TableCell>
+        <TableCell className="whitespace-nowrap">{(Users_1_000___.passCode as string) || ''}</TableCell>
+        <TableCell className="whitespace-nowrap">{(Users_1_000___.alias as string) || ''}</TableCell>
         <TableCell>
-          <span className={`py-1 rounded-full text-xs font-medium bg-green-500 text-green-50 px-3`}>{(Users_1_000___.role as string) || ''}</span>
+          <span className={`py-1 rounded-full text-xs font-medium bg-green-500 text-green-50 px-3 whitespace-nowrap`}>
+            {(Users_1_000___.role as string) || ''}
+          </span>
         </TableCell>
-        <TableCell className="hidden lg:table-cell">{formatDate(Users_1_000___.createdAt)}</TableCell>
+        <TableCell className="whitespace-nowrap">{formatDate(Users_1_000___.createdAt)}</TableCell>
         <TableCell className="justify-end flex">{renderActions(Users_1_000___)}</TableCell>
       </TableRow>
     ));
@@ -151,13 +161,15 @@ const ViewTableNextComponents: React.FC = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="w-full my-4">
-        <div className="w-full flex items-center justify-between gap-4 pb-2 border-b-1 border-slat-400">
-          <div className="px-2 gap-2 flex items-center justify-start w-full">
+        {/* Toolbar: Made responsive */}
+        <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-400">
+          <div className="px-2 gap-2 flex items-center justify-start w-full sm:w-auto">
             Total Selected <span className="text-xs text-slate-500">({bulkData.length})</span>
           </div>
-          <div className="px-2 gap-2 flex items-center justify-end w-full">
+          {/* Button group: allow wrapping and justify start on mobile, end on sm+ */}
+          <div className="px-2 gap-2 flex flex-wrap items-center justify-start sm:justify-end w-full">
             <Button variant="outlineDefault" size="sm" onClick={() => toggleBulkDynamicUpdateModal(true)} disabled={bulkData.length === 0}>
-              <PencilIcon className="w-4 h-4 mr-1" /> B. Update
+              <PencilIcon className="w-4 h-4 mr-1" /> B. Update (Dyn)
             </Button>
             <Button variant="outlineDefault" size="sm" onClick={() => toggleBulkUpdateModal(true)} disabled={bulkData.length === 0}>
               <PencilIcon className="w-4 h-4 mr-1" /> B. Update
@@ -171,7 +183,7 @@ const ViewTableNextComponents: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              className="border-1 bg-green-100 hover:bg-green-200 border-green-300 hover:border-green-400 text-green-400 hover:text-green-500 cursor-pointer "
+              className="border bg-green-100 hover:bg-green-200 border-green-300 hover:border-green-400 text-green-400 hover:text-green-500 cursor-pointer"
               onClick={() => {
                 refetch();
                 handlePopUp();
@@ -183,37 +195,54 @@ const ViewTableNextComponents: React.FC = () => {
           </div>
         </div>
       </div>
-      <Table className="border-1 border-slate-500">
-        <TableHeader className="bg-slate-600 text-slate-50 rounded overflow-hidden border-1 border-slate-600">
-          <TableRow>
-            <TableHead>
-              <Checkbox onCheckedChange={checked => handleSelectAll(!!checked)} checked={bulkData.length === getAllUsers_1_000___Data.length} />
-            </TableHead>
-            {['name', 'email', 'passCode', 'alias', 'role', 'createdAt'].map(key => (
-              <TableHead
-                key={key}
-                className={`font-bold text-slate-50 cursor-pointer ${key === 'email' || key === 'alias' ? 'hidden md:table-cell' : ''} ${
-                  key === 'passCode' || key === 'createdAt' ? 'hidden lg:table-cell' : ''
-                }`}
-                onClick={() => handleSort(key as keyof IUsers_1_000___)}
-              >
-                {key.charAt(0).toUpperCase() + key.slice(1)} {sortConfig?.key === key && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+
+      {/* Table Wrapper for horizontal scrolling */}
+      <div className="overflow-x-auto w-full">
+        <Table className="border border-slate-500 min-w-[900px]">
+          {' '}
+          {/* min-width ensures table has enough space, adjust as needed */}
+          <TableHeader className="bg-slate-600 text-slate-50 rounded overflow-hidden border-b border-slate-600">
+            <TableRow>
+              <TableHead className="sticky left-0 bg-slate-600 z-10">
+                {' '}
+                {/* Sticky checkbox column */}
+                <Checkbox
+                  onCheckedChange={checked => handleSelectAll(!!checked)}
+                  checked={bulkData.length > 0 && bulkData.length === getAllUsers_1_000___Data.length} // ensure checkbox reflects all-selected state correctly
+                />
               </TableHead>
-            ))}
-            <TableHead className="hidden lg:table-cell font-bold text-slate-50 text-end pr-4">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>{renderTableRows()}</TableBody>
-      </Table>
-      <Pagination
-        currentPage={queryPramsPage}
-        itemsPerPage={queryPramsLimit}
-        onPageChange={e => setQueryPramsPage(e)}
-        totalItems={getResponseData?.data?.total}
-      />
-      <div className="max-w-[380px] flex items-center justify-between pl-2 gap-4 border-1 border-slate-200 rounded-xl w-full mx-auto mt-8">
+              {['name', 'email', 'passCode', 'alias', 'role', 'createdAt'].map(key => (
+                <TableHead
+                  key={key}
+                  className={`font-bold text-slate-50 cursor-pointer whitespace-nowrap`} // Removed responsive hiding, added whitespace-nowrap
+                  onClick={() => handleSort(key as keyof IUsers_1_000___)}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)} {sortConfig?.key === key && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                </TableHead>
+              ))}
+              <TableHead className="font-bold text-slate-50 text-end pr-4 whitespace-nowrap sticky right-0 bg-slate-600 z-10">
+                {' '}
+                {/* Sticky actions column header */}
+                Actions
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>{renderTableRows()}</TableBody>
+        </Table>
+      </div>
+
+      {getResponseData?.data?.total > 0 && ( // Only show pagination if there are items
+        <Pagination
+          currentPage={queryPramsPage}
+          itemsPerPage={queryPramsLimit}
+          onPageChange={e => setQueryPramsPage(e)}
+          totalItems={getResponseData?.data?.total}
+        />
+      )}
+
+      <div className="max-w-[380px] flex items-center justify-between pl-2 gap-4 border border-slate-200 rounded-xl w-full mx-auto mt-8">
         <Label htmlFor="set-limit" className="text-right text-slate-500 font-thin pl-3">
-          Users_1_000___ per page
+          Items per page
         </Label>
         <Select
           onValueChange={value => {
