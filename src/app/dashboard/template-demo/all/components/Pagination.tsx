@@ -20,7 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsP
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const getPageNumbers = () => {
-    const maxPagesToShow = 5;
+    const maxPagesToShow = 5; // Show 5 page numbers at a time
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = startPage + maxPagesToShow - 1;
 
@@ -29,16 +29,27 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsP
       startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    // Ensure startPage is not less than 1
+    startPage = Math.max(1, startPage);
+
+    return Array.from({ length: Math.min(maxPagesToShow, endPage - startPage + 1) }, (_, i) => startPage + i);
   };
 
   const renderPageButton = (page: number, isCurrent: boolean) => (
     <button
-      key={page}
+      key={`page-${page}`}
       onClick={() => onPageChange(page)}
-      className={`flex items-center justify-center h-10 w-10 rounded-md transition-colors ${
-        isCurrent ? 'bg-green-400 cursor-text text-white' : 'cursor-pointer text-gray-700 hover:bg-green-50 hover:text-green-600'
-      }`}
+      disabled={isCurrent} // Disable current page button
+      className={`
+        flex items-center justify-center h-10 w-10 rounded-md transition-colors
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background
+        ${
+          isCurrent
+            ? 'bg-secondary dark:bg-secondary/40 text-secondary-foreground cursor-default' // Active: More opaque for light, original for dark
+            : 'bg-transparent text-muted-foreground hover:bg-secondary/50 dark:hover:bg-secondary/20 hover:text-secondary-foreground cursor-pointer' // Inactive: More opaque hover for light, original for dark
+        }
+      `}
+      aria-current={isCurrent ? 'page' : undefined}
     >
       {page}
     </button>
@@ -46,47 +57,61 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsP
 
   if (totalPages <= 1) return null;
 
+  const pageNumbers = getPageNumbers();
+  const showStartEllipsis = pageNumbers.length > 0 && pageNumbers[0] > 2;
+  const showEndEllipsis = pageNumbers.length > 0 && pageNumbers[pageNumbers.length - 1] < totalPages - 1;
+
   return (
     <div className="flex items-center justify-center w-full py-4">
-      <nav className="flex items-center gap-1 rounded-lg shadow-sm bg-white p-1">
+      <nav className="flex items-center gap-1 rounded-lg shadow-sm bg-card p-1.5">
         {/* Previous button */}
         <button
           onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`flex cursor-pointer items-center justify-center h-10 w-10 rounded-md transition-colors ${
-            currentPage === 1 ? 'text-gray-300 cursor-text' : 'text-gray-700 hover:bg-green-50 hover:text-green-600'
-          }`}
+          className={`
+            flex items-center justify-center h-10 w-10 rounded-md transition-colors
+            text-muted-foreground
+            hover:bg-secondary/50 dark:hover:bg-secondary/20 hover:text-secondary-foreground /* More opaque hover for light */
+            disabled:bg-secondary/5 disabled:text-muted-foreground/5 /* More opaque disabled bg for light */
+            dark:disabled:bg-secondary/5 dark:disabled:text-muted-foreground/5 /* Original disabled for dark */
+            disabled:cursor-not-allowed
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background
+            cursor-pointer
+          `}
           aria-label="Previous page"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
 
-        {/* First page */}
-        {getPageNumbers()[0] > 1 && (
-          <>
-            {renderPageButton(1, currentPage === 1)}
-            {getPageNumbers()[0] > 2 && <span className="h-10 flex items-center justify-center text-gray-500">...</span>}
-          </>
-        )}
+        {/* First page button if needed */}
+        {pageNumbers.length > 0 && pageNumbers[0] > 1 && renderPageButton(1, currentPage === 1)}
+
+        {/* Start ellipsis */}
+        {showStartEllipsis && <span className="flex items-center justify-center h-10 w-10 text-muted-foreground">...</span>}
 
         {/* Page numbers */}
-        {getPageNumbers().map(page => renderPageButton(page, currentPage === page))}
+        {pageNumbers.map(page => renderPageButton(page, currentPage === page))}
 
-        {/* Last page */}
-        {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
-          <>
-            {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && <span className="h-10 flex items-center justify-center text-gray-500">...</span>}
-            {renderPageButton(totalPages, currentPage === totalPages)}
-          </>
-        )}
+        {/* End ellipsis */}
+        {showEndEllipsis && <span className="flex items-center justify-center h-10 w-10 text-muted-foreground">...</span>}
+
+        {/* Last page button if needed */}
+        {pageNumbers.length > 0 && pageNumbers[pageNumbers.length - 1] < totalPages && renderPageButton(totalPages, currentPage === totalPages)}
 
         {/* Next button */}
         <button
           onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`flex cursor-pointer items-center justify-center h-10 w-10 rounded-md transition-colors ${
-            currentPage === totalPages ? 'text-gray-300 cursor-text' : 'text-gray-700 hover:bg-green-50 hover:text-green-600'
-          }`}
+          className={`
+            flex items-center justify-center h-10 w-10 rounded-md transition-colors
+            text-muted-foreground
+            hover:bg-secondary/50 dark:hover:bg-secondary/20 hover:text-secondary-foreground /* More opaque hover for light */
+            disabled:bg-secondary/5 disabled:text-muted-foreground/5 /* More opaque disabled bg for light */
+            dark:disabled:bg-secondary/5 dark:disabled:text-muted-foreground/5 /* Original disabled for dark */
+            disabled:cursor-not-allowed
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background
+            cursor-pointer
+          `}
           aria-label="Next page"
         >
           <ChevronRight className="h-5 w-5" />
