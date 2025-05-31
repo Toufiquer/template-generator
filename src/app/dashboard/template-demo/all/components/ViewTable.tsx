@@ -212,7 +212,7 @@ const ViewTableNextComponents: React.FC = () => {
         totalItems={getResponseData?.data?.total}
       />
       <div className="max-w-[380px] flex items-center justify-between pl-2 gap-4 border-1 border-slate-200 rounded-xl w-full mx-auto mt-8">
-        <Label htmlFor="set-limit" className="text-right text-slate-500 font-thin pl-2">
+        <Label htmlFor="set-limit" className="text-right text-slate-500 font-thin pl-3">
           Users_1_000___ per page
         </Label>
         <Select
@@ -225,9 +225,13 @@ const ViewTableNextComponents: React.FC = () => {
           <SelectTrigger className="col-span-4">
             <SelectValue placeholder="Select a limit" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-50">
+          <SelectContent>
             {pageLimitArr.map(i => (
-              <SelectItem key={i} value={i.toString()} className="cursor-pointer hover:bg-slate-200">
+              <SelectItem
+                key={i}
+                value={i.toString()}
+                className="focus:bg-slate-200 hover:bg-slate-300 dark:focus:bg-slate-500 dark:hover:bg-slate-600 cursor-pointer"
+              >
                 {i}
               </SelectItem>
             ))}
