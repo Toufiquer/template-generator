@@ -16,10 +16,10 @@ const ConfirmDeleteNextComponent = ({
   confirmTitle,
   className,
 }: {
-  className: string | null;
-  confirmTitle: string | null;
-  title: string | null;
-  variant: interFateConfirmDeleteVariant['variant'];
+  className?: string | null;
+  confirmTitle?: string | null;
+  title?: string | null;
+  variant?: interFateConfirmDeleteVariant['variant'];
   onClickFunction: () => void;
 }) => {
   return (

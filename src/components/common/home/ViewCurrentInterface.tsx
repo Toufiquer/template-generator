@@ -13,10 +13,8 @@ import GenerateCode from '../generate-code/main';
 
 const ViewCurrentInterface = () => {
   const [isContentVisible, setIsContentVisible] = useState(true);
-  const { setCurrentInterface, currentInterface } = useInterfaceStore();
-  const handleClick = () => {
-    setCurrentInterface(null);
-  };
+  const { currentInterface } = useInterfaceStore();
+
   return (
     <main>
       {currentInterface && (

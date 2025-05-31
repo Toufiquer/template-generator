@@ -20,7 +20,9 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
     updateInterface(othersData);
   };
   const handleClick = () => {
-    currentValue?.id && handleRemove(currentValue.id);
+    if (currentValue?.id) {
+      handleRemove(currentValue.id);
+    }
   };
   return (
     <main>
