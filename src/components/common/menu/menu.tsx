@@ -12,7 +12,7 @@ import { ModeToggle } from '../mode-toggle';
 
 const MenuBarNextComponent = () => {
   return (
-    <main className="centralized-center divide-accent divide-x-2">
+    <main className="centralized-center divide-accent divide-x-2 flex-wrap gap-4">
       <Link className="px-4" href="/">
         Home
       </Link>

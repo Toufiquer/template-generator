@@ -72,9 +72,9 @@ const MainNextPage: React.FC = () => {
 
   let renderUI = (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row gap-2 justify-between items-center mb-6">
         <h1 className="h2 w-full">User_3_000___ Management {isSuccess && <sup className="text-xs">(total:{getResponseData?.data?.total || '00'})</sup>}</h1>
-        <div className="w-full flex gap-2 item-center justify-end">
+        <div className="w-full flex flex-col md:flex-row gap-2 item-center justify-end">
           <Button size="sm" variant="outlineGarden" onClick={() => router.push('/dashboard/template-demo/ssr-view')}>
             <BiRightArrowAlt className="w-4 h-4" />
             SSR View
