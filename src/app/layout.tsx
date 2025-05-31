@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ReduxProvider>
-            <div className="w-full flex flex-col gap-4">
+            <div className="w-full flex flex-col gap-4 py-2">
               <MenuBarNextComponent />
               <div className="py-4 centralized-center">{children}</div>
             </div>

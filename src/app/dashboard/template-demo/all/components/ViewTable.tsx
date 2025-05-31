@@ -92,8 +92,7 @@ const ViewTableNextComponents: React.FC = () => {
   const renderActions = (Users_1_000___: IUsers_1_000___) => (
     <div className="flex flex-col sm:flex-row gap-2">
       <Button
-        className="cursor-pointer "
-        variant="outline"
+        variant="outlineDefault"
         size="sm"
         onClick={() => {
           setSelectedUsers_1_000___(Users_1_000___);
@@ -103,8 +102,7 @@ const ViewTableNextComponents: React.FC = () => {
         <EyeIcon className="w-4 h-4 mr-1" /> View
       </Button>
       <Button
-        className="cursor-pointer "
-        variant="outline"
+        variant="outlineDefault"
         size="sm"
         onClick={() => {
           setSelectedUsers_1_000___(Users_1_000___);
@@ -114,9 +112,8 @@ const ViewTableNextComponents: React.FC = () => {
         <PencilIcon className="w-4 h-4 mr-1" /> Edit
       </Button>
       <Button
-        variant="outline"
+        variant="outlineGarden"
         size="sm"
-        className="text-rose-400 hover:text-rose-500 cursor-pointer bg-rose-100 hover:bg-rose-200 border-1 border-rose-300 hover:border-rose-400 "
         onClick={() => {
           setSelectedUsers_1_000___(Users_1_000___);
           toggleDeleteModal(true);
@@ -159,22 +156,16 @@ const ViewTableNextComponents: React.FC = () => {
             Total Selected <span className="text-xs text-slate-500">({bulkData.length})</span>
           </div>
           <div className="px-2 gap-2 flex items-center justify-end w-full">
-            <Button className="cursor-pointer " variant="outline" size="sm" onClick={() => toggleBulkDynamicUpdateModal(true)} disabled={bulkData.length === 0}>
+            <Button variant="outlineDefault" size="sm" onClick={() => toggleBulkDynamicUpdateModal(true)} disabled={bulkData.length === 0}>
               <PencilIcon className="w-4 h-4 mr-1" /> B. Update
             </Button>
-            <Button className="cursor-pointer " variant="outline" size="sm" onClick={() => toggleBulkUpdateModal(true)} disabled={bulkData.length === 0}>
+            <Button variant="outlineDefault" size="sm" onClick={() => toggleBulkUpdateModal(true)} disabled={bulkData.length === 0}>
               <PencilIcon className="w-4 h-4 mr-1" /> B. Update
             </Button>
-            <Button className="cursor-pointer " variant="outline" size="sm" onClick={() => toggleBulkEditModal(true)} disabled={bulkData.length === 0}>
+            <Button variant="outlineDefault" size="sm" onClick={() => toggleBulkEditModal(true)} disabled={bulkData.length === 0}>
               <PencilIcon className="w-4 h-4 mr-1" /> Edit
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-rose-400 hover:text-rose-500 cursor-pointer bg-rose-100 hover:bg-rose-200 border-1 border-rose-300 hover:border-rose-400 "
-              onClick={() => toggleBulkDeleteModal(true)}
-              disabled={bulkData.length === 0}
-            >
+            <Button variant="outlineFire" size="sm" onClick={() => toggleBulkDeleteModal(true)} disabled={bulkData.length === 0}>
               <TrashIcon className="w-4 h-4 mr-1" /> Delete
             </Button>
             <Button

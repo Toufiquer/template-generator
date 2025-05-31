@@ -73,28 +73,17 @@ const MainNextPage: React.FC = () => {
   let renderUI = (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold w-full">
-          User_3_000___ Management {isSuccess && <sup className="text-xs">(total:{getResponseData?.data?.total || '00'})</sup>}
-        </h1>
+        <h1 className="h2 w-full">User_3_000___ Management {isSuccess && <sup className="text-xs">(total:{getResponseData?.data?.total || '00'})</sup>}</h1>
         <div className="w-full flex gap-2 item-center justify-end">
-          <Button
-            className="text-green-400 hover:text-green-500 cursor-pointer bg-green-100 hover:bg-green-200 border-1 border-green-300 hover:border-green-400"
-            onClick={() => router.push('/dashboard/template-demo/ssr-view')}
-          >
+          <Button size="sm" variant="outlineGarden" onClick={() => router.push('/dashboard/template-demo/ssr-view')}>
             <BiRightArrowAlt className="w-4 h-4" />
             SSR View
           </Button>
-          <Button
-            className="text-green-400 hover:text-green-500 cursor-pointer bg-green-100 hover:bg-green-200 border-1 border-green-300 hover:border-green-400"
-            onClick={() => router.push('/dashboard/template-demo/client-view')}
-          >
+          <Button size="sm" variant="outlineGarden" onClick={() => router.push('/dashboard/template-demo/client-view')}>
             <BiRightArrowAlt className="w-4 h-4" />
             Client View
           </Button>
-          <Button
-            className="text-green-400 hover:text-green-500 cursor-pointer bg-green-100 hover:bg-green-200 border-1 border-green-300 hover:border-green-400"
-            onClick={() => toggleAddModal(true)}
-          >
+          <Button size="sm" variant="outlineGarden" onClick={() => toggleAddModal(true)}>
             <PlusIcon className="w-4 h-4" />
             Add User_3_000___
           </Button>

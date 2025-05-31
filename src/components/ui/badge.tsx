@@ -18,11 +18,11 @@ const badgeVariants = cva(
         fire: 'text-slate-700 hover:text-slate-800 bg-rose-400 hover:bg-rose-500 border-rose-500 hover:border-rose-600',
         water: 'text-slate-700 hover:text-slate-800 bg-blue-400 hover:bg-blue-500 border-blue-500 hover:border-blue-600',
         outlineGarden:
-          'border-1 border-green-400 dark:text-green-50 shadow-xl bg-green-300/20 shadow-xs hover:bg-green-400 transition-all duration-300 text-black/80',
+          'border-1 border-green-400 shadow-xl bg-green-300/20 shadow-xs hover:bg-green-400 transition-all duration-300  text-green-500 hover:text-green-50',
         outlineFire:
-          'border-1 border-rose-400 dark:text-rose-50 shadow-xl bg-rose-300/20 shadow-xs hover:bg-rose-400 transition-all duration-300 text-black/80',
+          'border-1 border-rose-400 shadow-xl bg-rose-300/20 shadow-xs hover:bg-rose-400 transition-all duration-300 text-rose-500 hover:text-rose-50',
         outlineWater:
-          'border-1 border-blue-400 dark:text-blue-50 shadow-xl bg-blue-300/20 shadow-xs hover:bg-blue-400 transition-all duration-300 text-black/80',
+          'border-1 border-blue-400 shadow-xl bg-blue-300/20 shadow-xs hover:bg-blue-400 transition-all duration-300 text-blue-500 hover:text-blue-50',
       },
     },
     defaultVariants: {
