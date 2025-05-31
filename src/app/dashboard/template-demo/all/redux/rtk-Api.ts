@@ -7,112 +7,72 @@
 */
 // This file is use for rest api
 import { apiSlice } from '@/redux/api/apiSlice';
-import { IUsers_1_000___ } from '../api/v1/Model';
 
-export type AddUserPayload = Omit<IUsers_1_000___, 'id'> & { id?: string };
-export type UpdateUserPayload = { id: string } & Partial<Omit<IUsers_1_000___, 'id'>>;
-export type BulkUpdateUsersPayload = UpdateUserPayload[];
-export type BulkDeleteUsersPayload = { id: string }[];
-
+// Use absolute paths with leading slash to ensure consistent behavior
 export const users_2_000___Api = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    getUsers_1_000___: builder.query<IUsers_1_000___, { page?: number; limit?: number; q?: string }>({
+    getUsers_1_000___: builder.query({
       query: ({ page, limit, q }) => {
-        let url = `/dashboard/template-demo/all/api/v1?page=${page || 1}&limit=${limit || 10}`;
+        let url = `/dashboard/a__1_1001_users__/all/api/v1?page=${page || 1}&limit=${limit || 10}`;
         if (q) {
           url += `&q=${encodeURIComponent(q)}`;
         }
         return url;
       },
-      providesTags: ['tagTypeUsers_2_000___'],
+      providesTags: [{ type: 'tagTypeUsers_1_000___', id: 'LIST' }],
     }),
-
-    getUsers_1_000___ById: builder.query<IUsers_1_000___, string>({
-      query: id => `/dashboard/template-demo/all/api/v1?id=${id}`,
-      providesTags: (result, error, id) => [{ type: 'tagTypeUsers_2_000___', id }],
+    getUsers_1_000___ById: builder.query({
+      query: id => `/dashboard/a__1_1001_users__/all/api/v1?id=${id}`,
     }),
-
-    addUsers_1_000___: builder.mutation<IUsers_1_000___, AddUserPayload>({
-      query: newUserPayload => ({
-        url: '/dashboard/template-demo/all/api/v1',
+    addUsers_1_000___: builder.mutation({
+      query: newUsers_1_000___ => ({
+        url: '/dashboard/a__1_1001_users__/all/api/v1',
         method: 'POST',
-        body: newUserPayload,
+        body: newUsers_1_000___,
       }),
-      invalidatesTags: (result, error, arg) => (arg.id ? [{ type: 'tagTypeUsers_2_000___', id: arg.id }] : ['tagTypeUsers_2_000___']),
+      invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
     }),
-
-    updateUsers_1_000___: builder.mutation<IUsers_1_000___, UpdateUserPayload>({
+    updateUsers_1_000___: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/dashboard/template-demo/all/api/v1`,
+        url: `/dashboard/a__1_1001_users__/all/api/v1`,
         method: 'PUT',
-        body: { id, ...data },
+        body: { id: id, ...data },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'tagTypeUsers_2_000___', id }],
+      invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
     }),
-
-    deleteUsers_1_000___: builder.mutation<void, { id: string }>({
+    deleteUsers_1_000___: builder.mutation({
       query: ({ id }) => ({
-        url: `/dashboard/template-demo/all/api/v1`,
+        url: `/dashboard/a__1_1001_users__/all/api/v1`,
         method: 'DELETE',
         body: { id },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'tagTypeUsers_2_000___', id }],
+      invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
     }),
-
-    bulkUpdateUsers_1_000___: builder.mutation<IUsers_1_000___[] | { success: boolean; count: number }, BulkUpdateUsersPayload>({
+    bulkUpdateUsers_1_000___: builder.mutation({
       query: bulkData => ({
-        url: `/dashboard/template-demo/all/api/v1?bulk=true`,
+        url: `/dashboard/a__1_1001_users__/all/api/v1?bulk=true`,
         method: 'PUT',
         body: bulkData,
       }),
-      invalidatesTags: ['tagTypeUsers_2_000___'],
+      invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
     }),
-
-    bulkDeleteUsers_1_000___: builder.mutation<void | { success: boolean; count: number }, BulkDeleteUsersPayload>({
+    bulkDeleteUsers_1_000___: builder.mutation({
       query: bulkData => ({
-        url: `/dashboard/template-demo/all/api/v1?bulk=true`,
+        url: `/dashboard/a__1_1001_users__/all/api/v1?bulk=true`,
         method: 'DELETE',
         body: bulkData,
       }),
-      invalidatesTags: ['tagTypeUsers_2_000___'],
+      invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
     }),
   }),
 });
 
 export const {
   useGetUsers_1_000___Query,
-  useGetUsers_1_000___ByIdQuery,
   useAddUsers_1_000___Mutation,
   useUpdateUsers_1_000___Mutation,
   useDeleteUsers_1_000___Mutation,
   useBulkUpdateUsers_1_000___Mutation,
   useBulkDeleteUsers_1_000___Mutation,
+  useGetUsers_1_000___ByIdQuery,
 } = users_2_000___Api;
-
-// Make sure your apiSlice is defined with tag types
-// Somewhere in your apiSlice.ts (or wherever it's defined):
-/*
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-export interface BaseQueryFn<
-  Args = any,
-  Result = unknown,
-  Error = FetchBaseQueryError,
-  DefinitionExtraOptions = {},
-  Meta = {}
-> {
-  (args: Args, api: BaseQueryApi, extraOptions: DefinitionExtraOptions): MaybePromise<
-    QueryReturnValue<Result, Error, Meta>
-  >;
-}
-// ... other types like BaseQueryApi, MaybePromise, QueryReturnValue if not importing from RTK
-
-export const apiSlice = createApi({
-  reducerPath: 'api', // Or your chosen reducer path
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }), // Your base query
-  tagTypes: ['tagTypeUsers_2_000___', 'AnotherTagType', 'YetAnotherTag'], // Ensure your tag is listed
-  endpoints: builder => ({
-    // your other endpoints or leave empty if injecting all
-  }),
-});
-*/
