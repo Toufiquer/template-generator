@@ -9,7 +9,7 @@
 import { useState } from 'react';
 
 import { useInterfaceStore } from '@/lib/store/mainStore';
-import GenerateCode from '../generate-code/main';
+import GenerateCode from '../../../components/common/generate-code/main';
 
 const ViewCurrentInterface = () => {
   const [isContentVisible, setIsContentVisible] = useState(true);

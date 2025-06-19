@@ -5,7 +5,10 @@
 | @copyright: code-generator, May, 2025
 |-----------------------------------------
 */
+
+import InterfaceInputComponent from './components/main';
+
 const Page = () => {
-  return <main>Doc Page</main>;
+  return <InterfaceInputComponent />;
 };
 export default Page;

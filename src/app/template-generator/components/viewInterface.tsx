@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
-import ConfirmDeleteNextComponent from '../theme/component/confirm-delete/confirm-delete';
+import ConfirmDeleteNextComponent from '../../design/theme/component/confirm-delete/confirm-delete';
 
 const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; idx?: number }) => {
   const [isContentVisible, setIsContentVisible] = useState(true);

@@ -6,7 +6,7 @@
 |-----------------------------------------
 */
 
-import MainThemeDemoNextComponents from '@/components/common/theme/main';
+import MainThemeDemoNextComponents from './theme/main';
 
 const Page = () => {
   return (

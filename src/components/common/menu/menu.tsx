@@ -16,8 +16,8 @@ const MenuBarNextComponent = () => {
       <Link className="px-4" href="/">
         Home
       </Link>
-      <Link className="px-4" href="/generate-code">
-        Generate Code
+      <Link className="px-4" href="/template-generator">
+        Template Genereator
       </Link>
       <Link className="px-4" href="/doc">
         Doc
