@@ -64,7 +64,7 @@ export default function SearchBox({ onSearch, placeholder = 'Search...', autoFoc
 
   return (
     <div className="relative w-full">
-      <div className="relative flex items-center">
+      <div className="relative flex items-center dark:bg-slate-900">
         <input
           ref={inputRef}
           type="text"
@@ -72,10 +72,10 @@ export default function SearchBox({ onSearch, placeholder = 'Search...', autoFoc
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full py-2 pl-10 pr-10 text-gray-700 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full py-2 pl-10 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-current"
         />
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <Search size={18} className="text-gray-400" />
+          <Search size={18} className="" />
         </div>
 
         {query.length > 0 && (

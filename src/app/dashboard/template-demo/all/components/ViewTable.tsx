@@ -224,7 +224,7 @@ const ViewTableNextComponents: React.FC = () => {
               <SelectItem
                 key={i}
                 value={i.toString()}
-                className="focus:bg-slate-200 hover:bg-slate-300 dark:focus:bg-slate-500 dark:hover:bg-slate-600 cursor-pointer"
+                className="border-1 focus:bg-slate-200 hover:bg-slate-300 dark:focus:bg-slate-500 dark:hover:bg-slate-600 cursor-pointer"
               >
                 {i}
               </SelectItem>

@@ -27,6 +27,9 @@ const InterfaceInputComponent: React.FC = () => {
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const data = e.target.value;
+    console.log(' data : ', data);
+    // console.log('  data : ', JSON.parse(data));
     setTextareaValue(e.target.value);
   };
   return (
@@ -36,7 +39,7 @@ const InterfaceInputComponent: React.FC = () => {
           View Generate Template
         </Link>
       )}
-      <div className="mx-auto p-6 rounded-lg shadow-lg min-w-7xl">
+      <div className="mx-auto p-6 rounded-lg shadow-lg w-full max-w-7xl">
         <h2 className="text-2xl font-bold mb-4">Interface Generator</h2>
         {/* Textarea for interface input */}
         <div className="mb-4">
@@ -50,13 +53,6 @@ const InterfaceInputComponent: React.FC = () => {
             placeholder="Enter your interface definition here..."
             className="w-full h-40 p-3 border rounded-md resize-vertical focus:ring-2 focus:border-transparent outline-none"
             rows={8}
-          />
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Enter Title"
-            className="border-1 w-full mt-4 p-4 rounded-md py-2"
           />
         </div>
         <div className="centralized-end">

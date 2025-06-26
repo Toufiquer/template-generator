@@ -45,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsP
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background
         ${
           isCurrent
-            ? 'bg-secondary dark:bg-secondary/40 text-secondary-foreground cursor-default' // Active: More opaque for light, original for dark
+            ? 'bg-slate-500/50 dark:bg-slate-900/70  text-secondary-foreground cursor-default' // Active: More opaque for light, original for dark
             : 'bg-transparent text-muted-foreground hover:bg-secondary/50 dark:hover:bg-secondary/20 hover:text-secondary-foreground cursor-pointer' // Inactive: More opaque hover for light, original for dark
         }
       `}
@@ -62,8 +62,8 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsP
   const showEndEllipsis = pageNumbers.length > 0 && pageNumbers[pageNumbers.length - 1] < totalPages - 1;
 
   return (
-    <div className="flex items-center justify-center w-full py-4">
-      <nav className="flex items-center gap-1 rounded-lg shadow-sm bg-card p-1.5">
+    <div className="flex items-center justify-center w-full py-4 ">
+      <nav className="flex items-center gap-1 rounded-lg shadow-sm dark:bg-card p-1.5 border-1">
         {/* Previous button */}
         <button
           onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
