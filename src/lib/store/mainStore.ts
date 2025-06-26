@@ -2,11 +2,19 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 // TypeScript interfaces for type safety
+
+export type IJsonData = {
+  baseinfo: {
+    id: number;
+    title: string;
+    description: string;
+  };
+  componentSchema: string[];
+};
 export interface SavedInterface {
   id: string;
-  content: string;
+  content: string | IJsonData;
   timestamp: string;
-  title: string;
 }
 
 export interface InterfaceStore {

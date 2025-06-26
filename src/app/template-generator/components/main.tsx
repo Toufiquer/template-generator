@@ -7,19 +7,43 @@ import ViewCurrentInterface from './ViewCurrentInterface';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 const InterfaceInputComponent: React.FC = () => {
-  const [textareaValue, setTextareaValue] = useState<string>('');
-  const [title, setTitle] = useState<string>('');
+  const [textareaValue, setTextareaValue] = useState<string>(`{
+  "baseinfo": {
+    "id": 1,
+    "title": "Schema 1",
+    "description": "This is example of a schema to create a webapp faster"
+  },
+  "componentSchema": [
+    "EMAIL",
+    "PASSWORD",
+    "TEXT",
+    "TEXTAREA",
+    "TEXTTHROW",
+    "RICHTEXT",
+    "SLUGARR",
+    "BOOLEAN",
+    "NUMBER",
+    "COLORPICKER",
+    "SINGLEIMAGE",
+    "MULTIIMAGE",
+    "DATEPICKER",
+    "DATERANGE",
+    "TIMEPICKER",
+    "TIMERANGE",
+    "SELECT",
+    "MULTISELECT"
+  ]
+}
+`);
   const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface, preViewPath } = useInterfaceStore();
 
   const handleSave = (): void => {
     if (textareaValue.trim()) {
       const newInterfaceValue: SavedInterface = {
         id: new Date().toString(),
-        title,
         content: textareaValue,
         timestamp: new Date().toString(),
       };
-      setTitle('');
       // Save to Zustand store
       setCurrentInterface(newInterfaceValue);
       updateInterface([newInterfaceValue, ...savedInterfaces]);

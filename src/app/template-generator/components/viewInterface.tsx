@@ -9,11 +9,11 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
+import { IJsonData, SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
 import ConfirmDeleteNextComponent from '../../design/theme/component/confirm-delete/confirm-delete';
 
 const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; idx?: number }) => {
-  const [isContentVisible, setIsContentVisible] = useState(true);
+  const [isContentVisible, setIsContentVisible] = useState(false);
   const { setCurrentInterface, savedInterfaces, updateInterface } = useInterfaceStore();
   const handleRemove = (item: string) => {
     const othersData = savedInterfaces.filter(i => i.id !== item);
@@ -24,6 +24,19 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
       handleRemove(currentValue.id);
     }
   };
+
+  console.log('currentValue : ', currentValue);
+  let currentJsonValue: IJsonData | null = null;
+  if (currentValue?.content) {
+    try {
+      currentJsonValue = JSON.parse(currentValue.content as string) as IJsonData;
+    } catch (e) {
+      console.error('Failed to parse content:', e);
+      currentJsonValue = null;
+    }
+  }
+  console.log('currentJsonValue : ', currentJsonValue?.baseinfo?.title);
+  const getTitleValue = (currentJsonValue?.baseinfo?.title as string) || '';
   return (
     <main>
       {currentValue && (
@@ -40,7 +53,7 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <h3 className="text-sm font-semibold  ">
-                  {currentValue ? `${idx}. Interfaces` : ' Current Interface:'} - {currentValue.title} -{' '}
+                  {idx}. {getTitleValue} - {' :: '}
                   {new Date(currentValue.timestamp).toLocaleString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -63,7 +76,9 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
 
           {isContentVisible && (
             <div className="mt-3  bg-gray-800">
-              <pre className="text-sm whitespace-pre-wrap p-3 border-1 rounded-md">{currentValue.content.trim()}</pre>
+              <pre className="text-sm whitespace-pre-wrap p-3 border-1 rounded-md">
+                {typeof currentValue.content === 'string' ? currentValue.content.trim() : JSON.stringify(currentValue.content, null, 2)}
+              </pre>
             </div>
           )}
         </div>
