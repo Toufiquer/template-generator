@@ -19,6 +19,7 @@ const InterfaceInputComponent: React.FC = () => {
         content: textareaValue,
         timestamp: new Date().toString(),
       };
+      setTitle('');
       // Save to Zustand store
       setCurrentInterface(newInterfaceValue);
       updateInterface([newInterfaceValue, ...savedInterfaces]);
