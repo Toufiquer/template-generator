@@ -27,7 +27,7 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
   return (
     <main>
       {currentValue && (
-        <div className="mt-2 p-4 rounded-md">
+        <div className="p-2 rounded-md">
           <div className="w-full flex items-center justify-between">
             <button onClick={() => setIsContentVisible(!isContentVisible)} className="w-full cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
@@ -62,8 +62,8 @@ const ViewInterface = ({ currentValue, idx }: { currentValue?: SavedInterface; i
           </div>
 
           {isContentVisible && (
-            <div className="mt-3">
-              <pre className="text-sm whitespace-pre-wrap p-3 rounded border">{currentValue.content.trim()}</pre>
+            <div className="mt-3  bg-gray-800">
+              <pre className="text-sm whitespace-pre-wrap p-3 border-1 rounded-md">{currentValue.content.trim()}</pre>
             </div>
           )}
         </div>

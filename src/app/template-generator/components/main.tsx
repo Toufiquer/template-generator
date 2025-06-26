@@ -64,9 +64,9 @@ const InterfaceInputComponent: React.FC = () => {
         <ViewCurrentInterface />
         {savedInterfaces.length > 0 && currentInterface && <hr className="my-6" />}
         {savedInterfaces.length > 0 && (
-          <div className="mt-5">
+          <div className="mt-5s">
             {savedInterfaces.map((i, idx) => (
-              <div key={i.id}>
+              <div key={i.id} className="border-1 border-slate-200 mb-3 bg-gray-900 rounded-md">
                 <ViewInterface currentValue={i} idx={idx + 1} />
               </div>
             ))}
