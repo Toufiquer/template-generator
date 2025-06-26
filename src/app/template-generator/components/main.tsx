@@ -52,7 +52,7 @@ const InterfaceInputComponent: React.FC = () => {
             value={textareaValue}
             onChange={handleTextareaChange}
             placeholder="Enter your interface definition here..."
-            className="w-full h-40 p-3 border rounded-md resize-vertical focus:ring-2 focus:border-transparent outline-none"
+            className="w-full h-40 p-3 border rounded-md resize-vertical focus:ring-2 focus:border-transparent outline-none bg-slate-800"
             rows={8}
           />
         </div>

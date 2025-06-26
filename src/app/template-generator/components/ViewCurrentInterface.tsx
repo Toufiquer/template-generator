@@ -16,9 +16,9 @@ const ViewCurrentInterface = () => {
   const { currentInterface } = useInterfaceStore();
 
   return (
-    <main>
+    <main className="border-1 border-slate-200 p-2 my-2 bg-slate-500 rounded-md">
       {currentInterface && (
-        <div className="mt-2 rounded-md">
+        <div className="rounded-md">
           <div className="w-full flex items-center justify-between">
             <button onClick={() => setIsContentVisible(!isContentVisible)} className="w-full cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
@@ -48,7 +48,7 @@ const ViewCurrentInterface = () => {
           </div>
 
           {isContentVisible && (
-            <div className="mt-3">
+            <div className="mt-3 bg-gray-800 rounded-md">
               <pre className="text-sm whitespace-pre-wrap p-3 rounded border">{currentInterface.content.trim()}</pre>
             </div>
           )}
