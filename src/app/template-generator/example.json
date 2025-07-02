@@ -1,27 +1,7 @@
-{
-  "baseinfo": {
-    "id": 1,
-    "title": "Schema 1",
-    "description": "This is example of a schema to create a webapp faster"
-  },
-  "componentSchema": [
-    "EMAIL",
-    "PASSWORD",
-    "TEXT",
-    "TEXTAREA",
-    "TEXTTHROW",
-    "RICHTEXT",
-    "SLUGARR",
-    "BOOLEAN",
-    "NUMBER",
-    "COLORPICKER",
-    "SINGLEIMAGE",
-    "MULTIIMAGE",
-    "DATEPICKER",
-    "DATERANGE",
-    "TIMEPICKER",
-    "TIMERANGE",
-    "SELECT",
-    "MULTISELECT"
-  ]
-}
+[
+  {
+    "_id": "68651084edb3dfbae8e023bb",
+    "index": 0,
+    "guid": "e8272fb0-d298-4f1d-a352-d766c43be4c7"
+  }
+]

@@ -31,7 +31,7 @@ const ViewCurrentInterface = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <h3 className="text-sm font-semibold">
-                  Current Interface: - {currentInterface.title} -{' '}
+                  Current Interface: - [ongoing] -{' '}
                   {new Date(currentInterface.timestamp).toLocaleString('en-US', {
                     year: 'numeric',
                     month: 'short',

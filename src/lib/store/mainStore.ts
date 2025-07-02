@@ -13,7 +13,7 @@ export type IJsonData = {
 };
 export interface SavedInterface {
   id: string;
-  content: string | IJsonData;
+  content: string;
   timestamp: string;
 }
 
@@ -29,7 +29,7 @@ export interface InterfaceStore {
 }
 
 // Zustand store with localStorage persistence
-export const useInterfaceStore = create<InterfaceStore>()(
+export const useInterfaceStore = create<InterfaceStore>()(                 
   persist(
     set => ({
       preViewPath: '',
