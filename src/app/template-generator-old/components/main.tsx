@@ -1,54 +1,47 @@
 'use client';
 
 import React, { useState } from 'react';
-import { SavedInterface, useInterfaceStore } from '@/lib/store/mainStore';
+import exampleInterface from './example.json';
+import { ISavedInterfaceToLocalDB, useInterfaceStore } from '@/lib/store/mainStore';
 import ViewInterface from './viewInterface';
-import ViewCurrentInterface from './ViewCurrentInterface';
+// import ViewCurrentInterface from './ViewCurrentInterface';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+
+
+
 const InterfaceInputComponent: React.FC = () => {
-  const [textareaValue, setTextareaValue] = useState<string>(`{
-  "baseinfo": {
-    "id": 1,
-    "title": "Schema 1",
-    "description": "This is example of a schema to create a webapp faster"
-  },
-  "componentSchema": [
-    "EMAIL",
-    "PASSWORD",
-    "TEXT",
-    "TEXTAREA",
-    "TEXTTHROW",
-    "RICHTEXT",
-    "SLUGARR",
-    "BOOLEAN",
-    "NUMBER",
-    "COLORPICKER",
-    "SINGLEIMAGE",
-    "MULTIIMAGE",
-    "DATEPICKER",
-    "DATERANGE",
-    "TIMEPICKER",
-    "TIMERANGE",
-    "SELECT",
-    "MULTISELECT"
-  ]
-}
-`);
-  const { updateInterface, setCurrentInterface, savedInterfaces, currentInterface, preViewPath } = useInterfaceStore();
+  const [textareaValue, setTextareaValue] = useState<string>(`${JSON.stringify(exampleInterface, null, 2)}`);
+  const { updateInterface, setCurrentInterface, interfaceDBArr, currentInterface, preViewPath } = useInterfaceStore();
+const [error,setError] = useState('');
+const [isLoading,setIsLoading] = useState(false);
+  
+
+  console.log("exampleInterface import form example.json : ", exampleInterface);
 
   const handleSave = (): void => {
-    if (textareaValue.trim()) {
-      const newInterfaceValue: SavedInterface = {
-        id: new Date().toString(),
-        content: textareaValue,
-        timestamp: new Date().toString(),
-      };
-      // Save to Zustand store
+console.log("first load")
+      try {
+        setError('');
+        console.log("textareaValue : ", textareaValue);
+        setIsLoading(true)
+        // Validate JSON
+        const newInterfaceValue: ISavedInterfaceToLocalDB = {
+          id: new Date().toString(),
+          content: JSON.parse(textareaValue),
+          timestamp: new Date().toString(),
+        };
+        console.log("newInterfaceValue : ", newInterfaceValue);
+        
       setCurrentInterface(newInterfaceValue);
-      updateInterface([newInterfaceValue, ...savedInterfaces]);
+      updateInterface([newInterfaceValue, ...interfaceDBArr]);
       setTextareaValue('');
-    }
+        
+      } catch (err) {
+        setError('Invalid JSON format. Please check your syntax.');
+      } finally {
+        setIsLoading(false);
+      }
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -56,6 +49,7 @@ const InterfaceInputComponent: React.FC = () => {
     console.log(' data : ', data);
     // console.log('  data : ', JSON.parse(data));
     setTextareaValue(e.target.value);
+    if (error) setError('');
   };
   return (
     <div className="w-full flex flex-col">
@@ -81,15 +75,21 @@ const InterfaceInputComponent: React.FC = () => {
           />
         </div>
         <div className="centralized-end">
-          <Button onClick={handleSave} disabled={!textareaValue.trim()} variant="outlineGarden" className="w-[180px]">
-            Save
+          <Button onClick={handleSave} disabled={!textareaValue.trim() || isLoading} variant="outlineGarden" className="w-[180px]" >
+          {isLoading ? 'Saving...' : 'Save'}
           </Button>
         </div>
-        <ViewCurrentInterface />
-        {savedInterfaces.length > 0 && currentInterface && <hr className="my-6" />}
-        {savedInterfaces.length > 0 && (
+          {/* Error Message */}
+          {error && (
+            <div className="text-red-600 text-sm  p-3 rounded-md border border-red-200">
+              {error}
+            </div>
+          )}
+        {/* <ViewCurrentInterface /> */}
+        {interfaceDBArr.length > 0 && currentInterface && <hr className="my-6" />}
+        {interfaceDBArr.length > 0 && (
           <div className="mt-5s">
-            {savedInterfaces.map((i, idx) => (
+            {interfaceDBArr.map((i, idx) => (
               <div key={i.id} className="border-1 border-slate-200 mb-3 bg-gray-900 rounded-md">
                 <ViewInterface currentValue={i} idx={idx + 1} />
               </div>

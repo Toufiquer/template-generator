@@ -11,7 +11,7 @@ export type IJsonData = {
   };
   componentSchema: string[];
 };
-export interface SavedInterface {
+export interface ISavedInterfaceToLocalDB {
   id: string;
   content: string;
   timestamp: string;
@@ -20,10 +20,10 @@ export interface SavedInterface {
 export interface InterfaceStore {
   preViewPath: string | null;
   setPreViewPath: (value: string) => void;
-  currentInterface: SavedInterface | null;
-  setCurrentInterface: (value: SavedInterface | null) => void;
-  savedInterfaces: SavedInterface[];
-  updateInterface: (interfaceData: SavedInterface[]) => void;
+  currentInterface: ISavedInterfaceToLocalDB | null;
+  setCurrentInterface: (value: ISavedInterfaceToLocalDB | null) => void;
+  interfaceDBArr: ISavedInterfaceToLocalDB[];
+  updateInterface: (interfaceData: ISavedInterfaceToLocalDB[]) => void;
   removeInterface: (id: string) => void;
   clearInterfaces: () => void;
 }
@@ -35,20 +35,20 @@ export const useInterfaceStore = create<InterfaceStore>()(
       preViewPath: '',
       setPreViewPath: (value: string) => set({ preViewPath: value }),
       currentInterface: null,
-      setCurrentInterface: (value: SavedInterface | null) => set({ currentInterface: value }),
-      savedInterfaces: [],
-      updateInterface: (interfaceData: SavedInterface[]) => set({ savedInterfaces: interfaceData }),
+      setCurrentInterface: (value: ISavedInterfaceToLocalDB | null) => set({ currentInterface: value }),
+      interfaceDBArr: [],
+      updateInterface: (interfaceData: ISavedInterfaceToLocalDB[]) => set({ interfaceDBArr: interfaceData }),
       removeInterface: (id: string) =>
         set(state => ({
-          savedInterfaces: state.savedInterfaces.filter(item => item.id !== id),
+          interfaceDBArr: state.interfaceDBArr.filter(item => item.id !== id),
         })),
-      clearInterfaces: () => set({ savedInterfaces: [] }),
+      clearInterfaces: () => set({ interfaceDBArr: [] }),
     }),
     {
       name: 'interface-store', // localStorage key
       // Optional: customize what gets persisted
       partialize: state => ({
-        savedInterfaces: state.savedInterfaces,
+        interfaceDBArr: state.interfaceDBArr,
       }),
     },
   ),
