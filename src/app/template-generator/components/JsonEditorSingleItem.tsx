@@ -34,7 +34,7 @@ const JsonEditorSingleItem = ({
     const [collasp, setCollasp] = useState(false)
 
     const handleSetJosn = (data: string) => {
-        setJsonInput(JSON.stringify(data))
+        setJsonInput(JSON.stringify(data, null, 2))
     }
 
     return (

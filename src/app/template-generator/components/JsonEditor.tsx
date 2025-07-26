@@ -7,15 +7,16 @@ import JsonEditorSingleItem from './JsonEditorSingleItem'
 
 import {
     AlertDialog,
+    AlertDialogTitle,
     AlertDialogAction,
     AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
+    AlertDialogContent,
     AlertDialogTrigger,
+    AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
@@ -59,6 +60,11 @@ const JsonEditor: React.FC = () => {
         if (error) setError('')
     }
 
+    const handleFormat = () => {
+        console.log('json : ', jsonInput)
+    }
+    const handleGenerate = () => {}
+
     return (
         <div className="w-full mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
@@ -90,13 +96,27 @@ const JsonEditor: React.FC = () => {
                     )}
 
                     {/* Save Button */}
-                    <button
-                        onClick={handleSave}
-                        disabled={isLoading || !jsonInput.trim()}
-                        className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        {isLoading ? 'Saving...' : 'Save'}
-                    </button>
+                    <div className="flex gap-4">
+                        <Button
+                            onClick={handleSave}
+                            disabled={isLoading || !jsonInput.trim()}
+                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            {isLoading ? 'Saving...' : 'Save'}
+                        </Button>
+                        <Button
+                            onClick={handleFormat}
+                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Formet
+                        </Button>
+                        <Button
+                            onClick={handleGenerate}
+                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Generate
+                        </Button>
+                    </div>
                 </div>
             </div>
 
