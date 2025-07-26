@@ -6,6 +6,7 @@ import { useJsonStore } from '@/lib/store/jsonStore'
 import { Button } from '@/components/ui/button'
 
 const JsonEditor: React.FC = () => {
+    const [collasp, setCollasp] = useState(false)
     const [jsonInput, setJsonInput] = useState<string>(
         '{\n  "uid": "000",\n  "name": "Basic Template"\n}'
     )
@@ -23,11 +24,17 @@ const JsonEditor: React.FC = () => {
             // Validate JSON
             const parsedJson = JSON.parse(jsonInput)
 
-            // Add to Zustand store
-            addItem(parsedJson)
-
-            // Optional: Clear input after successful save
-            // setJsonInput('');
+            const isAlreadyExist = items.find(
+                (i) => i.data.uid === parsedJson.uid
+            )
+            if (!isAlreadyExist) {
+                setError('Json already exist.')
+                return
+            } else {
+                // Add to Zustand store
+                addItem(parsedJson)
+                setJsonInput('')
+            }
         } catch (err) {
             setError('Invalid JSON format. Please check your syntax.')
         } finally {
@@ -42,7 +49,7 @@ const JsonEditor: React.FC = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="w-full md:max-w-7xl mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-100 mb-4">
                     JSON Editor
@@ -109,21 +116,37 @@ const JsonEditor: React.FC = () => {
                                 key={item.id}
                                 className="border border-gray-200 rounded-md p-4 bg-gray-50 dark:bg-gray-700"
                             >
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-xs text-white">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-slate-400 w-full">
+                                        <strong className="text-white">
+                                            {item.data.name} :{' '}
+                                        </strong>
                                         Saved at:{' '}
                                         {item.timestamp.toLocaleString()}
                                     </span>
-                                    <Button
-                                        onClick={() => removeItem(item.id)}
-                                        variant="fire"
-                                    >
-                                        Remove
-                                    </Button>
+                                    <div className="w-full flex items-center justify-end gap-4">
+                                        <Button
+                                            onClick={() => removeItem(item.id)}
+                                            variant="fire"
+                                        >
+                                            Remove
+                                        </Button>
+                                        <Button
+                                            onClick={() => setCollasp(!collasp)}
+                                            variant="garden"
+                                        >
+                                            {collasp ? 'Colasp' : 'View'}
+                                        </Button>
+                                        <Button variant="secondary">
+                                            Edit
+                                        </Button>
+                                    </div>
                                 </div>
-                                <pre className=" p-3 rounded border text-sm overflow-x-auto bg-slate-900">
-                                    {JSON.stringify(item.data, null, 2)}
-                                </pre>
+                                {collasp && (
+                                    <pre className=" p-3 rounded border text-sm overflow-x-auto bg-slate-900 my-2">
+                                        {JSON.stringify(item.data, null, 2)}
+                                    </pre>
+                                )}
                             </div>
                         ))}
                     </div>
