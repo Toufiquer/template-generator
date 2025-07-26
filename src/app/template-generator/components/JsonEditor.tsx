@@ -3,12 +3,11 @@
 
 import React, { useState } from 'react'
 import { useJsonStore } from '@/lib/store/jsonStore'
-import { Button } from '@/components/ui/button'
+import JsonEditorSingleItem from './JsonEditorSingleItem'
 
 const JsonEditor: React.FC = () => {
-    const [collasp, setCollasp] = useState(false)
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "name": "Basic Template"\n}'
+        '{\n  "uid": "000",\n  "templateName": "Basic Template"\n}'
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -25,9 +24,9 @@ const JsonEditor: React.FC = () => {
             const parsedJson = JSON.parse(jsonInput)
 
             const isAlreadyExist = items.find(
-                (i) => i.data.uid === parsedJson.uid
+                (i) => i.data.templateName === parsedJson.templateName
             )
-            if (!isAlreadyExist) {
+            if (isAlreadyExist?.id) {
                 setError('Json already exist.')
                 return
             } else {
@@ -112,42 +111,12 @@ const JsonEditor: React.FC = () => {
                 ) : (
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                         {items.map((item) => (
-                            <div
+                            <JsonEditorSingleItem
                                 key={item.id}
-                                className="border border-gray-200 rounded-md p-4 bg-gray-50 dark:bg-gray-700"
-                            >
-                                <div className="flex justify-between items-center">
-                                    <span className="text-xs text-slate-400 w-full">
-                                        <strong className="text-white">
-                                            {item.data.name} :{' '}
-                                        </strong>
-                                        Saved at:{' '}
-                                        {item.timestamp.toLocaleString()}
-                                    </span>
-                                    <div className="w-full flex items-center justify-end gap-4">
-                                        <Button
-                                            onClick={() => removeItem(item.id)}
-                                            variant="fire"
-                                        >
-                                            Remove
-                                        </Button>
-                                        <Button
-                                            onClick={() => setCollasp(!collasp)}
-                                            variant="garden"
-                                        >
-                                            {collasp ? 'Colasp' : 'View'}
-                                        </Button>
-                                        <Button variant="secondary">
-                                            Edit
-                                        </Button>
-                                    </div>
-                                </div>
-                                {collasp && (
-                                    <pre className=" p-3 rounded border text-sm overflow-x-auto bg-slate-900 my-2">
-                                        {JSON.stringify(item.data, null, 2)}
-                                    </pre>
-                                )}
-                            </div>
+                                item={item}
+                                removeItem={removeItem}
+                                setJsonInput={setJsonInput}
+                            />
                         ))}
                     </div>
                 )}
