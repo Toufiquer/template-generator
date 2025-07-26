@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react'
 import { useJsonStore } from '@/lib/store/jsonStore'
+import { Button } from '@/components/ui/button'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
@@ -106,21 +107,21 @@ const JsonEditor: React.FC = () => {
                         {items.map((item) => (
                             <div
                                 key={item.id}
-                                className="border border-gray-200 rounded-md p-4 bg-gray-50"
+                                className="border border-gray-200 rounded-md p-4 bg-gray-50 dark:bg-gray-700"
                             >
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="text-xs text-gray-500">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-xs text-white">
                                         Saved at:{' '}
                                         {item.timestamp.toLocaleString()}
                                     </span>
-                                    <button
+                                    <Button
                                         onClick={() => removeItem(item.id)}
-                                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                        variant="fire"
                                     >
                                         Remove
-                                    </button>
+                                    </Button>
                                 </div>
-                                <pre className=" p-3 rounded border text-sm overflow-x-auto">
+                                <pre className=" p-3 rounded border text-sm overflow-x-auto bg-slate-900">
                                     {JSON.stringify(item.data, null, 2)}
                                 </pre>
                             </div>
