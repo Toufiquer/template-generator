@@ -68,7 +68,7 @@ const JsonEditor: React.FC = () => {
     return (
         <div className="w-full mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-100 mb-4">
+                <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-00 mb-4">
                     JSON Editor
                 </h2>
 
@@ -84,7 +84,7 @@ const JsonEditor: React.FC = () => {
                         id="json-input"
                         value={jsonInput}
                         onChange={handleInputChange}
-                        className="w-full h-64 p-4 min-w-7xl border bg-gray-400 border-gray-300 rounded-md font-mono text-sm resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full dark:text-gray-100 h-64 p-4 min-w-7xl border dark:bg-gray-900 border-gray-300 rounded-md font-mono text-sm resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Enter your JSON data here..."
                     />
 

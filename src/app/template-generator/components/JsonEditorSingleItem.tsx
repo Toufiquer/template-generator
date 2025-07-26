@@ -38,10 +38,10 @@ const JsonEditorSingleItem = ({
     }
 
     return (
-        <div className="border border-gray-200 rounded-md p-4 bg-gray-50 dark:bg-gray-700">
+        <div className="border border-gray-200 rounded-md p-4 bg-gray-300 dark:bg-gray-700 ">
             <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-400 w-full">
-                    <strong className="text-white">
+                    <strong className="dark:text-white text-gray-900">
                         {item.data.templateName} :{' '}
                     </strong>
                     Saved at: {item.timestamp.toLocaleString()}
