@@ -5,6 +5,18 @@ import React, { useState } from 'react'
 import { useJsonStore } from '@/lib/store/jsonStore'
 import JsonEditorSingleItem from './JsonEditorSingleItem'
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
         '{\n  "uid": "000",\n  "templateName": "Basic Template"\n}'
@@ -48,7 +60,7 @@ const JsonEditor: React.FC = () => {
     }
 
     return (
-        <div className="w-full md:max-w-7xl mx-auto p-6">
+        <div className="w-full mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-100 mb-4">
                     JSON Editor
@@ -95,12 +107,33 @@ const JsonEditor: React.FC = () => {
                         Saved Items ({items.length})
                     </h3>
                     {items.length > 0 && (
-                        <button
-                            onClick={clearItems}
-                            className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-                        >
-                            Clear All
-                        </button>
+                        <AlertDialog>
+                            <AlertDialogTrigger className="px-4 py-2 cursor-pointer bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                Clear All
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will
+                                        permanently delete your account and
+                                        remove your data from our servers.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction className="px-4 py-2 cursor-pointer bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                        <button onClick={clearItems}>
+                                            Clear All
+                                        </button>
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     )}
                 </div>
 
