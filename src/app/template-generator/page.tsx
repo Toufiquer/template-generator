@@ -5,7 +5,14 @@
 | @copyright: template-generator, July, 2025
 |-----------------------------------------
 */
-const Page= () => {
-return <main>Page</main>;
+
+import JsonEditor from './components/JsonEditor'
+
+const Page = () => {
+    return (
+        <main>
+            <JsonEditor />
+        </main>
+    )
 }
 export default Page
