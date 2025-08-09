@@ -63,7 +63,34 @@ const JsonEditor: React.FC = () => {
     const handleFormat = () => {
         console.log('json : ', jsonInput)
     }
-    const handleGenerate = () => {}
+    const handleGenerate = async () => {
+        console.log('handle generate is start')
+
+        setError('')
+        setIsLoading(true)
+        try {
+            const response = await fetch('/api/template', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ data: jsonInput }),
+            })
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const result = await response.json()
+            console.log('Success:', result)
+            // Handle success response
+        } catch (error) {
+            setError('Failed to fetch: ' + (error as Error).message)
+        } finally {
+            setIsLoading(false)
+        }
+        console.log('handle generate is End')
+    }
 
     return (
         <div className="w-full mx-auto p-6">
@@ -111,6 +138,7 @@ const JsonEditor: React.FC = () => {
                             Formet
                         </Button>
                         <Button
+                            disabled={isLoading || !jsonInput.trim()}
                             onClick={handleGenerate}
                             className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
