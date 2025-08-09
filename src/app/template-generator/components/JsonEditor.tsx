@@ -37,10 +37,10 @@ const JsonEditor: React.FC = () => {
             const parsedJson = JSON.parse(jsonInput)
 
             const isAlreadyExist = items.find(
-                (i) => i.data.templateName === parsedJson.templateName
+                (i) => i.data.uid === parsedJson.uid
             )
             if (isAlreadyExist?.id) {
-                setError('Json already exist.')
+                setError('Json already exist with this uid.')
                 return
             } else {
                 // Add to Zustand store
