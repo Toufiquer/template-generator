@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {"title": "STRING"} \n }'
+        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
