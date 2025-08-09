@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template"\n}'
+        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {"title": "STRING"} \n }'
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -48,7 +48,6 @@ const JsonEditor: React.FC = () => {
                 setJsonInput('')
             }
         } catch (err) {
-            
             setError('Invalid JSON format. Please check your syntax.')
         } finally {
             setIsLoading(false)
