@@ -48,6 +48,7 @@ const JsonEditor: React.FC = () => {
                 setJsonInput('')
             }
         } catch (err) {
+            
             setError('Invalid JSON format. Please check your syntax.')
         } finally {
             setIsLoading(false)
