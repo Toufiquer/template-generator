@@ -25,3 +25,30 @@ From this json this application can generate those file with features I write be
     d. component for CURD operation
 3. a client component [that component render in client]
 4. a ssr [that render on server]
+
+5. in a single component we use those data type
+  1. STRING - 
+  2. EMAIL - 
+  3. PASSWORD -
+  4. PASSCODE -
+  5. SELECT - 
+  6. DYNAMICSELECT - 
+  7. IMAGES - 
+  8. IMAGE  - 
+  9. DESCRIPTION - 
+  10. INTNUMBER - 
+  11. FLOATNUMBER - 
+  12. BOOLEAN - 
+  13. DATE  - 
+  14. TIME - 
+  15. DATERANGE - 
+  16. TIMERANGE - 
+  17. COLOEPICKER - 
+  18. PHONE - 
+  19. URL - 
+  20. RICHTEXT - 
+  21. AUTOCOMPLETE - 
+  22. RADIOBUTTON - 
+  23. CHECKBOX - 
+  24. MULTICHECKBOX - 
+

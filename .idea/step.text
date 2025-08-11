@@ -1,6 +1,8 @@
 1. CURD with Json. [DONE]
     User can read, write, delete and update json in a single file. 
 
+1.2 create data-type 
+
 2. api
     a. controller
     b. jwt-utils
