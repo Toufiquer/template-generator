@@ -1,0 +1,27 @@
+Here is an example of Json file 
+
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+
+From this json this application can generate those file with features I write below,
+1. api 
+2. dashboard 
+    a. redux
+    b. main page with a table with CURD operation
+    c. zustand store for manage state
+    d. component for CURD operation
+3. a client component [that component render in client]
+4. a ssr [that render on server]

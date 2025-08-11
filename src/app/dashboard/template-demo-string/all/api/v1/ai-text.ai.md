@@ -6,24 +6,23 @@ This application will do the following things
     "uid": "000",
     "templateName": "Basic Template",
     "schema": {
-        "name": "STRING&REQUIRED",
-        "dataArr": ["STRING"],
-        "email": "EMAIL",
-        "passCode":"STRING&REQUIRED",
-        "alias":"STRING&REQUIRED",
-        "role": " STRING&ENUM=E1,E2,E3",
-        "images": ["STRING"],
-        "descriptions": "STRING"
-        },
+    "name": "STRING&REQUIRED",
+    "dataArr": ["STRING"],
+    "email": "EMAIL",
+    "passCode":"STRING&REQUIRED",
+    "alias":"STRING&REQUIRED",
+    "role": " STRING&ENUM=E1,E2,E3",
+    "images": ["STRING"],
+    "descriptions": "STRING"
+    },
     "namingConvention":{
-        "Users_1_000___": "Posts",
-        "users_2_000___": "posts",
-        "User_3_000___": "Post",
-        "user_4_000___": "post",
-        "ISelect_6_000___": "ISelect",
-        "select_5_000___": "select"
-        }
+    "Users_1_000**_": "Posts",
+    "users_2_000_**": "posts",
+    "User_3_000**_": "Post",
+    "user_4_000_**": "post",
+    "ISelect_6_000**_": "ISelect",
+    "select_5_000_**": "select"
+    }
     }"""
 
 2.
-
