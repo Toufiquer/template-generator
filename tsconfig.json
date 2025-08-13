@@ -31,7 +31,9 @@
         ".idea/ai-prompt/redux/rtk-Api-in.ts",
         ".idea/ai-prompt/redux/rtk-Api-out.ts",
         ".idea/ai-prompt/store/store/Store-in.ts",
-        ".idea/ai-prompt/store/store/Store-out.ts"
+        ".idea/ai-prompt/store/store/Store-out.ts",
+        ".idea/ai-prompt/store/store-type/StoreTypes-in.ts",
+        ".idea/ai-prompt/store/store-type/StoreTypes-out.ts"
     ],
     "exclude": ["node_modules"]
 }

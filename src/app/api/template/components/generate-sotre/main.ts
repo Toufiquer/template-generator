@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import writeInFile from '../create-and-write'
 import generateStoreFile from './generate-store'
 import generateStoreConstant from './generate-store-constant'
-import generateStoreType from './generate-store-type'
+import generateStoreTypeFile from './generate-store-type'
 
 const generateStore = async (data: string) => {
     //  !  create api
@@ -17,7 +17,7 @@ const generateStore = async (data: string) => {
 
     const storeTemplate = generateStoreFile(data)
     const storeConstantTemplate = generateStoreConstant(data)
-    const storeTypeTemplate = generateStoreType(data)
+    const storeTypeTemplate = generateStoreTypeFile(data)
     writeInFile(
         storeTemplate,
         `src/app/generate/${folderName}/all/store/store.ts`

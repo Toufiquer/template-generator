@@ -1,36 +1,34 @@
-import { IBlogs } from '@/app/dashboard/blogs/all/api/v1/model'
+import { IPosts } from '@/app/dashboard/template-demo/all/api/v1/model'
 
-export interface BlogsStore {
+export interface PostsStore {
     queryPramsLimit: number
     queryPramsPage: number
     queryPramsQ: string
-    blogs: IBlogs[]
-    selectedBlogs: IBlogs | null
-    newBlogs: Partial<IBlogs>
+    posts: IPosts[]
+    selectedPosts: IPosts | null
+    newPosts: Partial<IPosts>
     isAddModalOpen: boolean
     isViewModalOpen: boolean
     isEditModalOpen: boolean
     isDeleteModalOpen: boolean
-    setNewBlogs: React.Dispatch<
-        React.SetStateAction<Partial<IBlogs>>
-    >
+    setNewPosts: React.Dispatch<React.SetStateAction<Partial<IPosts>>>
     isBulkEditModalOpen: boolean
     isBulkUpdateModalOpen: boolean
     isBulkDynamicUpdateModal: boolean
     isBulkDeleteModalOpen: boolean
-    bulkData: IBlogs[]
+    bulkData: IPosts[]
     setQueryPramsLimit: (payload: number) => void
     setQueryPramsPage: (payload: number) => void
     setQueryPramsQ: (payload: string) => void
-    setBlogs: (Blogs: IBlogs[]) => void
-    setSelectedBlogs: (Blogs: IBlogs | null) => void
+    setPosts: (Posts: IPosts[]) => void
+    setSelectedPosts: (Posts: IPosts | null) => void
     toggleAddModal: (isOpen: boolean) => void
     toggleViewModal: (isOpen: boolean) => void
     toggleEditModal: (isOpen: boolean) => void
     toggleDeleteModal: (isOpen: boolean) => void
-    toggleBulkEditModal: (Blogs: boolean) => void
-    toggleBulkUpdateModal: (Blogs: boolean) => void
-    toggleBulkDynamicUpdateModal: (Blogs: boolean) => void
-    toggleBulkDeleteModal: (Blogs: boolean) => void
-    setBulkData: (bulkData: IBlogs[]) => void
+    toggleBulkEditModal: (Posts: boolean) => void
+    toggleBulkUpdateModal: (Posts: boolean) => void
+    toggleBulkDynamicUpdateModal: (Posts: boolean) => void
+    toggleBulkDeleteModal: (Posts: boolean) => void
+    setBulkData: (bulkData: IPosts[]) => void
 }
