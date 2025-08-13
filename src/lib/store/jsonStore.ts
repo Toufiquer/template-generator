@@ -1,5 +1,6 @@
 // store/jsonStore.ts
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 export interface JsonItem {
     id: string
@@ -14,22 +15,30 @@ export interface JsonStore {
     clearItems: () => void
 }
 
-export const useJsonStore = create<JsonStore>((set) => ({
-    items: [],
-    addItem: (data) =>
-        set((state) => ({
-            items: [
-                ...state.items,
-                {
-                    id: Date.now().toString(),
-                    data,
-                    timestamp: new Date(),
-                },
-            ],
-        })),
-    removeItem: (id) =>
-        set((state) => ({
-            items: state.items.filter((item) => item.id !== id),
-        })),
-    clearItems: () => set({ items: [] }),
-}))
+export const useJsonStore = create<JsonStore>()(
+    persist(
+        (set) => ({
+            items: [],
+            addItem: (data) =>
+                set((state) => ({
+                    items: [
+                        ...state.items,
+                        {
+                            id: Date.now().toString(),
+                            data,
+                            timestamp: new Date(),
+                        },
+                    ],
+                })),
+            removeItem: (id) =>
+                set((state) => ({
+                    items: state.items.filter((item) => item.id !== id),
+                })),
+            clearItems: () => set({ items: [] }),
+        }),
+        {
+            name: 'json-storage', // unique name for the storage item
+            storage: createJSONStorage(() => localStorage), // (optional) by default the storage is localStorage
+        }
+    )
+)

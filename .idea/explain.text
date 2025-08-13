@@ -1,0 +1,80 @@
+Here is an example of Json file 
+
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+
+From this json this application can generate those file with features I write below,
+1. api 
+2. dashboard 
+    a. redux
+    b. main page with a table with CURD operation
+    c. zustand store for manage state
+    d. component for CURD operation
+3. a client component [that component render in client]
+4. a ssr [that render on server]
+
+5. in a single component we use those data type
+  1. STRING - 
+  2. EMAIL - 
+  3. PASSWORD -
+  4. PASSCODE -
+  5. SELECT - 
+  6. DYNAMICSELECT - 
+  7. IMAGES - 
+  8. IMAGE  - 
+  9. DESCRIPTION - 
+  10. INTNUMBER - 
+  11. FLOATNUMBER - 
+  12. BOOLEAN - 
+  13. DATE  - 
+  14. TIME - 
+  15. DATERANGE - 
+  16. TIMERANGE - 
+  17. COLOEPICKER - 
+  18. PHONE - 
+  19. URL - 
+  20. RICHTEXT - 
+  21. AUTOCOMPLETE - 
+  22. RADIOBUTTON - 
+  23. CHECKBOX - 
+  24. MULTICHECKBOX - 
+
+
+
+  "title" : "STRING",
+  "email" : "EMAIL",
+  "password" : "PASSWOR",
+  "passcode" : "PASSCOD",
+  "area" : "SELECT",
+  "sub-area" : "DYNAMICSELECT",
+  "products-images" : "IMAGES",
+  "parsonal-image" : "IMAGE ",
+  "description" : "DESCRIPTION",
+  "age" : "INTNUMBER",
+  "amount" : "FLOATNUMBER",
+  "isActive" : "BOOLEAN",
+  "start-date" : "DATE ",
+  "start-time" : "TIME",
+  "schedule-date" : "DATERANGE",
+  "schedule-time" : "TIMERANGE",
+  "favorite-color" : "COLOEPICKER",
+  "number" : "PHONE",
+  "profile" : "URL",
+  "test" : "RICHTEXT",
+  "info" : "AUTOCOMPLETE",
+  "shift" : "RADIOBUTTON",
+  "policy" : "CHECKBOX",
+  "hobbys" : "MULTICHECKBOX",
