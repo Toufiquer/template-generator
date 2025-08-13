@@ -17,6 +17,7 @@ import {
     AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import ViewDataType from './ViewDataType'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
@@ -95,9 +96,12 @@ const JsonEditor: React.FC = () => {
     return (
         <div className="w-full mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-00 mb-4">
-                    JSON Editor
-                </h2>
+                <div className="w-full flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-00 mb-4">
+                        JSON Editor
+                    </h2>
+                    <ViewDataType />
+                </div>
 
                 {/* JSON Input Form */}
                 <div className="space-y-4">
