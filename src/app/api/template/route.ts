@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
     try {
-        //  !  create api
-        const { data } = await request.json()
-        console.log('Data : ', data)
+        // //  !  create api
+        // const { data } = await request.json()
+        // console.log('Data : ', data)
         return NextResponse.json({ message: 'file found' }, { status: 200 })
     } catch (e) {
         console.log(e)
@@ -15,5 +15,3 @@ export async function POST(request: NextRequest) {
         )
     }
 }
-
-
