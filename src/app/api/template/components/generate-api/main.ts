@@ -5,9 +5,8 @@ import writeInFile from '../create-and-write'
 import { generateModel } from './generate-model'
 import { generateRoute } from './generate-route'
 
-const generateApi = async (request: NextRequest) => {
+const generateApi = async (data: string) => {
     //  !  create api
-    const { data } = await request.json()
     let folderName = 'example'
 
     // console.log('Data : ', data)
@@ -21,15 +20,15 @@ const generateApi = async (request: NextRequest) => {
     const routeTemplate = generateRoute(data)
     writeInFile(
         controllerTemplate,
-        `src/app/generate/${folderName}/api/v1/controller.tsx`
+        `src/app/generate/${folderName}/all/api/v1/controller.tsx`
     )
     writeInFile(
         medelTemplate,
-        `src/app/generate/${folderName}/api/v1/model.tsx`
+        `src/app/generate/${folderName}/all/api/v1/model.tsx`
     )
     writeInFile(
         routeTemplate,
-        `src/app/generate/${folderName}/api/v1/route.tsx`
+        `src/app/generate/${folderName}/all/api/v1/route.tsx`
     )
 }
 export default generateApi

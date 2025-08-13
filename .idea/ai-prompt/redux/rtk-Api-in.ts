@@ -1,0 +1,71 @@
+// This file is use for rest api
+import { apiSlice } from '@/redux/api/apiSlice'
+
+// Use absolute paths with leading slash to ensure consistent behavior
+export const users_2_000___Api = apiSlice.injectEndpoints({
+    endpoints: (builder) => ({
+        getUsers_1_000___: builder.query({
+            query: ({ page, limit, q }) => {
+                let url = `/dashboard/user/all/api/v1?page=${page || 1}&limit=${limit || 10}`
+                if (q) {
+                    url += `&q=${encodeURIComponent(q)}`
+                }
+                return url
+            },
+            providesTags: [{ type: 'tagTypeUsers_1_000___', id: 'LIST' }],
+        }),
+        getUsers_1_000___ById: builder.query({
+            query: (id) => `/dashboard/user/all/api/v1?id=${id}`,
+        }),
+        addUsers_1_000___: builder.mutation({
+            query: (newUsers_1_000___) => ({
+                url: '/dashboard/user/all/api/v1',
+                method: 'POST',
+                body: newUsers_1_000___,
+            }),
+            invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
+        }),
+        updateUsers_1_000___: builder.mutation({
+            query: ({ id, ...data }) => ({
+                url: `/dashboard/user/all/api/v1`,
+                method: 'PUT',
+                body: { id: id, ...data },
+            }),
+            invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
+        }),
+        deleteUsers_1_000___: builder.mutation({
+            query: ({ id }) => ({
+                url: `/dashboard/user/all/api/v1`,
+                method: 'DELETE',
+                body: { id },
+            }),
+            invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
+        }),
+        bulkUpdateUsers_1_000___: builder.mutation({
+            query: (bulkData) => ({
+                url: `/dashboard/user/all/api/v1?bulk=true`,
+                method: 'PUT',
+                body: bulkData,
+            }),
+            invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
+        }),
+        bulkDeleteUsers_1_000___: builder.mutation({
+            query: (bulkData) => ({
+                url: `/dashboard/user/all/api/v1?bulk=true`,
+                method: 'DELETE',
+                body: bulkData,
+            }),
+            invalidatesTags: [{ type: 'tagTypeUsers_1_000___' }],
+        }),
+    }),
+})
+
+export const {
+    useGetUsers_1_000___Query,
+    useAddUsers_1_000___Mutation,
+    useUpdateUsers_1_000___Mutation,
+    useDeleteUsers_1_000___Mutation,
+    useBulkUpdateUsers_1_000___Mutation,
+    useBulkDeleteUsers_1_000___Mutation,
+    useGetUsers_1_000___ByIdQuery,
+} = users_2_000___Api
