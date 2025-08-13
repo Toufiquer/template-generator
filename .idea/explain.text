@@ -51,3 +51,30 @@ From this json this application can generate those file with features I write be
   22. RADIOBUTTON - 
   23. CHECKBOX - 
   24. MULTICHECKBOX - 
+
+
+
+  "title" : "STRING",
+  "email" : "EMAIL",
+  "password" : "PASSWOR",
+  "passcode" : "PASSCOD",
+  "area" : "SELECT",
+  "sub-area" : "DYNAMICSELECT",
+  "products-images" : "IMAGES",
+  "parsonal-image" : "IMAGE ",
+  "description" : "DESCRIPTION",
+  "age" : "INTNUMBER",
+  "amount" : "FLOATNUMBER",
+  "isActive" : "BOOLEAN",
+  "start-date" : "DATE ",
+  "start-time" : "TIME",
+  "schedule-date" : "DATERANGE",
+  "schedule-time" : "TIMERANGE",
+  "favorite-color" : "COLOEPICKER",
+  "number" : "PHONE",
+  "profile" : "URL",
+  "test" : "RICHTEXT",
+  "info" : "AUTOCOMPLETE",
+  "shift" : "RADIOBUTTON",
+  "policy" : "CHECKBOX",
+  "hobbys" : "MULTICHECKBOX",
