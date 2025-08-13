@@ -3,7 +3,15 @@
     "templateName": "Basic Template",
     "schema": {
         "title1": "STRING",
-        "title3": "STRING"
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING"
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING"
+        }
     },
     "namingConvention": {
         "Users_1_000___": "Posts",
