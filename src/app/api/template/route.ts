@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import generateApi from './components/generate-api/main'
 import generateRtk from './components/generate-redux-toolkit/main'
+import generateStore from './components/generate-sotre/main'
 
 export async function POST(request: NextRequest) {
     try {
@@ -11,6 +12,7 @@ export async function POST(request: NextRequest) {
         const { data } = await request.json()
         generateApi(data)
         generateRtk(data)
+        generateStore(data)
 
         return NextResponse.json({ message: 'file found' }, { status: 200 })
     } catch (e) {

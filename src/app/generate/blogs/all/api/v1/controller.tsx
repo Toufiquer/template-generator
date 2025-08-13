@@ -1,6 +1,6 @@
 import { withDB } from '@/app/api/utils/db'
 
-import Post from './model'
+import Blog from './model'
 
 interface IResponse {
     data: unknown
@@ -15,17 +15,17 @@ const formatResponse = (data: unknown, message: string, status: number): IRespon
     status,
 })
 
-// CREATE Post
-export async function createPost(req: Request): Promise<IResponse> {
+// CREATE Blog
+export async function createBlog(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
-            const postData = await req.json()
-            const newPost = await Post.create({
-                ...postData,
+            const blogsData = await req.json()
+            const newBlog = await Blog.create({
+                ...blogsData,
             })
             return formatResponse(
-                newPost,
-                'Post created successfully',
+                newBlog,
+                'Blog created successfully',
                 201
             )
         } catch (error: unknown) {
@@ -42,27 +42,27 @@ export async function createPost(req: Request): Promise<IResponse> {
     })
 }
 
-// GET single Post by ID
-export async function getPostById(req: Request): Promise<IResponse> {
+// GET single Blog by ID
+export async function getBlogById(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const id = new URL(req.url).searchParams.get('id')
         if (!id)
-            return formatResponse(null, 'Post ID is required', 400)
+            return formatResponse(null, 'Blog ID is required', 400)
 
-        const post = await Post.findById(id)
-        if (!post)
-            return formatResponse(null, 'Post not found', 404)
+        const blogs = await Blog.findById(id)
+        if (!blogs)
+            return formatResponse(null, 'Blog not found', 404)
 
         return formatResponse(
-            post,
-            'Post fetched successfully',
+            blogs,
+            'Blog fetched successfully',
             200
         )
     })
 }
 
-// GET all Posts with pagination
-export async function getPosts(req: Request): Promise<IResponse> {
+// GET all Blogs with pagination
+export async function getBlogs(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const url = new URL(req.url)
         const page = parseInt(url.searchParams.get('page') || '1', 10)
@@ -107,43 +107,43 @@ export async function getPosts(req: Request): Promise<IResponse> {
             }
         }
 
-        const posts = await Post.find(searchFilter)
+        const blogs = await Blog.find(searchFilter)
             .sort({ updatedAt: -1, createdAt: -1 })
             .skip(skip)
             .limit(limit)
 
-        const totalPosts =
-            await Post.countDocuments(searchFilter)
+        const totalBlogs =
+            await Blog.countDocuments(searchFilter)
 
         return formatResponse(
             {
-                posts: posts || [],
-                total: totalPosts,
+                blogs: blogs || [],
+                total: totalBlogs,
                 page,
                 limit,
             },
-            'Posts fetched successfully',
+            'Blogs fetched successfully',
             200
         )
     })
 }
 
-// UPDATE single Post by ID
-export async function updatePost(req: Request): Promise<IResponse> {
+// UPDATE single Blog by ID
+export async function updateBlog(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
             const { id, ...updateData } = await req.json()
-            const updatedPost = await Post.findByIdAndUpdate(
+            const updatedBlog = await Blog.findByIdAndUpdate(
                 id,
                 updateData,
                 { new: true, runValidators: true }
             )
 
-            if (!updatedPost)
-                return formatResponse(null, 'Post not found', 404)
+            if (!updatedBlog)
+                return formatResponse(null, 'Blog not found', 404)
             return formatResponse(
-                updatedPost,
-                'Post updated successfully',
+                updatedBlog,
+                'Blog updated successfully',
                 200
             )
         } catch (error: unknown) {
@@ -160,13 +160,13 @@ export async function updatePost(req: Request): Promise<IResponse> {
     })
 }
 
-// BULK UPDATE Posts
-export async function bulkUpdatePosts(req: Request): Promise<IResponse> {
+// BULK UPDATE Blogs
+export async function bulkUpdateBlogs(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const updates: { id: string; updateData: Record<string, unknown> }[] = await req.json()
         const results = await Promise.allSettled(
             updates.map(({ id, updateData }) =>
-                Post.findByIdAndUpdate(id, updateData, {
+                Blog.findByIdAndUpdate(id, updateData, {
                     new: true,
                     runValidators: true,
                 })
@@ -189,27 +189,27 @@ export async function bulkUpdatePosts(req: Request): Promise<IResponse> {
     })
 }
 
-// DELETE single Post by ID
-export async function deletePost(req: Request): Promise<IResponse> {
+// DELETE single Blog by ID
+export async function deleteBlog(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { id } = await req.json()
-        const deletedPost = await Post.findByIdAndDelete(id)
-        if (!deletedPost)
+        const deletedBlog = await Blog.findByIdAndDelete(id)
+        if (!deletedBlog)
             return formatResponse(
                 null,
-                'Post not found',
+                'Blog not found',
                 404
             )
         return formatResponse(
             { deletedCount: 1 },
-            'Post deleted successfully',
+            'Blog deleted successfully',
             200
         )
     })
 }
 
-// BULK DELETE Posts
-export async function bulkDeletePosts(req: Request): Promise<IResponse> {
+// BULK DELETE Blogs
+export async function bulkDeleteBlogs(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { ids }: { ids: string[] } = await req.json()
         const deletedIds: string[] = []
@@ -217,9 +217,9 @@ export async function bulkDeletePosts(req: Request): Promise<IResponse> {
 
         for (const id of ids) {
             try {
-                const doc = await Post.findById(id)
+                const doc = await Blog.findById(id)
                 if (doc) {
-                    const deletedDoc = await Post.findByIdAndDelete(id)
+                    const deletedDoc = await Blog.findByIdAndDelete(id)
                     if (deletedDoc) {
                         deletedIds.push(id)
                     }

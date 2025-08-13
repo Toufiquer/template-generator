@@ -1,0 +1,440 @@
+here is an example of model.ts
+```
+
+```
+
+here is an example of a json file named inputJsonFile 
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT",
+    "books-list": "MULTISELECT",
+    "check-list": "MULTIDYNAMICSELECT",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+here is example of out put model.ts 
+```
+
+```
+
+Now write a function it return the whole model.ts file in string.
+
+and remember the following 
+
+    1. some times json could looklike this one 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+```
+    2. here is mongoose schema model 
+    ```
+
+const mySchema = new Schema({
+  STRING: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  EMAIL: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  PASSWORD: {
+    type: String,
+    required: true,
+    select: false // Hides this field from query results by default for security
+  },
+  PASSCODE: {
+    type: String,
+    required: true,
+    select: false
+  },
+  SELECT: {
+    type: String,
+    required: true,
+    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
+  },
+  DYNAMICSELECT: {
+    type: Schema.Types.ObjectId,
+    ref: 'AnotherModel' // Example of a dynamic reference to another model
+  },
+  IMAGES: [{
+    type: String // Array of URLs to images
+  }],
+  IMAGE: {
+    type: String // URL to a single image
+  },
+  DESCRIPTION: {
+    type: String,
+    trim: true
+  },
+  INTNUMBER: {
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value'
+    }
+  },
+  FLOATNUMBER: {
+    type: Number
+  },
+  BOOLEAN: {
+    type: Boolean,
+    default: false
+  },
+  DATE: {
+    type: Date,
+    default: Date.now
+  },
+  TIME: {
+    type: String // Can be stored as a string in 'HH:MM:SS' format
+  },
+  DATERANGE: {
+    start: { type: Date },
+    end: { type: Date }
+  },
+  TIMERANGE: {
+    start: { type: String }, // 'HH:MM:SS'
+    end: { type: String }   // 'HH:MM:SS'
+  },
+  COLORPICKER: {
+    type: String,
+    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+  },
+  PHONE: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
+  URL: {
+    type: String,
+    trim: true
+  },
+  RICHTEXT: {
+    type: String
+  },
+  AUTOCOMPLETE: {
+    type: String
+  },
+  RADIOBUTTON: {
+    type: String,
+    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
+  },
+  CHECKBOX: {
+    type: Boolean,
+    default: false
+  },
+  MULTICHECKBOX: [{
+    type: String // An array of strings representing the selected options
+  }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
+});
+
+    ```
+    3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }

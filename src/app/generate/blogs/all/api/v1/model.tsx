@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-const postSchema = new Schema(
+const blogsSchema = new Schema(
     {
     title: { type: String, required: true, trim: true },
     email: {
@@ -45,10 +45,10 @@ const postSchema = new Schema(
     { timestamps: true }
 );
 
-export default mongoose.models.Post ||
-    mongoose.model('Post', postSchema);
+export default mongoose.models.Blog ||
+    mongoose.model('Blog', blogsSchema);
 
-export interface IPosts extends Document {
+export interface IBlogs extends Document {
     title: string;
     email: string;
     password: string;
