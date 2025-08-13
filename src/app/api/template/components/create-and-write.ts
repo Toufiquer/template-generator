@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
-const createAndWriteFile = (contentPage: string, filePath: string) => {
+const writeInFile = (contentPage: string, filePath: string) => {
     try {
         const newFilePath = path.join(process.cwd(), filePath)
         const dirPath = path.dirname(newFilePath)
@@ -25,15 +25,17 @@ const createAndWriteFile = (contentPage: string, filePath: string) => {
     }
 }
 
-// Example usage:
-const content = `
-  const Page = () => {
-    return <main>Page Render </main>;
-  };
+// // Example usage:
+// const content = `
+//   const Page = () => {
+//     return <main>Page Render </main>;
+//   };
 
-  export default Page;
-`
+//   export default Page;
+// `
 
-const newFilePath = 'src/app/generate/example/page.tsx'
+// const newFilePath = 'src/app/generate/example/page.tsx'
 
-createAndWriteFile(content, newFilePath)
+// writeInFile(content, newFilePath)
+
+export default writeInFile
