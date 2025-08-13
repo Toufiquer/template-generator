@@ -1,0 +1,996 @@
+here is an example of Controller.ts
+```
+import { withDB } from '@/app/api/utils/db'
+
+import { IResponse } from '@/app/api/utils/jwt-verify'
+import { connectRedis, getRedisData } from '@/app/api/utils/redis'
+
+import User_3_000___ from './model'
+
+// Helper to format responses
+const formatResponse = (data: unknown, message: string, status: number) => ({
+    data,
+    message,
+    status,
+})
+
+// CREATE User_3_000___
+export async function createUser_3_000___(req: Request): Promise<IResponse> {
+    return withDB(async () => {
+        try {
+            const user_4_000___Data = await req.json()
+            const newUser_3_000___ = await User_3_000___.create({
+                ...user_4_000___Data,
+            })
+            return formatResponse(
+                newUser_3_000___,
+                'User_3_000___ created successfully',
+                201
+            )
+        } catch (error: unknown) {
+            if ((error as { code?: number }).code === 11000) {
+                const err = error as { keyValue?: Record<string, unknown> }
+                return formatResponse(
+                    null,
+                    `Duplicate key error: ${JSON.stringify(err.keyValue)}`,
+                    400
+                )
+            }
+            throw error // Re-throw other errors to be handled by `withDB`
+        }
+    })
+}
+
+// GET single User_3_000___ by ID
+export async function getUser_3_000___ById(req: Request) {
+    return withDB(async () => {
+        const id = new URL(req.url).searchParams.get('id')
+        if (!id)
+            return formatResponse(null, 'User_3_000___ ID is required', 400)
+
+        const user_4_000___ = await User_3_000___.findById(id)
+        if (!user_4_000___)
+            return formatResponse(null, 'User_3_000___ not found', 404)
+
+        return formatResponse(
+            user_4_000___,
+            'User_3_000___ fetched successfully',
+            200
+        )
+    })
+}
+
+// GET all Users_1_000___ with pagination
+export async function getUsers_1_000___(req: Request) {
+    await connectRedis()
+    const getValue = await getRedisData('users_2_000___')
+    if (getValue) {
+        const { users_2_000___, totalUsers_1_000___, page, limit } =
+            JSON.parse(getValue)
+        return formatResponse(
+            {
+                users_2_000___: users_2_000___ || [],
+                total: totalUsers_1_000___,
+                page,
+                limit,
+            },
+            'Users_1_000___ fetched successfully',
+            200
+        )
+    } else {
+        return withDB(async () => {
+            const url = new URL(req.url)
+            const page = parseInt(url.searchParams.get('page') || '1', 10)
+            const limit = parseInt(url.searchParams.get('limit') || '10', 10)
+            const skip = (page - 1) * limit
+
+            const searchQuery = url.searchParams.get('q')
+
+            let searchFilter = {}
+
+            // Apply search filter only if search query is provided
+            if (searchQuery) {
+                searchFilter = {
+                    $or: [
+                        { name: { $regex: searchQuery, $options: 'i' } },
+                        { email: { $regex: searchQuery, $options: 'i' } },
+                        { alias: { $regex: searchQuery, $options: 'i' } },
+                    ],
+                }
+            }
+
+            const users_2_000___ = await User_3_000___.find(searchFilter)
+                .sort({ updatedAt: -1, createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+
+            const totalUsers_1_000___ =
+                await User_3_000___.countDocuments(searchFilter)
+
+            return formatResponse(
+                {
+                    users_2_000___: users_2_000___ || [],
+                    total: totalUsers_1_000___,
+                    page,
+                    limit,
+                },
+                'Users_1_000___ fetched successfully',
+                200
+            )
+        })
+    }
+}
+
+// UPDATE single User_3_000___ by ID
+export async function updateUser_3_000___(req: Request) {
+    return withDB(async () => {
+        try {
+            const { id, ...updateData } = await req.json()
+            const updatedUser_3_000___ = await User_3_000___.findByIdAndUpdate(
+                id,
+                updateData,
+                { new: true, runValidators: true }
+            )
+
+            if (!updatedUser_3_000___)
+                return formatResponse(null, 'User_3_000___ not found', 404)
+            return formatResponse(
+                updatedUser_3_000___,
+                'User_3_000___ updated successfully',
+                200
+            )
+        } catch (error: unknown) {
+            if ((error as { code?: number }).code === 11000) {
+                const err = error as { keyValue?: Record<string, unknown> }
+                return formatResponse(
+                    null,
+                    `Duplicate key error: ${JSON.stringify(err.keyValue)}`,
+                    400
+                )
+            }
+            throw error // Re-throw other errors to be handled by `withDB`
+        }
+    })
+}
+
+// BULK UPDATE Users_1_000___
+export async function bulkUpdateUsers_1_000___(req: Request) {
+    return withDB(async () => {
+        const updates = await req.json()
+        const results = await Promise.allSettled(
+            updates.map(
+                ({
+                    id,
+                    updateData,
+                }: {
+                    id: string
+                    updateData: Record<string, unknown>
+                }) =>
+                    User_3_000___.findByIdAndUpdate(id, updateData, {
+                        new: true,
+                        runValidators: true,
+                    })
+            )
+        )
+
+        const successfulUpdates = results
+            .filter((r) => r.status === 'fulfilled' && r.value)
+            .map(
+                (r) => (r as PromiseFulfilledResult<typeof User_3_000___>).value
+            )
+        const failedUpdates = results
+            .filter((r) => r.status === 'rejected' || !r.value)
+            .map((_, i) => updates[i].id)
+
+        return formatResponse(
+            { updated: successfulUpdates, failed: failedUpdates },
+            'Bulk update completed',
+            200
+        )
+    })
+}
+
+// DELETE single User_3_000___ by ID
+export async function deleteUser_3_000___(req: Request) {
+    return withDB(async () => {
+        const { id } = await req.json()
+        const deletedUser_3_000___ = await User_3_000___.findByIdAndDelete(id)
+        if (!deletedUser_3_000___)
+            return formatResponse(
+                deletedUser_3_000___,
+                'User_3_000___ not found',
+                404
+            )
+        return formatResponse(
+            { deletedCount: 1 },
+            'User_3_000___ deleted successfully',
+            200
+        )
+    })
+}
+
+// BULK DELETE Users_1_000___
+export async function bulkDeleteUsers_1_000___(req: Request) {
+    return withDB(async () => {
+        const { ids } = await req.json()
+        const deletedIds: string[] = []
+        const invalidIds: string[] = []
+
+        for (const id of ids) {
+            try {
+                const user_4_000___ = await User_3_000___.findById(id)
+                if (user_4_000___) {
+                    const deletedUser_3_000___ =
+                        await User_3_000___.findByIdAndDelete(id)
+                    if (deletedUser_3_000___) deletedIds.push(id)
+                } else {
+                    invalidIds.push(id)
+                }
+            } catch {
+                invalidIds.push(id)
+            }
+        }
+
+        return formatResponse(
+            { deleted: deletedIds.length, deletedIds, invalidIds },
+            'Bulk delete operation completed',
+            200
+        )
+    })
+}
+
+```
+
+here is an example of a json file named inputJsonFile 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING"
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING"
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING"
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING"
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+
+```
+
+here is example of out put Controller.ts 
+```
+import { withDB } from '@/app/api/utils/db'
+
+import Post from './model'
+
+interface IResponse {
+    data: unknown
+    message: string
+    status: number
+}
+
+// Helper to format responses
+const formatResponse = (data: unknown, message: string, status: number) => ({
+    data,
+    message,
+    status,
+})
+
+// CREATE Post
+export async function createPost(req: Request): Promise<IResponse> {
+    return withDB(async () => {
+        try {
+            const postData = await req.json()
+            const newPost = await Post.create({
+                ...postData,
+            })
+            return formatResponse(newPost, 'Post created successfully', 201)
+        } catch (error: unknown) {
+            if ((error as { code?: number }).code === 11000) {
+                const err = error as { keyValue?: Record<string, unknown> }
+                return formatResponse(
+                    null,
+                    `Duplicate key error: ${JSON.stringify(err.keyValue)}`,
+                    400
+                )
+            }
+            throw error // Re-throw other errors to be handled by `withDB`
+        }
+    })
+}
+
+// GET single Post by ID
+export async function getPostById(req: Request) {
+    return withDB(async () => {
+        const id = new URL(req.url).searchParams.get('id')
+        if (!id) return formatResponse(null, 'Post ID is required', 400)
+
+        const post = await Post.findById(id)
+        if (!post) return formatResponse(null, 'Post not found', 404)
+
+        return formatResponse(post, 'Post fetched successfully', 200)
+    })
+}
+
+// GET all Posts with pagination
+export async function getPosts(req: Request) {
+    return withDB(async () => {
+        const url = new URL(req.url)
+        const page = parseInt(url.searchParams.get('page') || '1', 10)
+        const limit = parseInt(url.searchParams.get('limit') || '10', 10)
+        const skip = (page - 1) * limit
+
+        const searchQuery = url.searchParams.get('q')
+
+        let searchFilter = {}
+
+        // Apply search filter only if search query is provided
+        if (searchQuery) {
+            searchFilter = {
+                $or: [
+                    { title1: { $regex: searchQuery, $options: 'i' } },
+                    { title2: { $regex: searchQuery, $options: 'i' } },
+                ],
+            }
+        }
+
+        const posts = await Post.find(searchFilter)
+            .sort({ updatedAt: -1, createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+
+        const totalPosts = await Post.countDocuments(searchFilter)
+
+        return formatResponse(
+            {
+                posts: posts || [],
+                total: totalPosts,
+                page,
+                limit,
+            },
+            'Posts fetched successfully',
+            200
+        )
+    })
+}
+
+// UPDATE single Post by ID
+export async function updatePost(req: Request) {
+    return withDB(async () => {
+        try {
+            const { id, ...updateData } = await req.json()
+            const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
+                new: true,
+                runValidators: true,
+            })
+
+            if (!updatedPost) return formatResponse(null, 'Post not found', 404)
+            return formatResponse(updatedPost, 'Post updated successfully', 200)
+        } catch (error: unknown) {
+            if ((error as { code?: number }).code === 11000) {
+                const err = error as { keyValue?: Record<string, unknown> }
+                return formatResponse(
+                    null,
+                    `Duplicate key error: ${JSON.stringify(err.keyValue)}`,
+                    400
+                )
+            }
+            throw error // Re-throw other errors to be handled by `withDB`
+        }
+    })
+}
+
+// BULK UPDATE Posts
+export async function bulkUpdatePosts(req: Request) {
+    return withDB(async () => {
+        const updates = await req.json()
+        const results = await Promise.allSettled(
+            updates.map(
+                ({
+                    id,
+                    updateData,
+                }: {
+                    id: string
+                    updateData: Record<string, unknown>
+                }) =>
+                    Post.findByIdAndUpdate(id, updateData, {
+                        new: true,
+                        runValidators: true,
+                    })
+            )
+        )
+
+        const successfulUpdates = results
+            .filter((r) => r.status === 'fulfilled' && r.value)
+            .map((r) => (r as PromiseFulfilledResult<typeof Post>).value)
+        const failedUpdates = results
+            .filter((r) => r.status === 'rejected' || !r.value)
+            .map((_, i) => updates[i].id)
+
+        return formatResponse(
+            { updated: successfulUpdates, failed: failedUpdates },
+            'Bulk update completed',
+            200
+        )
+    })
+}
+
+// DELETE single Post by ID
+export async function deletePost(req: Request) {
+    return withDB(async () => {
+        const { id } = await req.json()
+        const deletedPost = await Post.findByIdAndDelete(id)
+        if (!deletedPost)
+            return formatResponse(deletedPost, 'Post not found', 404)
+        return formatResponse(
+            { deletedCount: 1 },
+            'Post deleted successfully',
+            200
+        )
+    })
+}
+
+// BULK DELETE Posts
+export async function bulkDeletePosts(req: Request) {
+    return withDB(async () => {
+        const { ids } = await req.json()
+        const deletedIds: string[] = []
+        const invalidIds: string[] = []
+
+        for (const id of ids) {
+            try {
+                const post = await Post.findById(id)
+                if (post) {
+                    const deletedPost = await Post.findByIdAndDelete(id)
+                    if (deletedPost) deletedIds.push(id)
+                } else {
+                    invalidIds.push(id)
+                }
+            } catch {
+                invalidIds.push(id)
+            }
+        }
+
+        return formatResponse(
+            { deleted: deletedIds.length, deletedIds, invalidIds },
+            'Bulk delete operation completed',
+            200
+        )
+    })
+}
+
+```
+
+Now write a function it return the whole Controller.ts file in string.
+
+and remember the following 
+
+    1. some times json could looklike this one 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+```
+    2. here is mongoose schema model 
+    ```
+    Here is an example of Json file 
+
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+
+From this json this application can generate those file with features I write below,
+1. api 
+2. dashboard 
+    a. redux
+    b. main page with a table with CURD operation
+    c. zustand store for manage state
+    d. component for CURD operation
+3. a client component [that component render in client]
+4. a ssr [that render on server]
+
+5. in a single component we use those data type
+  1. STRING - 
+  2. EMAIL - 
+  3. PASSWORD -
+  4. PASSCODE -
+  5. SELECT - 
+  6. DYNAMICSELECT - 
+  7. IMAGES - 
+  8. IMAGE  - 
+  9. DESCRIPTION - 
+  10. INTNUMBER - 
+  11. FLOATNUMBER - 
+  12. BOOLEAN - 
+  13. DATE  - 
+  14. TIME - 
+  15. DATERANGE - 
+  16. TIMERANGE - 
+  17. COLOEPICKER - 
+  18. PHONE - 
+  19. URL - 
+  20. RICHTEXT - 
+  21. AUTOCOMPLETE - 
+  22. RADIOBUTTON - 
+  23. CHECKBOX - 
+  24. MULTICHECKBOX - 
+  25. MULTISELECT - 
+  26. MULTIDYNAMICSELECT - 
+
+
+all json example
+-----------------------------------------------------
+  "title" : "STRING",
+  "email" : "EMAIL",
+  "password" : "PASSWOR",
+  "passcode" : "PASSCOD",
+  "area" : "SELECT",
+  "sub-area" : "DYNAMICSELECT",
+  "products-images" : "IMAGES",
+  "parsonal-image" : "IMAGE ",
+  "description" : "DESCRIPTION",
+  "age" : "INTNUMBER",
+  "amount" : "FLOATNUMBER",
+  "isActive" : "BOOLEAN",
+  "start-date" : "DATE ",
+  "start-time" : "TIME",
+  "schedule-date" : "DATERANGE",
+  "schedule-time" : "TIMERANGE",
+  "favorite-color" : "COLOEPICKER",
+  "number" : "PHONE",
+  "profile" : "URL",
+  "test" : "RICHTEXT",
+  "info" : "AUTOCOMPLETE",
+  "shift" : "RADIOBUTTON",
+  "policy" : "CHECKBOX",
+  "hobbys" : "MULTICHECKBOX",
+  "books-list": "MULTISELECT",
+  "check-list": "MULTIDYNAMICSELECT"
+
+
+Databasetype and mongooseSchema Schema
+-----------------------------------------------------
+  STRING : String,
+  EMAIL : String,
+  PASSWOR : String,
+  PASSCOD : String,
+  SELECT : String,
+  MULTISELECT : String[],
+  DYNAMICSELECT : String,
+  MULTIDYNAMICSELECT : String[],
+  IMAGES : String,
+  IMAGE  : String,
+  DESCRIPTION : String,
+  INTNUMBER : Number,
+  FLOATNUMBER : Number,
+  BOOLEAN : boolean,
+  DATE  : Date,
+  TIME : String,
+  DATERANGE : {start: String, end: String},
+  TIMERANGE : {start: String, end: String},
+  COLOEPICKER : String,
+  PHONE : String,
+  URL : String,
+  RICHTEXT : String,
+  AUTOCOMPLETE : String,
+  RADIOBUTTON : Boolean,
+  CHECKBOX : String,
+  MULTICHECKBOX : String,
+
+
+
+const mySchema = new Schema({
+  STRING: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  EMAIL: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  PASSWORD: {
+    type: String,
+    required: true,
+    select: false // Hides this field from query results by default for security
+  },
+  PASSCODE: {
+    type: String,
+    required: true,
+    select: false
+  },
+  SELECT: {
+    type: String,
+    required: true,
+    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
+  },
+  DYNAMICSELECT: {
+    type: Schema.Types.ObjectId,
+    ref: 'AnotherModel' // Example of a dynamic reference to another model
+  },
+  IMAGES: [{
+    type: String // Array of URLs to images
+  }],
+  IMAGE: {
+    type: String // URL to a single image
+  },
+  DESCRIPTION: {
+    type: String,
+    trim: true
+  },
+  INTNUMBER: {
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value'
+    }
+  },
+  FLOATNUMBER: {
+    type: Number
+  },
+  BOOLEAN: {
+    type: Boolean,
+    default: false
+  },
+  DATE: {
+    type: Date,
+    default: Date.now
+  },
+  TIME: {
+    type: String // Can be stored as a string in 'HH:MM:SS' format
+  },
+  DATERANGE: {
+    start: { type: Date },
+    end: { type: Date }
+  },
+  TIMERANGE: {
+    start: { type: String }, // 'HH:MM:SS'
+    end: { type: String }   // 'HH:MM:SS'
+  },
+  COLORPICKER: {
+    type: String,
+    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+  },
+  PHONE: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
+  URL: {
+    type: String,
+    trim: true
+  },
+  RICHTEXT: {
+    type: String
+  },
+  AUTOCOMPLETE: {
+    type: String
+  },
+  RADIOBUTTON: {
+    type: String,
+    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
+  },
+  CHECKBOX: {
+    type: Boolean,
+    default: false
+  },
+  MULTICHECKBOX: [{
+    type: String // An array of strings representing the selected options
+  }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
+});
+
+    ```
+    3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }
+    4. each key should include in search query on searchFilter
