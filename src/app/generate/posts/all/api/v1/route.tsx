@@ -1,12 +1,12 @@
 import { handleRateLimit } from '@/app/api/utils/rate-limit';
 import {
-    getBlogs,
-    createBlog,
-    updateBlog,
-    deleteBlog,
-    getBlogById,
-    bulkUpdateBlogs,
-    bulkDeleteBlogs,
+    getPosts,
+    createPost,
+    updatePost,
+    deletePost,
+    getPostById,
+    bulkUpdatePosts,
+    bulkDeletePosts,
 } from './controller';
 
 import {
@@ -15,7 +15,7 @@ import {
     IResponse,
 } from '@/app/api/utils/jwt-verify';
 
-// GET all Blogs
+// GET all Posts
 export async function GET(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
@@ -25,12 +25,12 @@ export async function GET(req: Request) {
 
     const id = new URL(req.url).searchParams.get('id');
     const result: IResponse = id
-        ? await getBlogById(req)
-        : await getBlogs(req);
+        ? await getPostById(req)
+        : await getPosts(req);
     return formatResponse(result.data, result.message, result.status);
 }
 
-// CREATE Blog
+// CREATE Post
 export async function POST(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
@@ -38,11 +38,11 @@ export async function POST(req: Request) {
     const tokenResponse = handleTokenVerify(req);
     if (tokenResponse) return tokenResponse;
 
-    const result = await createBlog(req);
+    const result = await createPost(req);
     return formatResponse(result.data, result.message, result.status);
 }
 
-// UPDATE Blog
+// UPDATE Post
 export async function PUT(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
@@ -52,13 +52,13 @@ export async function PUT(req: Request) {
 
     const isBulk = new URL(req.url).searchParams.get('bulk') === 'true';
     const result = isBulk
-        ? await bulkUpdateBlogs(req)
-        : await updateBlog(req);
+        ? await bulkUpdatePosts(req)
+        : await updatePost(req);
 
     return formatResponse(result.data, result.message, result.status);
 }
 
-// DELETE Blog
+// DELETE Post
 export async function DELETE(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
@@ -68,8 +68,8 @@ export async function DELETE(req: Request) {
 
     const isBulk = new URL(req.url).searchParams.get('bulk') === 'true';
     const result = isBulk
-        ? await bulkDeleteBlogs(req)
-        : await deleteBlog(req);
+        ? await bulkDeletePosts(req)
+        : await deletePost(req);
 
     return formatResponse(result.data, result.message, result.status);
 }

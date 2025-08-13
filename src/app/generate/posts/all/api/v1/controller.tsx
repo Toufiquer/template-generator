@@ -1,6 +1,6 @@
 import { withDB } from '@/app/api/utils/db'
 
-import Blog from './model'
+import Post from './model'
 
 interface IResponse {
     data: unknown
@@ -15,17 +15,17 @@ const formatResponse = (data: unknown, message: string, status: number): IRespon
     status,
 })
 
-// CREATE Blog
-export async function createBlog(req: Request): Promise<IResponse> {
+// CREATE Post
+export async function createPost(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
-            const blogData = await req.json()
-            const newBlog = await Blog.create({
-                ...blogData,
+            const postData = await req.json()
+            const newPost = await Post.create({
+                ...postData,
             })
             return formatResponse(
-                newBlog,
-                'Blog created successfully',
+                newPost,
+                'Post created successfully',
                 201
             )
         } catch (error: unknown) {
@@ -42,27 +42,27 @@ export async function createBlog(req: Request): Promise<IResponse> {
     })
 }
 
-// GET single Blog by ID
-export async function getBlogById(req: Request): Promise<IResponse> {
+// GET single Post by ID
+export async function getPostById(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const id = new URL(req.url).searchParams.get('id')
         if (!id)
-            return formatResponse(null, 'Blog ID is required', 400)
+            return formatResponse(null, 'Post ID is required', 400)
 
-        const blog = await Blog.findById(id)
-        if (!blog)
-            return formatResponse(null, 'Blog not found', 404)
+        const post = await Post.findById(id)
+        if (!post)
+            return formatResponse(null, 'Post not found', 404)
 
         return formatResponse(
-            blog,
-            'Blog fetched successfully',
+            post,
+            'Post fetched successfully',
             200
         )
     })
 }
 
-// GET all Blogs with pagination
-export async function getBlogs(req: Request): Promise<IResponse> {
+// GET all Posts with pagination
+export async function getPosts(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const url = new URL(req.url)
         const page = parseInt(url.searchParams.get('page') || '1', 10)
@@ -77,53 +77,73 @@ export async function getBlogs(req: Request): Promise<IResponse> {
         if (searchQuery) {
             searchFilter = {
                 $or: [
-                        { 'title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'title2': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md1.title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md1.title2': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md2.title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md2.title2': { $regex: searchQuery, $options: 'i' } }
+                        { 'title': { $regex: searchQuery, $options: 'i' } },
+                        { 'email': { $regex: searchQuery, $options: 'i' } },
+                        { 'password': { $regex: searchQuery, $options: 'i' } },
+                        { 'passcode': { $regex: searchQuery, $options: 'i' } },
+                        { 'area': { $regex: searchQuery, $options: 'i' } },
+                        { 'books-list': { $regex: searchQuery, $options: 'i' } },
+                        { 'check-list': { $regex: searchQuery, $options: 'i' } },
+                        { 'sub-area': { $regex: searchQuery, $options: 'i' } },
+                        { 'products-images': { $regex: searchQuery, $options: 'i' } },
+                        { 'personal-image': { $regex: searchQuery, $options: 'i' } },
+                        { 'description': { $regex: searchQuery, $options: 'i' } },
+                        { 'age': { $regex: searchQuery, $options: 'i' } },
+                        { 'amount': { $regex: searchQuery, $options: 'i' } },
+                        { 'isActive': { $regex: searchQuery, $options: 'i' } },
+                        { 'start-date': { $regex: searchQuery, $options: 'i' } },
+                        { 'start-time': { $regex: searchQuery, $options: 'i' } },
+                        { 'schedule-date': { $regex: searchQuery, $options: 'i' } },
+                        { 'schedule-time': { $regex: searchQuery, $options: 'i' } },
+                        { 'favorite-color': { $regex: searchQuery, $options: 'i' } },
+                        { 'number': { $regex: searchQuery, $options: 'i' } },
+                        { 'profile': { $regex: searchQuery, $options: 'i' } },
+                        { 'test': { $regex: searchQuery, $options: 'i' } },
+                        { 'info': { $regex: searchQuery, $options: 'i' } },
+                        { 'shift': { $regex: searchQuery, $options: 'i' } },
+                        { 'policy': { $regex: searchQuery, $options: 'i' } },
+                        { 'hobbys': { $regex: searchQuery, $options: 'i' } }
                 ],
             }
         }
 
-        const blogs = await Blog.find(searchFilter)
+        const posts = await Post.find(searchFilter)
             .sort({ updatedAt: -1, createdAt: -1 })
             .skip(skip)
             .limit(limit)
 
-        const totalBlogs =
-            await Blog.countDocuments(searchFilter)
+        const totalPosts =
+            await Post.countDocuments(searchFilter)
 
         return formatResponse(
             {
-                blogs: blogs || [],
-                total: totalBlogs,
+                posts: posts || [],
+                total: totalPosts,
                 page,
                 limit,
             },
-            'Blogs fetched successfully',
+            'Posts fetched successfully',
             200
         )
     })
 }
 
-// UPDATE single Blog by ID
-export async function updateBlog(req: Request): Promise<IResponse> {
+// UPDATE single Post by ID
+export async function updatePost(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
             const { id, ...updateData } = await req.json()
-            const updatedBlog = await Blog.findByIdAndUpdate(
+            const updatedPost = await Post.findByIdAndUpdate(
                 id,
                 updateData,
                 { new: true, runValidators: true }
             )
 
-            if (!updatedBlog)
-                return formatResponse(null, 'Blog not found', 404)
+            if (!updatedPost)
+                return formatResponse(null, 'Post not found', 404)
             return formatResponse(
-                updatedBlog,
-                'Blog updated successfully',
+                updatedPost,
+                'Post updated successfully',
                 200
             )
         } catch (error: unknown) {
@@ -140,13 +160,13 @@ export async function updateBlog(req: Request): Promise<IResponse> {
     })
 }
 
-// BULK UPDATE Blogs
-export async function bulkUpdateBlogs(req: Request): Promise<IResponse> {
+// BULK UPDATE Posts
+export async function bulkUpdatePosts(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const updates: { id: string; updateData: Record<string, unknown> }[] = await req.json()
         const results = await Promise.allSettled(
             updates.map(({ id, updateData }) =>
-                Blog.findByIdAndUpdate(id, updateData, {
+                Post.findByIdAndUpdate(id, updateData, {
                     new: true,
                     runValidators: true,
                 })
@@ -169,27 +189,27 @@ export async function bulkUpdateBlogs(req: Request): Promise<IResponse> {
     })
 }
 
-// DELETE single Blog by ID
-export async function deleteBlog(req: Request): Promise<IResponse> {
+// DELETE single Post by ID
+export async function deletePost(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { id } = await req.json()
-        const deletedBlog = await Blog.findByIdAndDelete(id)
-        if (!deletedBlog)
+        const deletedPost = await Post.findByIdAndDelete(id)
+        if (!deletedPost)
             return formatResponse(
                 null,
-                'Blog not found',
+                'Post not found',
                 404
             )
         return formatResponse(
             { deletedCount: 1 },
-            'Blog deleted successfully',
+            'Post deleted successfully',
             200
         )
     })
 }
 
-// BULK DELETE Blogs
-export async function bulkDeleteBlogs(req: Request): Promise<IResponse> {
+// BULK DELETE Posts
+export async function bulkDeletePosts(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { ids }: { ids: string[] } = await req.json()
         const deletedIds: string[] = []
@@ -197,9 +217,9 @@ export async function bulkDeleteBlogs(req: Request): Promise<IResponse> {
 
         for (const id of ids) {
             try {
-                const doc = await Blog.findById(id)
+                const doc = await Post.findById(id)
                 if (doc) {
-                    const deletedDoc = await Blog.findByIdAndDelete(id)
+                    const deletedDoc = await Post.findByIdAndDelete(id)
                     if (deletedDoc) {
                         deletedIds.push(id)
                     }
