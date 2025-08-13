@@ -25,10 +25,14 @@ export async function POST(request: NextRequest) {
     fs.writeFileSync(filePathApi, contentApi, 'utf8');
 
     //  !  create page
-    const contentPage = `const Page = () => {
-  return <main>Page Render </main>;
-};
-export default Page;`;
+    const contentPage = `
+                          const Page = () => {
+                            return <main>Page Render </main>;
+                          };
+
+                          export default Page;
+                          
+                        `;
     const filePathPage = path.join(process.cwd(), `src/app/generate/${folderName}/page.tsx`);
     const dirPathPage = path.dirname(filePathApi);
     if (!fs.existsSync(dirPathPage)) {

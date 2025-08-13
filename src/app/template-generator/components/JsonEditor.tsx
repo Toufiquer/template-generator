@@ -17,10 +17,11 @@ import {
     AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import ViewDataType from './ViewDataType'
 
 const JsonEditor: React.FC = () => {
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template"\n}'
+        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON",\n    "policy": "CHECKBOX",\n    "hobbys": "MULTICHECKBOX"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -37,10 +38,10 @@ const JsonEditor: React.FC = () => {
             const parsedJson = JSON.parse(jsonInput)
 
             const isAlreadyExist = items.find(
-                (i) => i.data.templateName === parsedJson.templateName
+                (i) => i.data.uid === parsedJson.uid
             )
             if (isAlreadyExist?.id) {
-                setError('Json already exist.')
+                setError('Json already exist with this uid.')
                 return
             } else {
                 // Add to Zustand store
@@ -61,13 +62,47 @@ const JsonEditor: React.FC = () => {
     }
 
     const handleGenerate = () => {}
+    const handleFormat = () => {
+        console.log('json : ', jsonInput)
+    }
+    const handleGenerate = async () => {
+        console.log('handle generate is start')
+
+        setError('')
+        setIsLoading(true)
+        try {
+            const response = await fetch('/api/template', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ data: jsonInput }),
+            })
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const result = await response.json()
+            console.log('Success:', result)
+            // Handle success response
+        } catch (error) {
+            setError('Failed to fetch: ' + (error as Error).message)
+        } finally {
+            setIsLoading(false)
+        }
+        console.log('handle generate is End')
+    }
 
     return (
         <div className="w-full mx-auto p-6">
             <div className=" rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-00 mb-4">
-                    JSON Editor
-                </h2>
+                <div className="w-full flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-gray- 800 dark:text-gray-00 mb-4">
+                        JSON Editor
+                    </h2>
+                    <ViewDataType />
+                </div>
 
                 {/* JSON Input Form */}
                 <div className="space-y-4">
@@ -101,8 +136,14 @@ const JsonEditor: React.FC = () => {
                         >
                             {isLoading ? 'Saving...' : 'Save'}
                         </Button>
-
                         <Button
+                            onClick={handleFormat}
+                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Formet
+                        </Button>
+                        <Button
+                            disabled={isLoading || !jsonInput.trim()}
                             onClick={handleGenerate}
                             className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >

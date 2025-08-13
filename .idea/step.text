@@ -1,0 +1,57 @@
+1. CURD with Json. [DONE]
+    User can read, write, delete and update json in a single file. 
+
+1.2 create data-type 
+
+2. api
+    a. controller
+    b. jwt-utils
+    c. jwt-verify
+    d. model
+    e. rate-limit
+    f. redis
+    g. route
+
+4. redux
+    a. rtk-apis
+
+5. store
+    a. store
+    b. store-const
+    c. store-type
+
+3. page
+    a. main-page
+
+6. component
+    [] rich-text-editor
+        a. index
+        b. newbar
+
+    [] view-rich-text
+        a. client component
+        b. server component
+        c. view rich text
+    1. add
+    2. bulk-delete
+    3. bulk-dynamic-update
+    4. bulk-edit
+    5. bulk-update
+    6. data-select
+    7. delete
+    8. dynamic-data-select
+    9. edit
+    10. image-dialog
+    11. images-select
+    12. multi-select
+    13. panigation
+    14. search-box
+    15. too-many-request
+    16. type-utils
+    17. utils
+    18. view
+    19. table-view
+
+7. Client Component
+
+8. SSR Component  
