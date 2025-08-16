@@ -17,6 +17,7 @@ import { generateSearchBoxComponentFile } from './generate-search-box'
 import { generateTypeUtils } from './generate-type-utils'
 import { generateUtils } from './generate-utils'
 import { generateViewComponentFile } from './generate-view'
+import { generateViewTableComponentFile } from './generate-table-view'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -63,6 +64,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const generateUtilsCentent = generateUtils(data)
 
     const viewComponentContent = generateViewComponentFile(data)
+
+    const viewTableComponentContent = generateViewTableComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -134,6 +137,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         viewComponentContent,
         `src/app/generate/${folderName}/all/components/View.tsx`
+    )
+    writeInFile(
+        viewTableComponentContent,
+        `src/app/generate/${folderName}/all/components/TableView.tsx`
     )
 }
 export default generateAllOtherComponentsMain
