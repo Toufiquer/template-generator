@@ -1,0 +1,149 @@
+/**
+ * Defines the structure for the schema object.
+ */
+interface Schema {
+    [key: string]: string | Schema
+}
+
+/**
+ * Defines the structure for the naming convention object.
+ */
+interface NamingConvention {
+    Users_1_000___: string
+    users_2_000___: string
+    User_3_000___: string
+    user_4_000___: string
+    [key: string]: string // Allows for additional keys
+}
+
+/**
+ * Defines the structure for the main input JSON file.
+ */
+interface InputJsonFile {
+    uid: string
+    templateName: string
+    schema: Schema
+    namingConvention: NamingConvention
+}
+
+/**
+ * Generates the content for a BulkDelete.tsx component file.
+ *
+ * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
+ * @returns {string} The complete BulkDelete.tsx file content as a string.
+ */
+export const generateBulkDeleteComponentFile = (
+    inputJsonFile: string
+): string => {
+    const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
+
+    // 1. Extract and format names from the naming convention.
+    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+
+    // 2. Intelligently find the most suitable display key from the schema.
+    // It prioritizes 'name', then 'title', then the first available 'STRING' field.
+    const schemaKeys = Object.keys(schema)
+    const displayKey =
+        schemaKeys.find((key) => key.toLowerCase() === 'name') ||
+        schemaKeys.find((key) => key.toLowerCase() === 'title') ||
+        schemaKeys.find((key) => schema[key] === 'STRING') ||
+        '_id' // Fallback to _id if no suitable string is found
+
+    // 3. Construct the file content using a template literal.
+    return `import React from 'react'
+
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { use${pluralPascalCase}Store } from '../store/Store'
+import { useBulkDelete${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { handleSuccess, handleError } from './utils'
+
+const BulkDeleteNextComponents: React.FC = () => {
+    const {
+        isBulkDeleteModalOpen,
+        toggleBulkDeleteModal,
+        bulkData,
+        setBulkData,
+    } = use${pluralPascalCase}Store()
+    
+    const [bulkDelete${pluralPascalCase}, { isLoading }] = useBulkDelete${pluralPascalCase}Mutation()
+
+    const handleBulkDelete = async () => {
+        if (!bulkData?.length) return
+        try {
+            const ids = bulkData.map((${pluralPascalCase.toLowerCase()}) => ${pluralPascalCase.toLowerCase()}._id)
+            await bulkDelete${pluralPascalCase}({ ids }).unwrap()
+            toggleBulkDeleteModal(false)
+            setBulkData([])
+            handleSuccess('Delete Successful')
+        } catch (error) {
+            console.error('Failed to delete ${pluralPascalCase}:', error)
+            handleError('Failed to delete items. Please try again.')
+        }
+    }
+
+    return (
+        <Dialog
+            open={isBulkDeleteModalOpen}
+            onOpenChange={toggleBulkDeleteModal}
+        >
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Deletion</DialogTitle>
+                </DialogHeader>
+                {bulkData?.length > 0 && (
+                    <div className="pt-4">
+                        <p>
+                            You are about to delete{' '}
+                            <span className="font-semibold">
+                                ({bulkData.length})
+                            </span>{' '}
+                            ${pluralLowerCase}.
+                        </p>
+                    </div>
+                )}
+                <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+                    <div className="flex flex-col">
+                        {bulkData.map((${pluralPascalCase.toLowerCase()}, idx) => (
+                            <span
+                                key={(${pluralPascalCase.toLowerCase()}._id as string) + idx}
+                                className="text-xs"
+                            >
+                                {idx + 1}. {(${pluralPascalCase.toLowerCase()} as any)['${displayKey}'] as string || ''}
+                            </span>
+                        ))}
+                    </div>
+                </ScrollArea>
+                <DialogFooter>
+                    <Button
+                        className="cursor-pointer"
+                        variant="outline"
+                        onClick={() => toggleBulkDeleteModal(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={isLoading}
+                        variant="destructive"
+                        onClick={handleBulkDelete}
+                    >
+                        {isLoading ? 'Deleting...' : 'Delete Selected'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default BulkDeleteNextComponents
+`
+}
