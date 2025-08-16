@@ -1,0 +1,841 @@
+here is an example of MultiSelect.tsx
+```
+'use client'
+
+import { useEffect, useState } from 'react'
+import { X } from 'lucide-react'
+
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+
+interface IResponseData {
+    id: number
+    name: string
+}
+
+interface MultiSelectProps {
+    label?: string
+    placeholder?: string
+    defaultSelected?: string[]
+    apiUrl?: string
+    onSelectionChange?: (selectedItems: string[]) => void
+    readOnly?: boolean
+}
+
+const MultiSelect = ({
+    label = 'Select Data',
+    placeholder = 'Select an option',
+    defaultSelected = [],
+    apiUrl = 'https://jsonplaceholder.typicode.com/users',
+    onSelectionChange,
+    readOnly = false,
+}: MultiSelectProps) => {
+    const [availableData, setAvailableData] = useState<string[]>([])
+    const [selectedItems, setSelectedItems] =
+        useState<string[]>(defaultSelected)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    // Fetch data on component mount
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true)
+            try {
+                const response = await fetch(apiUrl)
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data: ${response.status}`)
+                }
+                const json = await response.json()
+                // Extract names from the API response
+                const names = json.map((item: IResponseData) => item.name)
+                setAvailableData(names)
+                setError(null)
+            } catch (err) {
+                setError(
+                    err instanceof Error ? err.message : 'Failed to fetch data'
+                )
+                console.error('Error fetching data:', err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [apiUrl])
+
+    // Update selected items from props when they change
+    useEffect(() => {
+        setSelectedItems(defaultSelected)
+    }, [defaultSelected])
+
+    // Notify parent component when selections change
+    useEffect(() => {
+        if (onSelectionChange) {
+            onSelectionChange(selectedItems)
+        }
+    }, [selectedItems, onSelectionChange])
+
+    // Handle selection of an item
+    const handleSelect = (value: string) => {
+        if (!readOnly) {
+            setSelectedItems((prev) => {
+                // Skip if already selected
+                if (prev.includes(value)) return prev
+                return [...prev, value]
+            })
+        }
+    }
+
+    // Remove an item from selection
+    const handleRemove = (itemToRemove: string) => {
+        if (!readOnly) {
+            setSelectedItems((prev) =>
+                prev.filter((item) => item !== itemToRemove)
+            )
+        }
+    }
+
+    // Get available options (exclude already selected items)
+    const getAvailableOptions = () => {
+        return availableData.filter((item) => !selectedItems.includes(item))
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-4 justify-between">
+                <div className="w-full">
+                    <Label htmlFor="multiselect" className="text-right">
+                        {label}
+                    </Label>
+                </div>
+                <div className="w-full">
+                    <Select
+                        onValueChange={handleSelect}
+                        disabled={
+                            readOnly ||
+                            isLoading ||
+                            getAvailableOptions().length === 0
+                        }
+                        defaultValue={'Please select an option'}
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue
+                                placeholder={
+                                    placeholder || 'Please select an option'
+                                }
+                            />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {isLoading ? (
+                                    <SelectLabel className="p-2 text-center text-gray-500">
+                                        Loading options...
+                                    </SelectLabel>
+                                ) : error ? (
+                                    <SelectLabel className="p-2 text-center text-red-500">
+                                        {error}
+                                    </SelectLabel>
+                                ) : getAvailableOptions().length === 0 ? (
+                                    <SelectLabel className="p-2 text-center text-gray-500">
+                                        No options available
+                                    </SelectLabel>
+                                ) : (
+                                    getAvailableOptions().map((item, index) => (
+                                        <SelectItem
+                                            key={`${item}-${index}`}
+                                            className="cursor-pointer"
+                                            value={item}
+                                        >
+                                            {item}
+                                        </SelectItem>
+                                    ))
+                                )}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            {/* Display selected items */}
+            {selectedItems.length > 0 && (
+                <div className="flex flex-wrap items-start gap-4 -ml-2">
+                    <div className="col-span-3 flex flex-wrap gap-2">
+                        {selectedItems.map((item, index) => (
+                            <Badge
+                                key={`selected-${item}-${index}`}
+                                variant="secondary"
+                            >
+                                {item}
+                                {!readOnly && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-4 w-4 p-0 ml-1 cursor-pointer"
+                                        onClick={() => handleRemove(item)}
+                                    >
+                                        <X className="h-3 w-3 cursor-pointer" />
+                                        <span className="sr-only">
+                                            Remove {item}
+                                        </span>
+                                    </Button>
+                                )}
+                            </Badge>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default MultiSelect
+
+```
+
+here is an example of a json file named inputJsonFile 
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT",
+    "books-list": "MULTISELECT",
+    "check-list": "MULTIDYNAMICSELECT",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+here is example of out put MultiSelect.tsx 
+```
+'use client'
+
+import { useEffect, useState } from 'react'
+import { X } from 'lucide-react'
+
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+
+interface IResponseData {
+    id: number
+    name: string
+}
+
+interface MultiSelectProps {
+    label?: string
+    placeholder?: string
+    defaultSelected?: string[]
+    apiUrl?: string
+    onSelectionChange?: (selectedItems: string[]) => void
+    readOnly?: boolean
+}
+
+const MultiSelect = ({
+    label = 'Select Data',
+    placeholder = 'Select an option',
+    defaultSelected = [],
+    apiUrl = 'https://jsonplaceholder.typicode.com/users',
+    onSelectionChange,
+    readOnly = false,
+}: MultiSelectProps) => {
+    const [availableData, setAvailableData] = useState<string[]>([])
+    const [selectedItems, setSelectedItems] =
+        useState<string[]>(defaultSelected)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    // Fetch data on component mount
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true)
+            try {
+                const response = await fetch(apiUrl)
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data: ${response.status}`)
+                }
+                const json = await response.json()
+                // Extract names from the API response
+                const names = json.map((item: IResponseData) => item.name)
+                setAvailableData(names)
+                setError(null)
+            } catch (err) {
+                setError(
+                    err instanceof Error ? err.message : 'Failed to fetch data'
+                )
+                console.error('Error fetching data:', err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [apiUrl])
+
+    // Update selected items from props when they change
+    useEffect(() => {
+        setSelectedItems(defaultSelected)
+    }, [defaultSelected])
+
+    // Notify parent component when selections change
+    useEffect(() => {
+        if (onSelectionChange) {
+            onSelectionChange(selectedItems)
+        }
+    }, [selectedItems, onSelectionChange])
+
+    // Handle selection of an item
+    const handleSelect = (value: string) => {
+        if (!readOnly) {
+            setSelectedItems((prev) => {
+                // Skip if already selected
+                if (prev.includes(value)) return prev
+                return [...prev, value]
+            })
+        }
+    }
+
+    // Remove an item from selection
+    const handleRemove = (itemToRemove: string) => {
+        if (!readOnly) {
+            setSelectedItems((prev) =>
+                prev.filter((item) => item !== itemToRemove)
+            )
+        }
+    }
+
+    // Get available options (exclude already selected items)
+    const getAvailableOptions = () => {
+        return availableData.filter((item) => !selectedItems.includes(item))
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-4 justify-between">
+                <div className="w-full">
+                    <Label htmlFor="multiselect" className="text-right">
+                        {label}
+                    </Label>
+                </div>
+                <div className="w-full">
+                    <Select
+                        onValueChange={handleSelect}
+                        disabled={
+                            readOnly ||
+                            isLoading ||
+                            getAvailableOptions().length === 0
+                        }
+                        defaultValue={'Please select an option'}
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue
+                                placeholder={
+                                    placeholder || 'Please select an option'
+                                }
+                            />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {isLoading ? (
+                                    <SelectLabel className="p-2 text-center text-gray-500">
+                                        Loading options...
+                                    </SelectLabel>
+                                ) : error ? (
+                                    <SelectLabel className="p-2 text-center text-red-500">
+                                        {error}
+                                    </SelectLabel>
+                                ) : getAvailableOptions().length === 0 ? (
+                                    <SelectLabel className="p-2 text-center text-gray-500">
+                                        No options available
+                                    </SelectLabel>
+                                ) : (
+                                    getAvailableOptions().map((item, index) => (
+                                        <SelectItem
+                                            key={`${item}-${index}`}
+                                            className="cursor-pointer"
+                                            value={item}
+                                        >
+                                            {item}
+                                        </SelectItem>
+                                    ))
+                                )}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            {/* Display selected items */}
+            {selectedItems.length > 0 && (
+                <div className="flex flex-wrap items-start gap-4 -ml-2">
+                    <div className="col-span-3 flex flex-wrap gap-2">
+                        {selectedItems.map((item, index) => (
+                            <Badge
+                                key={`selected-${item}-${index}`}
+                                variant="secondary"
+                            >
+                                {item}
+                                {!readOnly && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-4 w-4 p-0 ml-1 cursor-pointer"
+                                        onClick={() => handleRemove(item)}
+                                    >
+                                        <X className="h-3 w-3 cursor-pointer" />
+                                        <span className="sr-only">
+                                            Remove {item}
+                                        </span>
+                                    </Button>
+                                )}
+                            </Badge>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default MultiSelect
+
+```
+
+Now write a function it return the whole MultiSelect.tsx file in string.
+
+and remember the following 
+
+    1. some times json could looklike this one 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+```
+    2. here is mongoose schema model 
+    ```
+
+const mySchema = new Schema({
+  STRING: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  EMAIL: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  PASSWORD: {
+    type: String,
+    required: true,
+    select: false // Hides this field from query results by default for security
+  },
+  PASSCODE: {
+    type: String,
+    required: true,
+    select: false
+  },
+  SELECT: {
+    type: String,
+    required: true,
+    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
+  },
+  DYNAMICSELECT: {
+    type: Schema.Types.ObjectId,
+    ref: 'AnotherModel' // Example of a dynamic reference to another model
+  },
+  IMAGES: [{
+    type: String // Array of URLs to images
+  }],
+  IMAGE: {
+    type: String // URL to a single image
+  },
+  DESCRIPTION: {
+    type: String,
+    trim: true
+  },
+  INTNUMBER: {
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value'
+    }
+  },
+  FLOATNUMBER: {
+    type: Number
+  },
+  BOOLEAN: {
+    type: Boolean,
+    default: false
+  },
+  DATE: {
+    type: Date,
+    default: Date.now
+  },
+  TIME: {
+    type: String // Can be stored as a string in 'HH:MM:SS' format
+  },
+  DATERANGE: {
+    start: { type: Date },
+    end: { type: Date }
+  },
+  TIMERANGE: {
+    start: { type: String }, // 'HH:MM:SS'
+    end: { type: String }   // 'HH:MM:SS'
+  },
+  COLORPICKER: {
+    type: String,
+    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+  },
+  PHONE: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
+  URL: {
+    type: String,
+    trim: true
+  },
+  RICHTEXT: {
+    type: String
+  },
+  AUTOCOMPLETE: {
+    type: String
+  },
+  RADIOBUTTON: {
+    type: String,
+    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
+  },
+  CHECKBOX: {
+    type: Boolean,
+    default: false
+  },
+  MULTICHECKBOX: [{
+    type: String // An array of strings representing the selected options
+  }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
+});
+
+    ```
+    3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }
+    4. please generate the file in typescript

@@ -48,3 +48,16 @@ export interface IUsers_1_000___ {
     updatedAt: Date
     _id: string
 }
+export const defaultUsers_1_000___ = {
+    name: '',
+    dataArr: [],
+    email: '',
+    passCode: '',
+    alias: '',
+    role: '',
+    images: [],
+    descriptions: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    _id: '',
+}

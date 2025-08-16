@@ -1,0 +1,724 @@
+here is an example of BulkEdit.tsx
+```
+import React from 'react'
+
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { IUsers_1_000___ } from '../api/v1/model'
+import { useUsers_1_000___Store } from '../store/Store'
+import { users_2_000___SelectorArr } from '../store/StoreConstants'
+import { useBulkUpdateUsers_1_000___Mutation } from '../redux/rtk-Api'
+
+import { handleSuccess } from './utils'
+
+const BulkEditNextComponents: React.FC = () => {
+    const { isBulkEditModalOpen, toggleBulkEditModal, bulkData, setBulkData } =
+        useUsers_1_000___Store()
+    const [bulkUpdateUsers_1_000___, { isLoading }] =
+        useBulkUpdateUsers_1_000___Mutation()
+
+    const handleBulkEditUsers_1_000___ = async () => {
+        if (!bulkData.length) return
+        try {
+            const newBulkData = bulkData.map(({ _id, ...rest }) => ({
+                id: _id,
+                updateData: rest,
+            }))
+            await bulkUpdateUsers_1_000___(newBulkData).unwrap()
+            toggleBulkEditModal(false)
+            setBulkData([])
+            handleSuccess('Edit Successful')
+        } catch (error) {
+            console.error('Failed to edit users_2_000___:', error)
+        }
+    }
+
+    const handleRoleChange = (Users_1_000___Id: string, role: string) => {
+        setBulkData(
+            bulkData.map((Users_1_000___) =>
+                Users_1_000___._id === Users_1_000___Id
+                    ? { ...Users_1_000___, role }
+                    : Users_1_000___
+            ) as IUsers_1_000___[]
+        )
+    }
+
+    return (
+        <Dialog open={isBulkEditModalOpen} onOpenChange={toggleBulkEditModal}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Update</DialogTitle>
+                </DialogHeader>
+                {bulkData.length > 0 && (
+                    <p className="pt-4">
+                        You are about to update{' '}
+                        <span className="font-semibold">
+                            ({bulkData.length})
+                        </span>{' '}
+                        users_1_000___
+                    </p>
+                )}
+                <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+                    <div className="flex flex-col gap-2">
+                        {bulkData.map((Users_1_000___, idx) => (
+                            <div
+                                key={(Users_1_000___._id as string) || idx}
+                                className="flex items-center justify-between"
+                            >
+                                <span>
+                                    {idx + 1}.{' '}
+                                    {(Users_1_000___.name as string) || ''}
+                                </span>
+                                <div className="flex items-center gap-4 min-w-[180px]">
+                                    <Label htmlFor="edit-role">Role</Label>
+                                    <Select
+                                        onValueChange={(role) =>
+                                            handleRoleChange(
+                                                Users_1_000___._id as string,
+                                                role
+                                            )
+                                        }
+                                        defaultValue={
+                                            (Users_1_000___.role as string) ||
+                                            ''
+                                        }
+                                    >
+                                        <SelectTrigger className="bg-slate-50">
+                                            <SelectValue placeholder="Select a role" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-slate-50">
+                                            {users_2_000___SelectorArr?.map(
+                                                (role, index) => (
+                                                    <SelectItem
+                                                        key={role + index}
+                                                        value={role}
+                                                        className="cursor-pointer hover:bg-slate-200"
+                                                    >
+                                                        {role}
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => toggleBulkEditModal(false)}
+                        className="cursor-pointer border-slate-400 hover:border-slate-500"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={isLoading}
+                        variant="outline"
+                        onClick={handleBulkEditUsers_1_000___}
+                        className="text-green-400 hover:text-green-500 cursor-pointer bg-green-100 hover:bg-green-200 border-1 border-green-300 hover:border-green-400"
+                    >
+                        Update Selected
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default BulkEditNextComponents
+
+```
+
+here is an example of a json file named inputJsonFile 
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT",
+    "books-list": "MULTISELECT",
+    "check-list": "MULTIDYNAMICSELECT",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+here is example of out put BulkEdit.tsx 
+```
+import React from 'react'
+
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { IPosts } from '../api/v1/model'
+import { usePostsStore } from '../store/Store'
+import { postsSelectorArr } from '../store/StoreConstants'
+import { useBulkUpdatePostsMutation } from '../redux/rtk-Api'
+
+import { handleSuccess } from './utils'
+
+const BulkEditNextComponents: React.FC = () => {
+    const { isBulkEditModalOpen, toggleBulkEditModal, bulkData, setBulkData } =
+        usePostsStore()
+    const [bulkUpdatePosts, { isLoading }] = useBulkUpdatePostsMutation()
+
+    const handleBulkEditPosts = async () => {
+        if (!bulkData.length) return
+        try {
+            const newBulkData = bulkData.map(({ _id, ...rest }) => ({
+                id: _id,
+                updateData: rest,
+            }))
+            await bulkUpdatePosts(newBulkData).unwrap()
+            toggleBulkEditModal(false)
+            setBulkData([])
+            handleSuccess('Edit Successful')
+        } catch (error) {
+            console.error('Failed to edit posts:', error)
+        }
+    }
+
+    const handleRoleChange = (PostsId: string, role: string) => {
+        setBulkData(
+            bulkData.map((Posts) =>
+                Posts._id === PostsId ? { ...Posts, role } : Posts
+            ) as IPosts[]
+        )
+    }
+
+    return (
+        <Dialog open={isBulkEditModalOpen} onOpenChange={toggleBulkEditModal}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Update</DialogTitle>
+                </DialogHeader>
+                {bulkData.length > 0 && (
+                    <p className="pt-4">
+                        You are about to update{' '}
+                        <span className="font-semibold">
+                            ({bulkData.length})
+                        </span>{' '}
+                        Posts
+                    </p>
+                )}
+                <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+                    <div className="flex flex-col gap-2">
+                        {bulkData.map((Posts, idx) => (
+                            <div
+                                key={(Posts._id as string) || idx}
+                                className="flex items-center justify-between"
+                            >
+                                <span>
+                                    {idx + 1}. {(Posts.name as string) || ''}
+                                </span>
+                                <div className="flex items-center gap-4 min-w-[180px]">
+                                    <Label htmlFor="edit-role">Role</Label>
+                                    <Select
+                                        onValueChange={(role) =>
+                                            handleRoleChange(
+                                                Posts._id as string,
+                                                role
+                                            )
+                                        }
+                                        defaultValue={
+                                            (Posts.role as string) || ''
+                                        }
+                                    >
+                                        <SelectTrigger className="bg-slate-50">
+                                            <SelectValue placeholder="Select a role" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-slate-50">
+                                            {postsSelectorArr?.map(
+                                                (role, index) => (
+                                                    <SelectItem
+                                                        key={role + index}
+                                                        value={role}
+                                                        className="cursor-pointer hover:bg-slate-200"
+                                                    >
+                                                        {role}
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => toggleBulkEditModal(false)}
+                        className="cursor-pointer border-slate-400 hover:border-slate-500"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={isLoading}
+                        variant="outline"
+                        onClick={handleBulkEditPosts}
+                        className="text-green-400 hover:text-green-500 cursor-pointer bg-green-100 hover:bg-green-200 border-1 border-green-300 hover:border-green-400"
+                    >
+                        Update Selected
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default BulkEditNextComponents
+
+```
+
+Now write a function it return the whole BulkEdit.tsx file in string.
+
+and remember the following 
+
+    1. some times json could looklike this one 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+```
+    2. here is mongoose schema model 
+    ```
+
+const mySchema = new Schema({
+  STRING: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  EMAIL: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  PASSWORD: {
+    type: String,
+    required: true,
+    select: false // Hides this field from query results by default for security
+  },
+  PASSCODE: {
+    type: String,
+    required: true,
+    select: false
+  },
+  SELECT: {
+    type: String,
+    required: true,
+    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
+  },
+  DYNAMICSELECT: {
+    type: Schema.Types.ObjectId,
+    ref: 'AnotherModel' // Example of a dynamic reference to another model
+  },
+  IMAGES: [{
+    type: String // Array of URLs to images
+  }],
+  IMAGE: {
+    type: String // URL to a single image
+  },
+  DESCRIPTION: {
+    type: String,
+    trim: true
+  },
+  INTNUMBER: {
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value'
+    }
+  },
+  FLOATNUMBER: {
+    type: Number
+  },
+  BOOLEAN: {
+    type: Boolean,
+    default: false
+  },
+  DATE: {
+    type: Date,
+    default: Date.now
+  },
+  TIME: {
+    type: String // Can be stored as a string in 'HH:MM:SS' format
+  },
+  DATERANGE: {
+    start: { type: Date },
+    end: { type: Date }
+  },
+  TIMERANGE: {
+    start: { type: String }, // 'HH:MM:SS'
+    end: { type: String }   // 'HH:MM:SS'
+  },
+  COLORPICKER: {
+    type: String,
+    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+  },
+  PHONE: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
+  URL: {
+    type: String,
+    trim: true
+  },
+  RICHTEXT: {
+    type: String
+  },
+  AUTOCOMPLETE: {
+    type: String
+  },
+  RADIOBUTTON: {
+    type: String,
+    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
+  },
+  CHECKBOX: {
+    type: Boolean,
+    default: false
+  },
+  MULTICHECKBOX: [{
+    type: String // An array of strings representing the selected options
+  }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
+});
+
+    ```
+    3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }
+    4. please generate the file in typescript

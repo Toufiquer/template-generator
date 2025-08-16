@@ -994,3 +994,4 @@ const mySchema = new Schema({
     ```
     3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }
     4. each key should include in search query on searchFilter
+    5. please generate the file in typescript

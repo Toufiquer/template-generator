@@ -1,0 +1,613 @@
+here is an example of Delete.tsx
+```
+import React from 'react'
+
+import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { IUsers_1_000___ } from '../api/v1/model'
+import { useUsers_1_000___Store } from '../store/Store'
+import { baseIUsers_1_000___ } from '../store/StoreConstants'
+import { useDeleteUsers_1_000___Mutation } from '../redux/rtk-Api'
+
+import { handleSuccess } from './utils'
+
+const DeleteNextComponents: React.FC = () => {
+    const {
+        toggleDeleteModal,
+        isDeleteModalOpen,
+        selectedUsers_1_000___,
+        setSelectedUsers_1_000___,
+    } = useUsers_1_000___Store()
+    const [deleteUsers_1_000___] = useDeleteUsers_1_000___Mutation()
+
+    const handleDeleteUsers_1_000___ = async () => {
+        if (selectedUsers_1_000___) {
+            try {
+                await deleteUsers_1_000___({
+                    id: selectedUsers_1_000___._id,
+                }).unwrap()
+                toggleDeleteModal(false)
+                handleSuccess('Delete Successful')
+            } catch (error) {
+                console.error('Failed to delete Users_1_000___:', error)
+            }
+        }
+    }
+
+    const handleCancel = () => {
+        toggleDeleteModal(false)
+        setSelectedUsers_1_000___({ ...baseIUsers_1_000___ } as IUsers_1_000___)
+    }
+
+    const { name = '' } = selectedUsers_1_000___ || {}
+
+    return (
+        <Dialog open={isDeleteModalOpen} onOpenChange={toggleDeleteModal}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Deletion</DialogTitle>
+                </DialogHeader>
+                {selectedUsers_1_000___ && (
+                    <div className="py-4">
+                        <p>
+                            You are about to delete Users_1_000___:{' '}
+                            <span className="font-semibold">
+                                {(name as string) || ''}
+                            </span>
+                        </p>
+                    </div>
+                )}
+                <DialogFooter>
+                    <Button
+                        className="cursor-pointer border-1 border-slate-400 hover:border-slate-500"
+                        variant="outline"
+                        onClick={handleCancel}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        className="text-rose-400 hover:text-rose-500 cursor-pointer bg-rose-100 hover:bg-rose-200 border-1 border-rose-300 hover:border-rose-400 "
+                        variant="outline"
+                        onClick={handleDeleteUsers_1_000___}
+                    >
+                        Delete
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default DeleteNextComponents
+
+```
+
+here is an example of a json file named inputJsonFile 
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT",
+    "books-list": "MULTISELECT",
+    "check-list": "MULTIDYNAMICSELECT",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+here is example of out put Delete.tsx 
+```
+import React from 'react'
+
+import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { IPosts } from '../api/v1/model'
+import { usePostsStore } from '../store/Store'
+import { baseIPosts } from '../store/StoreConstants'
+import { useDeletePostsMutation } from '../redux/rtk-Api'
+
+import { handleSuccess } from './utils'
+
+const DeleteNextComponents: React.FC = () => {
+    const {
+        toggleDeleteModal,
+        isDeleteModalOpen,
+        selectedPosts,
+        setSelectedPosts,
+    } = usePostsStore()
+    const [deletePosts] = useDeletePostsMutation()
+
+    const handleDeletePosts = async () => {
+        if (selectedPosts) {
+            try {
+                await deletePosts({
+                    id: selectedPosts._id,
+                }).unwrap()
+                toggleDeleteModal(false)
+                handleSuccess('Delete Successful')
+            } catch (error) {
+                console.error('Failed to delete Posts:', error)
+            }
+        }
+    }
+
+    const handleCancel = () => {
+        toggleDeleteModal(false)
+        setSelectedPosts({ ...baseIPosts } as IPosts)
+    }
+
+    const { name = '' } = selectedPosts || {}
+
+    return (
+        <Dialog open={isDeleteModalOpen} onOpenChange={toggleDeleteModal}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Confirm Deletion</DialogTitle>
+                </DialogHeader>
+                {selectedPosts && (
+                    <div className="py-4">
+                        <p>
+                            You are about to delete Posts:{' '}
+                            <span className="font-semibold">
+                                {(name as string) || ''}
+                            </span>
+                        </p>
+                    </div>
+                )}
+                <DialogFooter>
+                    <Button
+                        className="cursor-pointer border-1 border-slate-400 hover:border-slate-500"
+                        variant="outline"
+                        onClick={handleCancel}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        className="text-rose-400 hover:text-rose-500 cursor-pointer bg-rose-100 hover:bg-rose-200 border-1 border-rose-300 hover:border-rose-400 "
+                        variant="outline"
+                        onClick={handleDeletePosts}
+                    >
+                        Delete
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default DeleteNextComponents
+
+```
+
+Now write a function it return the whole Delete.tsx file in string.
+
+and remember the following 
+
+    1. some times json could looklike this one 
+```
+{
+    "uid": "000",
+    "templateName": "Basic Template",
+    "schema": {
+        "title1": "STRING",
+        "title2": "STRING",
+        "manager-md1": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        },
+        "manager-md2": {
+            "title1": "STRING",
+            "title2": "STRING",
+            "chief-executive-officer-ceo1": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            },
+            "chief-executive-officer-ceo2": {
+                "title1": "STRING",
+                "title2": "STRING",
+                "executive-officer-eo1": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                },
+                "executive-officer-eo2": {
+                    "title1": "STRING",
+                    "title2": "STRING",
+                    "worker1": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    },
+                    "worker2": {
+                        "title1": "STRING",
+                        "title2": "STRING",
+                        "loworker1": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        },
+                        "loworker2": {
+                            "title1": "STRING",
+                            "title2": "STRING"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "namingConvention": {
+        "Users_1_000___": "Posts",
+        "users_2_000___": "posts",
+        "User_3_000___": "Post",
+        "user_4_000___": "post",
+        "ISelect_6_000___": "ISelect",
+        "select_5_000___": "select"
+    }
+}
+```
+    2. here is mongoose schema model 
+    ```
+
+const mySchema = new Schema({
+  STRING: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  EMAIL: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  PASSWORD: {
+    type: String,
+    required: true,
+    select: false // Hides this field from query results by default for security
+  },
+  PASSCODE: {
+    type: String,
+    required: true,
+    select: false
+  },
+  SELECT: {
+    type: String,
+    required: true,
+    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
+  },
+  DYNAMICSELECT: {
+    type: Schema.Types.ObjectId,
+    ref: 'AnotherModel' // Example of a dynamic reference to another model
+  },
+  IMAGES: [{
+    type: String // Array of URLs to images
+  }],
+  IMAGE: {
+    type: String // URL to a single image
+  },
+  DESCRIPTION: {
+    type: String,
+    trim: true
+  },
+  INTNUMBER: {
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value'
+    }
+  },
+  FLOATNUMBER: {
+    type: Number
+  },
+  BOOLEAN: {
+    type: Boolean,
+    default: false
+  },
+  DATE: {
+    type: Date,
+    default: Date.now
+  },
+  TIME: {
+    type: String // Can be stored as a string in 'HH:MM:SS' format
+  },
+  DATERANGE: {
+    start: { type: Date },
+    end: { type: Date }
+  },
+  TIMERANGE: {
+    start: { type: String }, // 'HH:MM:SS'
+    end: { type: String }   // 'HH:MM:SS'
+  },
+  COLORPICKER: {
+    type: String,
+    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+  },
+  PHONE: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
+  URL: {
+    type: String,
+    trim: true
+  },
+  RICHTEXT: {
+    type: String
+  },
+  AUTOCOMPLETE: {
+    type: String
+  },
+  RADIOBUTTON: {
+    type: String,
+    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
+  },
+  CHECKBOX: {
+    type: Boolean,
+    default: false
+  },
+  MULTICHECKBOX: [{
+    type: String // An array of strings representing the selected options
+  }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
+});
+
+    ```
+    3. json key is changable or dynamic. for example {"name":"STRING", "book-name":"STRING", "note":"STRING" }
+    4. please generate the file in typescript
