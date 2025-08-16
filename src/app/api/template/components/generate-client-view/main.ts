@@ -2,7 +2,7 @@ import writeInFile from '../create-and-write'
 import { generateIDHomeButton } from './generate-[id]-home-button'
 import { generateDetailPageFile } from './generate-[id]-page'
 import { generateCustomButton } from './generate-custom-button'
-import { generateMainPage } from './generate-main-page'
+import { generateClientListPageFile } from './generate-main-page'
 
 const generateClientView = async (data: string) => {
     //  !  create api
@@ -15,14 +15,14 @@ const generateClientView = async (data: string) => {
         folderName = namingConvention.users_2_000___
     }
 
-    // const mainPageTemplate = generateMainPage(data)
+    const mainPageTemplate = generateClientListPageFile(data)
     const custombuttonTemplate = generateCustomButton(data)
     const idHomeButtonTemplate = generateIDHomeButton(data)
     // const detailPageTemplate = generateDetailPageFile(data)
-    // writeInFile(
-    //     mainPageTemplate,
-    //     `src/app/generate/${folderName}/client-view/page.tsx`
-    // )
+    writeInFile(
+        mainPageTemplate,
+        `src/app/generate/${folderName}/client-view/page.tsx`
+    )
     writeInFile(
         custombuttonTemplate,
         `src/app/generate/${folderName}/client-view/CustomButton.tsx`

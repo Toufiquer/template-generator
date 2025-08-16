@@ -1,21 +1,25 @@
+/**
+ * Defines the structure for the schema object.
+ */
 interface Schema {
     [key: string]: string | Schema
 }
 
 /**
- * Defines the structure for the naming conventions provided in the JSON.
+ * Defines the structure for the naming convention object.
  */
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
     User_3_000___: string
     user_4_000___: string
+    [key: string]: string // Allows for additional keys
 }
 
 /**
- * Defines the overall structure of the input JSON configuration.
+ * Defines the structure for the main input JSON file.
  */
-interface InputConfig {
+interface InputJsonFile {
     uid: string
     templateName: string
     schema: Schema
@@ -23,73 +27,85 @@ interface InputConfig {
 }
 
 /**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
+ * Generates the content for a client-side list page (page.tsx).
  *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
+ * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
+ * @returns {string} The complete page.tsx file content as a string.
  */
-export const generateMainPage = (inputJsonFile: string): string => {
+export const generateClientListPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
     // 1. Extract the required names for API paths and data keys.
-    const pluralName = namingConvention.users_2_000___ // e.g., "posts"
-    const singularName = namingConvention.user_4_000___ // e.g., "post"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
 
     // 2. Intelligently find the display key.
-    // It looks for the first top-level 'STRING' field in the schema to use as the item's name/title.
-    // If none is found, it defaults to 'name'.
+    // It looks for a top-level field named 'title' or 'name', falling back to the first 'STRING' field.
+    const schemaKeys = Object.keys(schema)
     const displayKey =
-        Object.keys(schema).find((key) => schema[key] === 'STRING') || 'name'
+        schemaKeys.find((key) => key.toLowerCase() === 'title') ||
+        schemaKeys.find((key) => key.toLowerCase() === 'name') ||
+        schemaKeys.find((key) => schema[key] === 'STRING') ||
+        'name' // Default fallback
 
     // 3. Construct the file content using a template literal.
-    return `import CustomLInk from './CustomButton'
+    return `'use client'
 
-const Page = async () => {
-    const fetchData = async () => {
-        const token = process.env.NEXT_PUBLIC_Token
-        if (!token) {
-            console.error(
-                'Authentication token not found. Unable to fetch data.'
-            )
-            return
+import { useEffect, useState } from 'react'
+
+import CustomLInk from './CustomButton'
+
+// Define a type for the data items for better type safety
+type DataItem = {
+    ${displayKey}: string;
+    _id: string;
+    [key: string]: any; // Allow other properties
+};
+
+const Page = () => {
+    const [data, setData] = useState<DataItem[]>([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const token = process.env.NEXT_PUBLIC_Token
+            if (!token) {
+                console.error(
+                    'Authentication token not found. Unable to fetch data.'
+                )
+                return
+            }
+            const url =
+                'http://localhost:3000/dashboard/${singularLowerCase}/all/api/v1?page=1&limit=4'
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: \`Bearer \${token}\`,
+                    },
+                })
+
+                const responseData = await response.json()
+                // Use optional chaining for safer access
+                setData(responseData?.data?.${pluralLowerCase} || [])
+            } catch (error) {
+                console.error('Failed to fetch data:', error)
+                setData([]) // Ensure data is an array on error
+            }
         }
+        fetchData()
+    }, [])
 
-        const url =
-            'http://localhost:3000/dashboard/${singularName}/all/api/v1?page=1&limit=4'
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    Authorization: \`Bearer \${token}\`,
-                },
-            })
-
-            const responseData = await response.json()
-            return responseData.data?.${pluralName}
-        } catch (error) {
-            console.error('Failed to fetch data:', error)
-            return []
-        }
-    }
-    const data: { ${displayKey}: string; _id: string }[] = await fetchData()
     return (
         <main className="w-full flex flex-col gap-2 p-1 md:p-4">
-            {data &&
-                data.length > 0 &&
-                data.map((i: { ${displayKey}: string; _id: string }, idx: number) => (
-                    <div key={idx + i?.${displayKey}}>
-                        <CustomLInk
-                            name={i.${displayKey}}
-                            url={\`/dashboard/${singularName}/ssr-view/details/\${i._id}\`}
-                        />
-                    </div>
-                ))}
+            {data?.map((item: DataItem, idx: number) => (
+                <div key={idx + item?._id}>
+                    <CustomLInk
+                        name={item.${displayKey}}
+                        url={\`/dashboard/${singularLowerCase}/client-view/details/\${item._id}\`}
+                    />
+                </div>
+            ))}
         </main>
     )
 }

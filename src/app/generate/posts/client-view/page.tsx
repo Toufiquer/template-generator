@@ -4,8 +4,16 @@ import { useEffect, useState } from 'react'
 
 import CustomLInk from './CustomButton'
 
+// Define a type for the data items for better type safety
+type DataItem = {
+    title: string;
+    _id: string;
+    [key: string]: any; // Allow other properties
+};
+
 const Page = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<DataItem[]>([])
+
     useEffect(() => {
         const fetchData = async () => {
             const token = process.env.NEXT_PUBLIC_Token
@@ -16,7 +24,7 @@ const Page = () => {
                 return
             }
             const url =
-                'https://b-varse.vercel.app/dashboard/template-demo/all/api/v1?page=1&limit=4'
+                'http://localhost:3000/dashboard/post/all/api/v1?page=1&limit=4'
 
             try {
                 const response = await fetch(url, {
@@ -27,20 +35,23 @@ const Page = () => {
                 })
 
                 const responseData = await response.json()
-                setData(responseData?.data?.users_2_000___)
+                // Use optional chaining for safer access
+                setData(responseData?.data?.posts || [])
             } catch (error) {
                 console.error('Failed to fetch data:', error)
+                setData([]) // Ensure data is an array on error
             }
         }
         fetchData()
     }, [])
+
     return (
         <main className="w-full flex flex-col gap-2 p-1 md:p-4">
-            {data?.map((i: { name: string; _id: string }, idx: number) => (
-                <div key={idx + i?.name}>
+            {data?.map((item: DataItem, idx: number) => (
+                <div key={idx + item?._id}>
                     <CustomLInk
-                        name={i.name}
-                        url={`/dashboard/template-demo/client-view/details/${i._id}`}
+                        name={item.title}
+                        url={`/dashboard/post/client-view/details/${item._id}`}
                     />
                 </div>
             ))}
