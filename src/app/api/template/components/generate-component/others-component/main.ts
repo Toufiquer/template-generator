@@ -10,6 +10,7 @@ import { generateDynamicDataSelectComponentFile } from './generate-dynamic-data-
 import { generateEditComponentFile } from './generate-edit'
 import { generateImagesSelectComponentFile } from './generate-images-select'
 import { generateImageDialogComponentFile } from './generate-imge-dialog'
+import { generateMultiSelectComponentFile } from './generate-multi-select'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -44,6 +45,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const imageDialogComponentContent = generateImageDialogComponentFile(data)
 
     const imagesSelectComponentContent = generateImagesSelectComponentFile(data)
+
+    const multiSelectComponentContent = generateMultiSelectComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -87,6 +90,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         imagesSelectComponentContent,
         `src/app/generate/${folderName}/all/components/ImagesSelect.tsx`
+    )
+    writeInFile(
+        multiSelectComponentContent,
+        `src/app/generate/${folderName}/all/components/MultiSelect.tsx`
     )
 }
 export default generateAllOtherComponentsMain
