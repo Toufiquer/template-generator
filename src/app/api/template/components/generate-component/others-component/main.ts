@@ -11,6 +11,7 @@ import { generateEditComponentFile } from './generate-edit'
 import { generateImagesSelectComponentFile } from './generate-images-select'
 import { generateImageDialogComponentFile } from './generate-imge-dialog'
 import { generateMultiSelectComponentFile } from './generate-multi-select'
+import { generatePaginationComponentFile } from './generate-pagination'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -47,6 +48,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const imagesSelectComponentContent = generateImagesSelectComponentFile(data)
 
     const multiSelectComponentContent = generateMultiSelectComponentFile(data)
+
+    const paginationComponentContent = generatePaginationComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -94,6 +97,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         multiSelectComponentContent,
         `src/app/generate/${folderName}/all/components/MultiSelect.tsx`
+    )
+    writeInFile(
+        paginationComponentContent,
+        `src/app/generate/${folderName}/all/components/Pagination.tsx`
     )
 }
 export default generateAllOtherComponentsMain
