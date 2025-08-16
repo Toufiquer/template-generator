@@ -6,6 +6,7 @@ import generateStore from './components/generate-sotre/main'
 import generateSSRView from './components/generate-ssr-view/main'
 import generateMainPage from './components/generate-main-page/main'
 import generateClientView from './components/generate-client-view/main'
+import generateAllOtherComponents from './components/generate-component/main'
 
 export async function POST(request: NextRequest) {
     try {
@@ -19,6 +20,7 @@ export async function POST(request: NextRequest) {
         generateSSRView(data)
         generateMainPage(data)
         generateClientView(data)
+        generateAllOtherComponents(data)
 
         return NextResponse.json({ message: 'file found' }, { status: 200 })
     } catch (e) {
