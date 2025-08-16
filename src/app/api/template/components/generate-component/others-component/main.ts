@@ -14,6 +14,7 @@ import { generateImageDialogComponentFile } from './generate-imge-dialog'
 import { generateMultiSelectComponentFile } from './generate-multi-select'
 import { generatePaginationComponentFile } from './generate-pagination'
 import { generateSearchBoxComponentFile } from './generate-search-box'
+import { generateTypeUtils } from './generate-type-utils'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -56,6 +57,7 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const searchBoxComponentContent = generateSearchBoxComponentFile(data)
 
     const generateTooManyRequestContent = generateTooManyRequestComponent(data)
+    const generateTypeUtilsContent = generateTypeUtils(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -115,6 +117,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         generateTooManyRequestContent,
         `src/app/generate/${folderName}/all/components/TooManyRequest.tsx`
+    )
+    writeInFile(
+        generateTypeUtilsContent,
+        `src/app/generate/${folderName}/all/components/TypeUtils.tsx`
     )
 }
 export default generateAllOtherComponentsMain
