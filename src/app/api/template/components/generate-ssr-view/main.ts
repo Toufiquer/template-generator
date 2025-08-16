@@ -1,4 +1,5 @@
 import writeInFile from '../create-and-write'
+import { generateCustomButton } from './generate-custom-button'
 import { generateMainPage } from './generate-main-page'
 
 const generateSSRView = async (data: string) => {
@@ -13,9 +14,14 @@ const generateSSRView = async (data: string) => {
     }
 
     const mainPageTemplate = generateMainPage(data)
+    const custombuttonTemplate = generateCustomButton(data)
     writeInFile(
         mainPageTemplate,
         `src/app/generate/${folderName}/ssr-view/page.tsx`
+    )
+    writeInFile(
+        custombuttonTemplate,
+        `src/app/generate/${folderName}/ssr-view/CustomButton.tsx`
     )
 }
 export default generateSSRView
