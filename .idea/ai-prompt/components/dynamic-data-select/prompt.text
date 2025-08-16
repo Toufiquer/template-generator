@@ -1,5 +1,57 @@
-here is an example of model.ts
+here is an example of DynamicDataSelect.tsx
 ```
+'use client'
+
+import React, { useState, useEffect } from 'react'
+
+import MultiSelect from './MultiSelect'
+
+interface DataSelectProps {
+    newItemTags: string[]
+    setNewItemTags: (payload: string[]) => void
+    label?: string
+    placeholder?: string
+}
+
+export default function DynamicDataSelect({
+    newItemTags,
+    setNewItemTags,
+    label,
+}: DataSelectProps) {
+    const [currentSelection, setCurrentSelection] =
+        useState<string[]>(newItemTags)
+    useEffect(() => {
+        if (JSON.stringify(newItemTags) !== JSON.stringify(currentSelection)) {
+            setCurrentSelection(newItemTags)
+        }
+    }, [newItemTags, currentSelection])
+
+    const handleSelectionChange = (newSelectionFromMultiSelect: string[]) => {
+        if (
+            JSON.stringify(newSelectionFromMultiSelect) !==
+            JSON.stringify(currentSelection)
+        ) {
+            setCurrentSelection(newSelectionFromMultiSelect)
+            setNewItemTags(newSelectionFromMultiSelect)
+        } else {
+            if (newSelectionFromMultiSelect !== currentSelection) {
+                setCurrentSelection(newSelectionFromMultiSelect)
+            }
+        }
+    }
+
+    return (
+        <div className="container mx-auto">
+            <form id="add-form" className="space-y-4">
+                <MultiSelect
+                    label={label}
+                    defaultSelected={currentSelection}
+                    onSelectionChange={handleSelectionChange}
+                />
+            </form>
+        </div>
+    )
+}
 
 ```
 
@@ -47,12 +99,64 @@ here is an example of a json file named inputJsonFile
 }
 ```
 
-here is example of out put model.ts 
+here is example of out put DynamicDataSelect.tsx 
 ```
+'use client'
+
+import { useState, useEffect } from 'react'
+
+import MultiSelect from './MultiSelect'
+
+interface DataSelectProps {
+    newItemTags: string[]
+    setNewItemTags: (payload: string[]) => void
+    label?: string
+    placeholder?: string
+}
+
+export default function DynamicDataSelect({
+    newItemTags,
+    setNewItemTags,
+    label,
+}: DataSelectProps) {
+    const [currentSelection, setCurrentSelection] =
+        useState<string[]>(newItemTags)
+    useEffect(() => {
+        if (JSON.stringify(newItemTags) !== JSON.stringify(currentSelection)) {
+            setCurrentSelection(newItemTags)
+        }
+    }, [newItemTags, currentSelection])
+
+    const handleSelectionChange = (newSelectionFromMultiSelect: string[]) => {
+        if (
+            JSON.stringify(newSelectionFromMultiSelect) !==
+            JSON.stringify(currentSelection)
+        ) {
+            setCurrentSelection(newSelectionFromMultiSelect)
+            setNewItemTags(newSelectionFromMultiSelect)
+        } else {
+            if (newSelectionFromMultiSelect !== currentSelection) {
+                setCurrentSelection(newSelectionFromMultiSelect)
+            }
+        }
+    }
+
+    return (
+        <div className="container mx-auto">
+            <form id="add-form" className="space-y-4">
+                <MultiSelect
+                    label={label}
+                    defaultSelected={currentSelection}
+                    onSelectionChange={handleSelectionChange}
+                />
+            </form>
+        </div>
+    )
+}
 
 ```
 
-Now write a function it return the whole model.ts file in string.
+Now write a function it return the whole DynamicDataSelect.tsx file in string.
 
 and remember the following 
 

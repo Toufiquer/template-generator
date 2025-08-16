@@ -6,6 +6,7 @@ import { generateBulkEditComponentFile } from './generate-bulk-edit'
 import { generateBulkUpdateComponentFile } from './generate-bulk-update'
 import { generateDataSelectComponentFile } from './generate-data-select'
 import { generateDeleteComponentFile } from './generate-delete'
+import { generateDynamicDataSelectComponentFile } from './generate-dynamic-data-select'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -31,6 +32,9 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const dataSelectComponentContent = generateDataSelectComponentFile(data)
 
     const deleteComponentContent = generateDeleteComponentFile(data)
+
+    const dynamicDataSelectComponentContent =
+        generateDynamicDataSelectComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -58,6 +62,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         deleteComponentContent,
         `src/app/generate/${folderName}/all/components/Delete.tsx`
+    )
+    writeInFile(
+        dynamicDataSelectComponentContent,
+        `src/app/generate/${folderName}/all/components/DynamicDataSelect.tsx`
     )
 }
 export default generateAllOtherComponentsMain
