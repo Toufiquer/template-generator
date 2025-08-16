@@ -1,3 +1,4 @@
+import { generateTooManyRequestComponent } from './../../../../../../../.idea/ai-prompt/components/too-many-request/fixed-return'
 import writeInFile from '../../create-and-write'
 import { generateAddComponentFile } from './generate-add'
 import { generateBulkDeleteComponentFile } from './generate-bulk-delete'
@@ -53,6 +54,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const paginationComponentContent = generatePaginationComponentFile(data)
 
     const searchBoxComponentContent = generateSearchBoxComponentFile(data)
+
+    const generateTooManyRequestContent = generateTooManyRequestComponent(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -108,6 +111,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         searchBoxComponentContent,
         `src/app/generate/${folderName}/all/components/SearchBox.tsx`
+    )
+    writeInFile(
+        generateTooManyRequestContent,
+        `src/app/generate/${folderName}/all/components/TooManyRequest.tsx`
     )
 }
 export default generateAllOtherComponentsMain
