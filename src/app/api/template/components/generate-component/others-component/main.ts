@@ -1,6 +1,7 @@
 import writeInFile from '../../create-and-write'
 import { generateAddComponentFile } from './generate-add'
 import { generateBulkDeleteComponentFile } from './generate-bulk-delete'
+import { generateBulkDynamicUpdateComponentFile } from './generate-bulk-dynamic-update'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -14,8 +15,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     }
 
     const addComponentTemplate = generateAddComponentFile(data)
-
     const bulkDeleteComponentContent = generateBulkDeleteComponentFile(data)
+    const bulkDynamicUpdateComponentContent =
+        generateBulkDynamicUpdateComponentFile(data)
+
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -23,6 +26,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         bulkDeleteComponentContent,
         `src/app/generate/${folderName}/all/components/BulkDelete.tsx`
+    )
+    writeInFile(
+        bulkDynamicUpdateComponentContent,
+        `src/app/generate/${folderName}/all/components/BulkDynamicUpdate.tsx`
     )
 }
 export default generateAllOtherComponentsMain
