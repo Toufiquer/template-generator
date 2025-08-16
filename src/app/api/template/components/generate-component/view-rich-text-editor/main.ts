@@ -1,5 +1,6 @@
 import writeInFile from '../../create-and-write'
-import { generateViewRichTextEditorClientComponent } from './generate-v-r-t-e-component'
+import { generateViewRichTextEditorClientComponent } from './generate-v-r-t-e-c-component'
+import { generateViewRichTextEditorServerComponent } from './generate-v-r-t-e-s-component'
 
 const generateViewRichTextEditorMain = async (data: string) => {
     //  !  create api
@@ -12,12 +13,18 @@ const generateViewRichTextEditorMain = async (data: string) => {
         folderName = namingConvention.users_2_000___
     }
 
-    const richTextEditorMenuBarTemplate =
+    const richTextEditorClientTemplate =
         generateViewRichTextEditorClientComponent(data)
+    const richTextEditorServerTemplate =
+        generateViewRichTextEditorServerComponent(data)
 
     writeInFile(
-        richTextEditorMenuBarTemplate,
+        richTextEditorClientTemplate,
         `src/app/generate/${folderName}/all/components/view-rich-text/ClientComponent.tsx`
+    )
+    writeInFile(
+        richTextEditorServerTemplate,
+        `src/app/generate/${folderName}/all/components/view-rich-text/ServerComponent.tsx`
     )
 }
 export default generateViewRichTextEditorMain
