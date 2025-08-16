@@ -5,6 +5,7 @@ import generateRtk from './components/generate-redux-toolkit/main'
 import generateStore from './components/generate-sotre/main'
 import generateSSRView from './components/generate-ssr-view/main'
 import generateMainPage from './components/generate-main-page/main'
+import generateClientView from './components/generate-client-view/main'
 
 export async function POST(request: NextRequest) {
     try {
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
         generateStore(data)
         generateSSRView(data)
         generateMainPage(data)
+        generateClientView(data)
 
         return NextResponse.json({ message: 'file found' }, { status: 200 })
     } catch (e) {
