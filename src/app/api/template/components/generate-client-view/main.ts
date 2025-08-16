@@ -16,17 +16,17 @@ const generateClientView = async (data: string) => {
     }
 
     // const mainPageTemplate = generateMainPage(data)
-    // const custombuttonTemplate = generateCustomButton(data)
+    const custombuttonTemplate = generateCustomButton(data)
     const idHomeButtonTemplate = generateIDHomeButton(data)
     // const detailPageTemplate = generateDetailPageFile(data)
     // writeInFile(
     //     mainPageTemplate,
     //     `src/app/generate/${folderName}/client-view/page.tsx`
     // )
-    // writeInFile(
-    //     custombuttonTemplate,
-    //     `src/app/generate/${folderName}/client-view/CustomButton.tsx`
-    // )
+    writeInFile(
+        custombuttonTemplate,
+        `src/app/generate/${folderName}/client-view/CustomButton.tsx`
+    )
     writeInFile(
         idHomeButtonTemplate,
         `src/app/generate/${folderName}/client-view/details/[id]/HomeButton.tsx`
