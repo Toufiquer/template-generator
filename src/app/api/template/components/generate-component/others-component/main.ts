@@ -8,6 +8,7 @@ import { generateDataSelectComponentFile } from './generate-data-select'
 import { generateDeleteComponentFile } from './generate-delete'
 import { generateDynamicDataSelectComponentFile } from './generate-dynamic-data-select'
 import { generateEditComponentFile } from './generate-edit'
+import { generateImageDialogComponentFile } from './generate-imge-dialog'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -38,6 +39,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
         generateDynamicDataSelectComponentFile(data)
 
     const editComponentContent = generateEditComponentFile(data)
+
+    const imageDialogComponentContent = generateImageDialogComponentFile(data)
 
     writeInFile(
         addComponentTemplate,
@@ -74,6 +77,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         editComponentContent,
         `src/app/generate/${folderName}/all/components/Edit.tsx`
+    )
+    writeInFile(
+        imageDialogComponentContent,
+        `src/app/generate/${folderName}/all/components/ImageDialog.tsx`
     )
 }
 export default generateAllOtherComponentsMain
