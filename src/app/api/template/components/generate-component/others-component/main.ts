@@ -8,6 +8,7 @@ import { generateDataSelectComponentFile } from './generate-data-select'
 import { generateDeleteComponentFile } from './generate-delete'
 import { generateDynamicDataSelectComponentFile } from './generate-dynamic-data-select'
 import { generateEditComponentFile } from './generate-edit'
+import { generateImagesSelectComponentFile } from './generate-images-select'
 import { generateImageDialogComponentFile } from './generate-imge-dialog'
 
 const generateAllOtherComponentsMain = async (data: string) => {
@@ -42,6 +43,7 @@ const generateAllOtherComponentsMain = async (data: string) => {
 
     const imageDialogComponentContent = generateImageDialogComponentFile(data)
 
+    const imagesSelectComponentContent = generateImagesSelectComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -81,6 +83,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         imageDialogComponentContent,
         `src/app/generate/${folderName}/all/components/ImageDialog.tsx`
+    )
+    writeInFile(
+        imagesSelectComponentContent,
+        `src/app/generate/${folderName}/all/components/ImagesSelect.tsx`
     )
 }
 export default generateAllOtherComponentsMain
