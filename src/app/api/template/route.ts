@@ -7,13 +7,23 @@ import generateSSRView from './components/generate-ssr-view/main'
 import generateMainPage from './components/generate-main-page/main'
 import generateClientView from './components/generate-client-view/main'
 import generateAllOtherComponents from './components/generate-component/main'
+import writeInFile from './components/create-and-write'
 
 export async function POST(request: NextRequest) {
     try {
         // //  !  create api
         // const { data } = await request.json()
         // console.log('Data : ', data)
+        let folderName = 'example'
         const { data } = await request.json()
+        const { namingConvention } = JSON.parse(data) || {}
+        if (namingConvention.users_2_000___) {
+            folderName = namingConvention.users_2_000___
+        }
+        writeInFile(
+            data,
+            `src/app/generate/${folderName}/slice-schema/slice-schema.json`
+        )
         generateApi(data)
         generateRtk(data)
         generateStore(data)
