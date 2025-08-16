@@ -15,6 +15,7 @@ import { generateMultiSelectComponentFile } from './generate-multi-select'
 import { generatePaginationComponentFile } from './generate-pagination'
 import { generateSearchBoxComponentFile } from './generate-search-box'
 import { generateTypeUtils } from './generate-type-utils'
+import { generateUtils } from './generate-utils'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -58,6 +59,7 @@ const generateAllOtherComponentsMain = async (data: string) => {
 
     const generateTooManyRequestContent = generateTooManyRequestComponent(data)
     const generateTypeUtilsContent = generateTypeUtils(data)
+    const generateUtilsCentent = generateUtils(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -121,6 +123,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         generateTypeUtilsContent,
         `src/app/generate/${folderName}/all/components/TypeUtils.tsx`
+    )
+    writeInFile(
+        generateUtilsCentent,
+        `src/app/generate/${folderName}/all/components/utils.tsx`
     )
 }
 export default generateAllOtherComponentsMain
