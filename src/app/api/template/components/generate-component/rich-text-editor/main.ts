@@ -1,5 +1,6 @@
 import writeInFile from '../../create-and-write'
 import { generateRichTextEditorIndex } from './generate-rich-text-editor-index'
+import { generateRichTextEditorMenuBar } from './generate-rich-text-editor-menu-bar'
 
 const generateRichTextEditorMain = async (data: string) => {
     //  !  create api
@@ -13,9 +14,14 @@ const generateRichTextEditorMain = async (data: string) => {
     }
 
     const richTextEditorIndexTemplate = generateRichTextEditorIndex(data)
+    const richTextEditorMenuBarTemplate = generateRichTextEditorMenuBar(data)
     writeInFile(
         richTextEditorIndexTemplate,
         `src/app/generate/${folderName}/all/components/rich-text-editor/index.tsx`
+    )
+    writeInFile(
+        richTextEditorMenuBarTemplate,
+        `src/app/generate/${folderName}/all/components/rich-text-editor/menu-bar.tsx`
     )
 }
 export default generateRichTextEditorMain
