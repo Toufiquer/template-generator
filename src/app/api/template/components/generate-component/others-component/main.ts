@@ -16,6 +16,7 @@ import { generatePaginationComponentFile } from './generate-pagination'
 import { generateSearchBoxComponentFile } from './generate-search-box'
 import { generateTypeUtils } from './generate-type-utils'
 import { generateUtils } from './generate-utils'
+import { generateViewComponentFile } from './generate-view'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -60,6 +61,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const generateTooManyRequestContent = generateTooManyRequestComponent(data)
     const generateTypeUtilsContent = generateTypeUtils(data)
     const generateUtilsCentent = generateUtils(data)
+
+    const viewComponentContent = generateViewComponentFile(data)
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -127,6 +130,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         generateUtilsCentent,
         `src/app/generate/${folderName}/all/components/utils.tsx`
+    )
+    writeInFile(
+        viewComponentContent,
+        `src/app/generate/${folderName}/all/components/View.tsx`
     )
 }
 export default generateAllOtherComponentsMain
