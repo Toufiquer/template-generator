@@ -1,186 +1,251 @@
-/**
- * A type definition for the schema object, allowing for infinitely nested structures.
- */
-type SchemaObject = {
-    [key: string]: string | SchemaObject
+interface Schema {
+    [key: string]: string | Schema
 }
 
 /**
- * A type definition for the main JSON configuration object.
+ * Defines the structure for the naming conventions provided in the JSON.
+ */
+interface NamingConvention {
+    Users_1_000___: string
+    users_2_000___: string
+    User_3_000___: string
+    user_4_000___: string
+}
+
+/**
+ * Defines the overall structure of the input JSON configuration.
  */
 interface InputConfig {
-    schema: SchemaObject
-    namingConvention: {
-        Users_1_000___: string
-        User_3_000___: string
-        user_4_000___: string
-    }
-}
-
-// Maps JSON data types to their corresponding Mongoose schema definitions.
-const mongooseTypeMap: Record<string, any> = {
-    STRING: '{ type: String, required: true, trim: true }',
-    EMAIL: `{
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
-        match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\\.\w{2,3})+$/, 'Please fill a valid email address']
-    }`,
-    PASSWORD: '{ type: String, required: true, select: false }',
-    PASSCODE: '{ type: String, required: true, select: false }',
-    SELECT: '{ type: String, required: true }',
-    DYNAMICSELECT: "{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }", // Example reference
-    IMAGES: '[{ type: String }]',
-    IMAGE: '{ type: String }',
-    DESCRIPTION: '{ type: String, trim: true }',
-    INTNUMBER: `{
-        type: Number,
-        validate: {
-            validator: Number.isInteger,
-            message: '{VALUE} is not an integer value'
-        }
-    }`,
-    FLOATNUMBER: '{ type: Number }',
-    BOOLEAN: '{ type: Boolean, default: false }',
-    DATE: '{ type: Date, default: Date.now }',
-    TIME: '{ type: String }',
-    DATERANGE: '{ start: { type: Date }, end: { type: Date } }',
-    TIMERANGE: '{ start: { type: String }, end: { type: String } }',
-    COLORPICKER: `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`,
-    PHONE: '{ type: String }', // Simplified for generator
-    URL: '{ type: String, trim: true }',
-    RICHTEXT: '{ type: String }',
-    AUTOCOMPLETE: '{ type: String }',
-    RADIOBUTTON: '{ type: String }',
-    CHECKBOX: '{ type: Boolean, default: false }',
-    MULTICHECKBOX: '[{ type: String }]',
-    MULTISELECT: '[{ type: String }]',
-    MULTIDYNAMICSELECT:
-        "[{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }]", // Example reference
-}
-
-// Maps JSON data types to their TypeScript interface equivalents.
-const typescriptTypeMap: Record<string, string> = {
-    STRING: 'string',
-    EMAIL: 'string',
-    PASSWORD: 'string',
-    PASSCODE: 'string',
-    SELECT: 'string',
-    DYNAMICSELECT: 'any', // Or a more specific ObjectId type
-    IMAGES: 'string[]',
-    IMAGE: 'string',
-    DESCRIPTION: 'string',
-    INTNUMBER: 'number',
-    FLOATNUMBER: 'number',
-    BOOLEAN: 'boolean',
-    DATE: 'Date',
-    TIME: 'string',
-    DATERANGE: '{ start: Date; end: Date; }',
-    TIMERANGE: '{ start: string; end: string; }',
-    COLORPICKER: 'string',
-    PHONE: 'string',
-    URL: 'string',
-    RICHTEXT: 'string',
-    AUTOCOMPLETE: 'string',
-    RADIOBUTTON: 'string',
-    CHECKBOX: 'boolean',
-    MULTICHECKBOX: 'string[]',
-    MULTISELECT: 'string[]',
-    MULTIDYNAMICSELECT: 'any[]',
+    uid: string
+    templateName: string
+    schema: Schema
+    namingConvention: NamingConvention
 }
 
 /**
- * Recursively generates the Mongoose schema definition from a schema object.
- * @param {SchemaObject} schema - The schema object to process.
- * @param {number} indentLevel - The current level of indentation for formatting.
- * @returns {string} A string representing the Mongoose schema definition.
- */
-const generateMongooseSchema = (
-    schema: SchemaObject,
-    indentLevel = 1
-): string => {
-    const indent = '    '.repeat(indentLevel)
-    const entries = Object.entries(schema).map(([key, value]) => {
-        const quotedKey = key.includes('-') ? `'${key}'` : key
-        if (typeof value === 'string') {
-            const typeDefinition = mongooseTypeMap[value] || '{ type: String }'
-            return `${indent}${quotedKey}: ${typeDefinition}`
-        } else {
-            const nestedSchema = generateMongooseSchema(value, indentLevel + 1)
-            return `${indent}${quotedKey}: {\n${nestedSchema}\n${indent}}`
-        }
-    })
-    return entries.join(',\n')
-}
-
-/**
- * Recursively generates the TypeScript interface definition from a schema object.
- * @param {SchemaObject} schema - The schema object to process.
- * @param {number} indentLevel - The current level of indentation for formatting.
- * @returns {string} A string representing the TypeScript interface properties.
- */
-const generateTypeScriptInterface = (
-    schema: SchemaObject,
-    indentLevel = 1
-): string => {
-    const indent = '    '.repeat(indentLevel)
-    const entries = Object.entries(schema).map(([key, value]) => {
-        const quotedKey = key.includes('-') ? `'${key}'` : key
-        if (typeof value === 'string') {
-            // All fields are considered mandatory for the interface as per the example.
-            // A '?' could be added before the colon for optional fields.
-            const tsType = typescriptTypeMap[value] || 'any'
-            return `${indent}${quotedKey}: ${tsType}`
-        } else {
-            const nestedInterface = generateTypeScriptInterface(
-                value,
-                indentLevel + 1
-            )
-            return `${indent}${quotedKey}: {\n${nestedInterface}\n${indent}}`
-        }
-    })
-    return entries.join(';\n')
-}
-
-/**
- * Generates the entire model.ts file content as a string based on a JSON configuration.
+ * Generates the entire Controller.ts file content as a string based on a JSON configuration.
  *
- * @param {string} inputJsonString - The JSON configuration as a string.
- * @returns {string} The complete content of the model.ts file.
+ * This function parses the JSON to extract naming conventions and a data schema. It then
+ * uses a template to build the controller's TypeScript code, dynamically inserting the correct
+ * names for models, variables, and functions. It also recursively traverses the schema to
+ * build a comprehensive search filter that includes all specified fields, including nested ones.
+ *
+ * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
+ * @returns {string} The complete, formatted Controller.ts file as a string.
  */
-export function generateModel(inputJsonString: string): string {
-    const config: InputConfig = JSON.parse(inputJsonString)
-    const { schema, namingConvention } = config
+export const generateModel = (inputJsonFile: string): string => {
+    const config: InputConfig = JSON.parse(inputJsonFile)
+    const { namingConvention, schema } = config
 
-    const schemaName = `${namingConvention.user_4_000___}Schema`
-    const modelName = namingConvention.User_3_000___
-    const interfaceName = `I${namingConvention.Users_1_000___}`
+    // --- 1. Extract Naming Conventions ---
+    const interfaceName = namingConvention.Users_1_000___ || 'Items'
+    const modelName = namingConvention.User_3_000___ || 'Item'
+    const schemaVarName = `${namingConvention.user_4_000___ || 'item'}Schema`
 
-    const mongooseSchemaString = generateMongooseSchema(schema)
-    const tsInterfaceString = generateTypeScriptInterface(schema)
+    // --- 2. Type Mapping Helpers ---
 
-    const modelTemplate = `
-import mongoose, { Schema, Document } from 'mongoose';
+    // Maps schema types to Mongoose schema definitions
+    const mapToMongooseSchema = (type: string): string => {
+        switch (type.toUpperCase()) {
+            case 'STRING':
+                return `{ type: String, required: true }`
+            case 'EMAIL':
+                return `{
+                    type: String,
+                    required: true,
+                    unique: true,
+                    match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email'],
+                }`
+            case 'PASSWORD':
+                return `{ type: String, required: true, select: false }`
+            case 'PASSCODE':
+                return `{ type: String, required: true, select: false }`
+            case 'SELECT':
+                return `{ type: String, required: true, enum: ['Option 1', 'Option 2'] }`
+            case 'DYNAMICSELECT':
+                return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
+            case 'IMAGES':
+                return `[{ type: String }]`
+            case 'IMAGE':
+                return `{ type: String }`
+            case 'DESCRIPTION':
+                return `{ type: String, trim: true }`
+            case 'INTNUMBER':
+                return `{ type: Number, validate: { validator: Number.isInteger, message: '{VALUE} is not an integer value' } }`
+            case 'FLOATNUMBER':
+                return `{ type: Number }`
+            case 'BOOLEAN':
+                return `{ type: Boolean, default: false }`
+            case 'DATE':
+                return `{ type: Date, default: Date.now }`
+            case 'TIME':
+                return `{ type: String }`
+            case 'DATERANGE':
+                return `{ start: { type: Date }, end: { type: Date } }`
+            case 'TIMERANGE':
+                return `{ start: { type: String }, end: { type: String } }`
+            case 'COLORPICKER':
+                return `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`
+            case 'PHONE':
+                return `{
+                    type: String,
+                    validate: {
+                      validator: function(v: string) {
+                        return /\d{3}-\d{3}-\d{4}/.test(v);
+                      },
+                      message: (props: { value: string }) => \`\${props.value} is not a valid phone number!\`
+                    }
+                }`
+            case 'URL':
+                return `{ type: String, trim: true }`
+            case 'RICHTEXT':
+            case 'AUTOCOMPLETE':
+                return `{ type: String }`
+            case 'RADIOBUTTON':
+                return `{ type: String, enum: ['Choice A', 'Choice B'] }`
+            case 'CHECKBOX':
+                return `{ type: Boolean, default: false }`
+            case 'MULTICHECKBOX':
+                return `[{ type: String }]`
+            default:
+                return `{ type: String, required: true }`
+        }
+    }
 
-const ${schemaName} = new Schema(
-    {
-${mongooseSchemaString}
-    },
-    { timestamps: true }
-);
+    // Maps schema types to TypeScript interface types
+    const mapToInterfaceType = (type: string): string => {
+        switch (type.toUpperCase()) {
+            case 'INTNUMBER':
+            case 'FLOATNUMBER':
+                return 'number'
+            case 'BOOLEAN':
+            case 'CHECKBOX':
+                return 'boolean'
+            case 'IMAGES':
+            case 'MULTICHECKBOX':
+                return 'string[]'
+            case 'DATE':
+                return 'Date'
+            case 'DATERANGE':
+                return '{ start: Date; end: Date }'
+            case 'TIMERANGE':
+                return '{ start: string; end: string }'
+            default:
+                return 'string'
+        }
+    }
 
-export default mongoose.models.${modelName} ||
-    mongoose.model('${modelName}', ${schemaName});
+    // Maps schema types to default values for the default object
+    const mapToDefaultValue = (type: string): string => {
+        switch (type.toUpperCase()) {
+            case 'INTNUMBER':
+            case 'FLOATNUMBER':
+                return '0'
+            case 'BOOLEAN':
+            case 'CHECKBOX':
+                return 'false'
+            case 'IMAGES':
+            case 'MULTICHECKBOX':
+                return '[]'
+            case 'DATE':
+                return 'new Date()'
+            case 'DATERANGE':
+                return '{ start: new Date(), end: new Date() }'
+            case 'TIMERANGE':
+                return '{ start: "", end: "" }'
+            default:
+                return "''"
+        }
+    }
 
-export interface ${interfaceName} extends Document {
-${tsInterfaceString};
+    // --- 3. Recursive Generation Functions (Corrected) ---
+
+    /**
+     * Recursively generates the Mongoose schema definition.
+     * All keys are quoted to handle special characters.
+     */
+    const generateSchemaFields = (
+        currentSchema: Schema,
+        depth: number
+    ): string => {
+        const indent = '    '.repeat(depth)
+        return Object.entries(currentSchema)
+            .map(([key, value]) => {
+                const quotedKey = `"${key}"` // Always quote the key
+                if (typeof value === 'object' && !Array.isArray(value)) {
+                    return `${indent}${quotedKey}: {\n${generateSchemaFields(value, depth + 1)}\n${indent}}`
+                }
+                return `${indent}${quotedKey}: ${mapToMongooseSchema(value as string)}`
+            })
+            .join(',\n')
+    }
+
+    /**
+     * Recursively generates the TypeScript interface definition.
+     * All keys are quoted to handle special characters.
+     */
+    const generateInterfaceFields = (
+        currentSchema: Schema,
+        depth: number
+    ): string => {
+        const indent = '    '.repeat(depth)
+        return Object.entries(currentSchema)
+            .map(([key, value]) => {
+                const quotedKey = `"${key}"` // Always quote the key
+                if (typeof value === 'object' && !Array.isArray(value)) {
+                    return `${indent}${quotedKey}: {\n${generateInterfaceFields(value, depth + 1)}\n${indent}}`
+                }
+                return `${indent}${quotedKey}: ${mapToInterfaceType(value as string)}`
+            })
+            .join(';\n')
+    }
+
+    /**
+     * Recursively generates the default object definition.
+     * All keys are quoted to handle special characters.
+     */
+    const generateDefaultObjectFields = (
+        currentSchema: Schema,
+        depth: number
+    ): string => {
+        const indent = '    '.repeat(depth)
+        return Object.entries(currentSchema)
+            .map(([key, value]) => {
+                const quotedKey = `"${key}"` // Always quote the key
+                if (typeof value === 'object' && !Array.isArray(value)) {
+                    return `${indent}${quotedKey}: {\n${generateDefaultObjectFields(value, depth + 1)}\n${indent}}`
+                }
+                return `${indent}${quotedKey}: ${mapToDefaultValue(value as string)}`
+            })
+            .join(',\n')
+    }
+
+    // --- 4. Assemble the Final File Content ---
+
+    const schemaContent = generateSchemaFields(schema, 1)
+    const interfaceContent = generateInterfaceFields(schema, 1)
+    const defaultObjectContent = generateDefaultObjectFields(schema, 1)
+
+    return `import mongoose, { Schema } from 'mongoose'
+
+const ${schemaVarName} = new Schema({
+${schemaContent}
+}, { timestamps: true })
+
+export default mongoose.models.${modelName} || mongoose.model('${modelName}', ${schemaVarName})
+
+export interface I${interfaceName} {
+${interfaceContent};
     createdAt: Date;
     updatedAt: Date;
     _id: string;
 }
-`
 
-    return modelTemplate.trim()
+export const default${interfaceName} = {
+${defaultObjectContent},
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    _id: '',
+}
+`
 }

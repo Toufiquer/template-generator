@@ -1,18 +1,18 @@
 import { create } from 'zustand'
-import { IBlogs } from '@/app/dashboard/blogs/all/api/v1/model'
-import { BlogsStore } from '@/app/dashboard/blogs/all/store/StoreTypes'
+import { IPosts } from '@/app/dashboard/posts/all/api/v1/model'
+import { PostsStore } from '@/app/dashboard/posts/all/store/StoreTypes'
 import {
-    baseIBlogs,
+    baseIPosts,
     queryParams,
-} from '@/app/dashboard/blogs/all/store/StoreConstants'
+} from '@/app/dashboard/posts/all/store/StoreConstants'
 
-export const useBlogsStore = create<BlogsStore>((set) => ({
+export const usePostsStore = create<PostsStore>((set) => ({
     queryPramsLimit: queryParams.limit,
     queryPramsPage: queryParams.page,
     queryPramsQ: queryParams.q,
-    blogs: [],
-    selectedBlogs: null,
-    newBlogs: baseIBlogs,
+    posts: [],
+    selectedPosts: null,
+    newPosts: baseIPosts,
     isBulkEditModalOpen: false,
     isBulkDynamicUpdateModal: false,
     isBulkUpdateModalOpen: false,
@@ -25,17 +25,17 @@ export const useBlogsStore = create<BlogsStore>((set) => ({
     setQueryPramsLimit: (payload: number) => set({ queryPramsLimit: payload }),
     setQueryPramsPage: (payload: number) => set({ queryPramsPage: payload }),
     setQueryPramsQ: (payload: string) => set({ queryPramsQ: payload }),
-    setBulkData: (bulkData: IBlogs[]) => set({ bulkData }),
-    setBlogs: (blogs: IBlogs[]) =>
-        set({ blogs }),
-    setSelectedBlogs: (Blogs) =>
-        set({ selectedBlogs: Blogs }),
-    setNewBlogs: (Blogs) =>
+    setBulkData: (bulkData: IPosts[]) => set({ bulkData }),
+    setPosts: (posts: IPosts[]) =>
+        set({ posts }),
+    setSelectedPosts: (Posts) =>
+        set({ selectedPosts: Posts }),
+    setNewPosts: (Posts) =>
         set((state) => ({
-            newBlogs:
-                typeof Blogs === 'function'
-                    ? Blogs(state.newBlogs)
-                    : Blogs,
+            newPosts:
+                typeof Posts === 'function'
+                    ? Posts(state.newPosts)
+                    : Posts,
         })),
     toggleAddModal: (data) => set({ isAddModalOpen: data }),
     toggleViewModal: (data) => set({ isViewModalOpen: data }),
