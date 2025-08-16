@@ -27,17 +27,16 @@ interface InputJsonFile {
 }
 
 /**
- * Generates the content for a dynamic details page (page.tsx) based on a JSON schema.
+ * Generates the content for a dynamic client-side details page (page.tsx).
  *
- * @param {InputJsonFile} inputJsonFile The JSON object containing the schema and naming conventions.
+ * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
  * @returns {string} The complete page.tsx file content as a string.
  */
-export const generateDetailPageFile = (inputJsonFile: string): string => {
+export const generateClientDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    const singularName = namingConvention.user_4_000___ // e.g., "post"
-    const modelName = namingConvention.User_3_000___ // e.g., "Post"
-    const interfaceName = `I${modelName}` // e.g., "IPost"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
 
     // --- Helper Functions ---
 
@@ -58,7 +57,7 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
             case 'MULTIDYNAMICSELECT':
                 return 'string[]'
             case 'DATE':
-                return 'Date | string' // Can be a Date object or string representation
+                return 'Date | string'
             case 'DATERANGE':
                 return '{ start: Date | string; end: Date | string }'
             case 'TIMERANGE':
@@ -69,9 +68,9 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
     }
 
     /**
-     * Recursively generates TypeScript interface properties from the schema.
+     * Recursively generates TypeScript type properties from the schema.
      */
-    const generateTsInterfaceProperties = (
+    const generateTsTypeProperties = (
         currentSchema: Schema,
         depth: number
     ): string => {
@@ -80,16 +79,55 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
             .map(([key, value]) => {
                 const quotedKey = `"${key}"`
                 if (typeof value === 'object' && !Array.isArray(value)) {
-                    return `${indent}${quotedKey}: {\n${generateTsInterfaceProperties(value, depth + 1)}\n${indent}}`
+                    return `${indent}${quotedKey}?: {\n${generateTsTypeProperties(value, depth + 1)}\n${indent}}`
                 }
-                return `${indent}${quotedKey}: ${mapSchemaTypeToTsType(value as string)}`
+                return `${indent}${quotedKey}?: ${mapSchemaTypeToTsType(value as string)}`
             })
             .join(';\n')
     }
 
     /**
-     * Generates the JSX for displaying the data fields within the DataDetails component.
-     * This version ensures all non-object values are safely converted to strings for rendering.
+     * Maps a schema type to its default initial value for useState.
+     */
+    const mapSchemaTypeToInitialValue = (type: string): string => {
+        switch (type.toUpperCase()) {
+            case 'INTNUMBER':
+            case 'FLOATNUMBER':
+                return '0'
+            case 'BOOLEAN':
+            case 'CHECKBOX':
+                return 'false'
+            case 'IMAGES':
+            case 'MULTICHECKBOX':
+            case 'MULTISELECT':
+            case 'MULTIDYNAMICSELECT':
+                return '[]'
+            default:
+                return "''"
+        }
+    }
+
+    /**
+     * Recursively generates the initial state object for useState.
+     */
+    const generateInitialStateObject = (
+        currentSchema: Schema,
+        depth: number
+    ): string => {
+        const indent = '    '.repeat(depth)
+        return Object.entries(currentSchema)
+            .map(([key, value]) => {
+                const quotedKey = `"${key}"`
+                if (typeof value === 'object' && !Array.isArray(value)) {
+                    return `${indent}${quotedKey}: {\n${generateInitialStateObject(value, depth + 1)}\n${indent}}`
+                }
+                return `${indent}${quotedKey}: ${mapSchemaTypeToInitialValue(value as string)}`
+            })
+            .join(',\n')
+    }
+
+    /**
+     * Generates the JSX to display all data fields.
      */
     const generateDetailsJsx = (currentSchema: Schema): string => {
         return Object.entries(currentSchema)
@@ -104,14 +142,10 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
 
                 let displayValue
                 if (isObject) {
-                    // For nested objects, pretty-print the JSON. This is already a string.
                     displayValue = `<pre>{JSON.stringify(data?.["${key}"], null, 2)}</pre>`
                 } else if (isArray) {
-                    // For arrays, join the elements to create a renderable string.
-                    displayValue = `{data?.["${key}"]?.join(', ')}`
+                    displayValue = `{(data?.["${key}"] as string[])?.join(', ')}`
                 } else {
-                    // For all other primitive-like values (string, number, boolean, Date),
-                    // explicitly convert them to a string to ensure they are valid React children.
                     displayValue = `{data?.["${key}"]?.toString()}`
                 }
 
@@ -123,86 +157,72 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
             .join('')
     }
 
-    // Find a primary display key (e.g., 'title', 'name') for the metadata
-    const displayKey =
-        Object.keys(schema).find(
-            (k) => k.toLowerCase() === 'title' || k.toLowerCase() === 'name'
-        ) || Object.keys(schema)[0]
-
-    const interfaceProperties = generateTsInterfaceProperties(schema, 1)
+    const tsTypeProperties = generateTsTypeProperties(schema, 1)
+    const initialStateObject = generateInitialStateObject(schema, 2)
     const detailsJsx = generateDetailsJsx(schema)
 
     // --- Final Template ---
+    return `'use client'
 
-    return `import { notFound } from 'next/navigation'
-import HomeButton from './HomeButton'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-// Dynamically generated interface based on the schema
-interface ${interfaceName} {
-${interfaceProperties};
-    _id: string;
+// Dynamically generated type for the data state
+type Data = {
+${tsTypeProperties}
 }
 
-interface ApiResponse {
-    data: ${interfaceName};
-    message: string;
-    status: number;
-}
+const Page = () => {
+    const [data, setData] = useState<Data | null>(null)
+    const pathname = usePathname()
+    const id = pathname.split('/')[5]
 
-const DataDetails = ({ data }: { data: ${interfaceName} }) => {
+    useEffect(() => {
+        if (id) {
+            const fetchData = async () => {
+                const token = process.env.NEXT_PUBLIC_Token
+                if (!token) {
+                    console.error(
+                        'Authentication token not found. Unable to fetch data.'
+                    )
+                    return
+                }
+
+                const url = \`http://localhost:3000/dashboard/${singularLowerCase}/all/api/v1?id=\${id}\`
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            Authorization: \`Bearer \${token}\`,
+                        },
+                    })
+
+                    const responseData = await response.json()
+                    setData(responseData?.data)
+                } catch (error) {
+                    console.error('Failed to fetch data:', error)
+                }
+            }
+            fetchData()
+        }
+    }, [id])
+    
     return (
         <div className="w-full flex flex-col md:p-4 p-1 gap-4">
-            <h1 className="text-2xl font-bold">${modelName} Details</h1>
             <div className="border border-slate-400 rounded-md overflow-hidden">
                 ${detailsJsx.trim()}
             </div>
-            <HomeButton />
+            <Link
+                href="/dashboard/${pluralLowerCase}"
+                className="w-full text-center hover:bg-slate-400 bg-slate-300 p-2 border border-slate-400 rounded-md"
+            >
+                Back to List
+            </Link>
         </div>
     )
 }
-
-const getDataById = async (id: string): Promise<ApiResponse> => {
-    const backendUrl = \`http://localhost:3000/dashboard/${singularName}/all/api/v1?id=\${id}\`
-
-    try {
-        const res = await fetch(backendUrl, { next: { revalidate: 3600 } }) // 1 hour cache
-        if (!res.ok) {
-            throw new Error('Failed to fetch data');
-        }
-        const responseData: ApiResponse = await res.json()
-        if (!responseData || !responseData.data) {
-             notFound()
-        }
-        return responseData
-    } catch (error) {
-        console.error('Failed to fetch ${modelName}:', error)
-        notFound();
-    }
-}
-
-async function getData(id: string) {
-    const data = await getDataById(id)
-    if (!data) notFound()
-    return data
-}
-
-export async function generateMetadata({ params }: { params: { id: string } }) {
-    const { id } = params
-    const data = await getData(id)
-
-    return {
-        title: data?.data?.["${displayKey}"]?.toString() || '${modelName}',
-    }
-}
-
-export default async function Page({ params }: { params: { id: string } }) {
-    const { id } = params
-    const data = await getData(id)
-    return (
-        <div className="py-12 flex flex-col w-full">
-            <DataDetails data={data.data} />
-        </div>
-    )
-}
+export default Page
 `
 }
