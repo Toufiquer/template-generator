@@ -230,7 +230,7 @@ const ViewNextComponents: React.FC = () => {
                 <DialogHeader>
                     <DialogTitle>${pluralPascalCase} Details</DialogTitle>
                 </DialogHeader>
-                {selected${singularPascalCase} && (
+                {selected${pluralPascalCase} && (
                     <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                         <div className="grid gap-1">
                             ${detailRowsJsx}
