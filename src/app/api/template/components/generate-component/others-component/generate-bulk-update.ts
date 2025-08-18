@@ -83,9 +83,9 @@ import {
 } from '@/components/ui/dialog'
 
 import { ${interfaceName} } from '../api/v1/model'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { ${pluralLowerCase}SelectorArr } from '../store/StoreConstants'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { ${pluralLowerCase}SelectorArr } from '../store/store-constant'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
 
 const BulkUpdateNextComponents: React.FC = () => {
@@ -180,7 +180,7 @@ const BulkUpdateNextComponents: React.FC = () => {
                                 <span>
                                     {idx + 1}. {(${singularPascalCase.toLowerCase()} as any)['${displayKey}'] as string || ''}
                                 </span>
-                                <span className="text-blue-500">{${singularPascalCase.toLowerCase()}['${editableFieldKey}'] as string}</span>
+                                <span className="text-blue-500">{${singularPascalCase.toLowerCase()}['${displayKey}'] as string}</span>
                             </div>
                         ))}
                     </div>
