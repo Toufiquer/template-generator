@@ -276,8 +276,8 @@ import {
 } from '@/components/ui/select'
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../api/v1/model'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const InputField: React.FC<{
@@ -317,18 +317,18 @@ const EditNextComponents: React.FC = () => {
     const {
         toggleEditModal,
         isEditModalOpen,
-        selected${singularPascalCase},
-        setSelected${singularPascalCase},
+        selected${pluralPascalCase},
+        setSelected${pluralPascalCase},
     } = use${pluralPascalCase}Store()
 
     const [update${pluralPascalCase}, { isLoading }] = useUpdate${pluralPascalCase}Mutation()
     const [${editedStateName}, set${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
     useEffect(() => {
-        if (selected${singularPascalCase}) {
-            set${singularPascalCase}(selected${singularPascalCase})
+        if (selected${pluralPascalCase}) {
+            set${singularPascalCase}(selected${pluralPascalCase})
         }
-    }, [selected${singularPascalCase}])
+    }, [selected${pluralPascalCase}])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -378,11 +378,11 @@ const EditNextComponents: React.FC = () => {
     }
 
     const handleEdit${singularPascalCase} = async () => {
-        if (!selected${singularPascalCase}) return
+        if (!selected${pluralPascalCase}) return
 
         try {
             await update${pluralPascalCase}({
-                id: selected${singularPascalCase}._id,
+                id: selected${pluralPascalCase}._id,
                 ...${editedStateName},
             }).unwrap()
             toggleEditModal(false)
@@ -425,7 +425,7 @@ const EditNextComponents: React.FC = () => {
                         variant="outline"
                         onClick={() => {
                             toggleEditModal(false)
-                            setSelected${singularPascalCase}(null)
+                            setSelected${pluralPascalCase}(null)
                         }}
                     >
                         Cancel
