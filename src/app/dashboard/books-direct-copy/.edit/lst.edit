@@ -1,0 +1,81 @@
+-------------------------------------------------------------
+Base data
+-------------------------------------------------------------
+01 -> useBooksStore
+02 -> useGetBooksQuery
+03 -> ViewBooksTable
+04 -> BulkUpdateBooks
+05 -> BulkDynamicUpdateBooks
+06 -> Book
+07 -> books
+08 -> Books
+09 -> books
+10 -> book
+11 -> books
+12 -> select_5_000___
+13 -> useAddBooksMutation
+14 -> defaultBooksData
+15 -> ISelect_6_000___
+16 -> newBooks
+17 -> addBooks
+18 -> Books
+19 -> addedBooks
+20 -> Books
+21 -> booksrtk_tag
+22 -> select_5_000___
+23 -> books
+24 -> Book
+
+-------------------------------------------------------------
+Updated data 
+-------------------------------------------------------------
+out put ----------------------------------
+01 -> useBooksStore                 | useBooksStore
+02 -> useGetBooksQuery             | useGetBooksQuery
+03 -> ViewBooksTable               | ViewBooksTable
+04 -> BulkUpdateBooks               | BulkUpdateBooks
+05 -> BulkDynamicUpdateBooks        | BulkDynamicUpdateBooks
+06 -> Book                         | Book
+07 -> books                     | books
+08 -> Books                        | Books
+09 -> books                        | books
+10 -> book                         | book
+11 -> books                       | books
+12 -> select_5_000___                  | select_5_000___
+13 -> useAddBooksMutation           | useAddBooksMutation
+14 -> defaultBooksData              | defaultBooksData
+15 -> ISelect_6_000___            | ISelect_6_000___
+16 -> newBooks                      | newBooks
+17 -> addBooks                      | addBooks
+18 -> Books                         | Books
+19 -> addedBooks                    | addedBooks
+20 -> Books                         | Books
+21 -> booksrtk_tag                        | booksrtk_tag
+22 -> select_5_000___                             | select_5_000___
+23 -> books                | books
+24 -> Book                            | Book
+
+
+
+2500*25
+
+-------------------------------------------------------------
+Documentation  
+-------------------------------------------------------------
+-------------------------------------------------------------
+unique-name/unique-id/global-id/global-check/
+-------------------------------------------------------------
+1.Users   /  _1_     / 000     /    ___     /
+-------------------------------------------------------------
+unique-name -> unique name to identify database
+unique-id   -> unique id to change secure
+global-id   -> global id to change secure
+global-check-> checking is all data editing finish or not
+-------------------------------------------------------------
+you have to change
+1. Books
+2. books
+3. Book
+4. book
+6. ISelect_6_000___
+5. select_5_000___
