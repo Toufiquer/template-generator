@@ -1,47 +1,12 @@
-/**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
+/*
+|-----------------------------------------
+| setting up Controller for the App
+| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
+| @copyright: varse-project, May, 2025
+|-----------------------------------------
+*/
 
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
- * Generates the content for the main client-side management page (page.tsx).
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete page.tsx file content as a string.
- */
-export const generateMainPageFile = (inputJsonFile: string): string => {
-    const { namingConvention } = JSON.parse(inputJsonFile) || {}
-
-    // Extract names and format them for different uses
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
-
-    // Construct the file content using a template literal
-    return `'use client'
+'use client'
 
 import React, { useState } from 'react'
 import { PlusIcon } from 'lucide-react'
@@ -51,19 +16,19 @@ import { BiRightArrowAlt } from 'react-icons/bi'
 import { Button } from '@/components/ui/button'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import AddFile from './components/Add'
-import EditFile from './components/Edit'
-import ViewFile from './components/View'
+import AddFilename8 from './components/Add'
+import EditFilename8 from './components/Edit'
+import ViewFilename8 from './components/View'
 import SearchBox from './components/SearchBox'
-import DeleteFile from './components/Delete'
-import BulkEditFile from './components/BulkEdit'
-import { use${pluralPascalCase}Store } from './store/store'
+import DeleteFilename8 from './components/Delete'
+import BulkEditFilename8 from './components/BulkEdit'
+import { useBooksStore } from './store/Store'
 import TooManyRequests from './components/TooManyRequest'
-import BulkDeleteFile from './components/BulkDelete'
-import { useGet${pluralPascalCase}Query } from './redux/rtk-api'
-import View${pluralPascalCase}Table from './components/TableView'
-import BulkUpdate${pluralPascalCase} from './components/BulkUpdate'
-import BulkDynamicUpdate${pluralPascalCase} from './components/BulkDynamicUpdate'
+import BulkDeleteFilename8 from './components/BulkDelete'
+import { useGetBooksQuery } from './redux/rtk-Api'
+import ViewBooksTable from './components/ViewTable'
+import BulkUpdateBooks from './components/BulkUpdate'
+import BulkDynamicUpdateBooks from './components/BulkDynamicUpdate'
 
 const MainNextPage: React.FC = () => {
     const [hashSearchText, setHashSearchText] = useState('')
@@ -74,13 +39,13 @@ const MainNextPage: React.FC = () => {
         queryPramsQ,
         setQueryPramsPage,
         setQueryPramsQ,
-    } = use${pluralPascalCase}Store()
+    } = useBooksStore()
 
     const {
         data: getResponseData,
         isSuccess,
         status: statusCode,
-    } = useGet${pluralPascalCase}Query(
+    } = useGetBooksQuery(
         { q: queryPramsQ, page: queryPramsPage, limit: queryPramsLimit },
         {
             selectFromResult: ({ data, isSuccess, status, error }) => ({
@@ -104,14 +69,14 @@ const MainNextPage: React.FC = () => {
     }
 
     const modals = [
-        AddFile,
-        ViewFile,
-        BulkDeleteFile,
-        BulkEditFile,
-        EditFile,
-        DeleteFile,
-        BulkUpdate${pluralPascalCase},
-        BulkDynamicUpdate${pluralPascalCase},
+        AddFilename8,
+        ViewFilename8,
+        BulkDeleteFilename8,
+        BulkEditFilename8,
+        EditFilename8,
+        DeleteFilename8,
+        BulkUpdateBooks,
+        BulkDynamicUpdateBooks,
     ]
     const router = useRouter()
 
@@ -119,7 +84,7 @@ const MainNextPage: React.FC = () => {
         <div className="container mx-auto p-4">
             <div className="flex flex-col md:flex-row gap-2 justify-between items-center mb-6">
                 <h1 className="h2 w-full">
-                    ${singularPascalCase} Management{' '}
+                    Book Management{' '}
                     {isSuccess && (
                         <sup className="text-xs">
                             (total:{getResponseData?.data?.total || '00'})
@@ -131,7 +96,7 @@ const MainNextPage: React.FC = () => {
                         size="sm"
                         variant="outlineGarden"
                         onClick={() =>
-                            router.push('/dashboard/${singularLowerCase}/ssr-view')
+                            router.push('/dashboard/template-demo/ssr-view')
                         }
                     >
                         <BiRightArrowAlt className="w-4 h-4" />
@@ -141,7 +106,7 @@ const MainNextPage: React.FC = () => {
                         size="sm"
                         variant="outlineGarden"
                         onClick={() =>
-                            router.push('/dashboard/${singularLowerCase}/client-view')
+                            router.push('/dashboard/template-demo/client-view')
                         }
                     >
                         <BiRightArrowAlt className="w-4 h-4" />
@@ -153,7 +118,7 @@ const MainNextPage: React.FC = () => {
                         onClick={() => toggleAddModal(true)}
                     >
                         <PlusIcon className="w-4 h-4" />
-                        Add ${singularPascalCase}
+                        Add Book
                     </Button>
                 </div>
             </div>
@@ -162,7 +127,7 @@ const MainNextPage: React.FC = () => {
                 placeholder="Search here ..."
                 autoFocus={false}
             />
-            <View${pluralPascalCase}Table />
+            <ViewBooksTable />
             {modals.map((ModalComponent, index) => (
                 <ModalComponent key={index} />
             ))}
@@ -177,5 +142,3 @@ const MainNextPage: React.FC = () => {
 }
 
 export default MainNextPage
-`
-}

@@ -61,27 +61,26 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { ${interfaceName} } from '../api/v1/model'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { ${baseInterfaceName} } from '../store/StoreConstants'
-import { useDelete${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { ${interfaceName}, default${pluralPascalCase} } from '../api/v1/model'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useDelete${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
 
 const DeleteNextComponents: React.FC = () => {
     const {
         toggleDeleteModal,
         isDeleteModalOpen,
-        selected${singularPascalCase},
-        setSelected${singularPascalCase},
+        selected${pluralPascalCase},
+        setSelected${pluralPascalCase},
     } = use${pluralPascalCase}Store()
     
     const [delete${singularPascalCase}, { isLoading }] = useDelete${pluralPascalCase}Mutation()
 
     const handleDelete = async () => {
-        if (selected${singularPascalCase}) {
+        if (selected${pluralPascalCase}) {
             try {
                 await delete${singularPascalCase}({
-                    id: selected${singularPascalCase}._id,
+                    id: selected${pluralPascalCase}._id,
                 }).unwrap()
                 toggleDeleteModal(false)
                 handleSuccess('Delete Successful')
@@ -94,10 +93,10 @@ const DeleteNextComponents: React.FC = () => {
 
     const handleCancel = () => {
         toggleDeleteModal(false)
-        setSelected${singularPascalCase}({ ...${baseInterfaceName} } as ${interfaceName})
+        setSelected${pluralPascalCase}({ ...default${pluralPascalCase} } as ${interfaceName})
     }
 
-    const displayName = (selected${singularPascalCase} as any)?.['${displayKey}'] || ''
+    const displayName = (selected${pluralPascalCase} as any)?.['${displayKey}'] || ''
 
     return (
         <Dialog open={isDeleteModalOpen} onOpenChange={toggleDeleteModal}>
@@ -105,7 +104,7 @@ const DeleteNextComponents: React.FC = () => {
                 <DialogHeader>
                     <DialogTitle>Confirm Deletion</DialogTitle>
                 </DialogHeader>
-                {selected${singularPascalCase} && (
+                {selected${pluralPascalCase} && (
                     <div className="py-4">
                         <p>
                             You are about to delete this ${singularPascalCase.toLowerCase()}:{' '}

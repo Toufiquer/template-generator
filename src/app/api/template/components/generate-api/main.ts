@@ -20,15 +20,15 @@ const generateApi = async (data: string) => {
     const routeTemplate = generateRoute(data)
     writeInFile(
         controllerTemplate,
-        `src/app/generate/${folderName}/all/api/v1/controller.tsx`
+        `src/app/generate/${folderName}/all/api/v1/controller.ts`
     )
     writeInFile(
         medelTemplate,
-        `src/app/generate/${folderName}/all/api/v1/model.tsx`
+        `src/app/generate/${folderName}/all/api/v1/model.ts`
     )
     writeInFile(
         routeTemplate,
-        `src/app/generate/${folderName}/all/api/v1/route.tsx`
+        `src/app/generate/${folderName}/all/api/v1/route.ts`
     )
 }
 export default generateApi

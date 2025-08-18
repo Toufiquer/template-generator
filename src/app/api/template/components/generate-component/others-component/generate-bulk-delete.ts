@@ -63,8 +63,8 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useBulkDelete${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useBulkDelete${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
 
 const BulkDeleteNextComponents: React.FC = () => {
