@@ -282,9 +282,9 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-Api'
-import { ${interfaceName}, ${defaultInstanceName} } from '@/app/dashboard/${pluralLowerCase}/api/v1/model'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { ${interfaceName}, ${defaultInstanceName} } from '@/app/dashboard/${pluralLowerCase}/all/api/v1/model'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const InputField: React.FC<{
