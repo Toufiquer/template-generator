@@ -62,8 +62,8 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
 import DynamicDataSelect from './DynamicDataSelect'
 
