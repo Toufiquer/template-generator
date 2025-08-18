@@ -61,33 +61,33 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                 switch ((type as string).toUpperCase()) {
                     case 'BOOLEAN':
                     case 'CHECKBOX':
-                        return `<DetailRow label="${label}" value={formatBoolean(selected${singularPascalCase}['${key}'])} />`
+                        return `<DetailRow label="${label}" value={formatBoolean(selected${pluralPascalCase}['${key}'])} />`
                     case 'DATE':
-                        return `<DetailRow label="${label}" value={formatDate(selected${singularPascalCase}['${key}'])} />`
+                        return `<DetailRow label="${label}" value={formatDate(selected${pluralPascalCase}['${key}'])} />`
                     case 'IMAGES':
                     case 'MULTICHECKBOX':
                     case 'MULTISELECT':
                     case 'MULTIDYNAMICSELECT':
-                        return `<DetailRowArray label="${label}" values={selected${singularPascalCase}['${key}']} />`
+                        return `<DetailRowArray label="${label}" values={selected${pluralPascalCase}['${key}']} />`
                     case 'DATERANGE':
-                        return `<DetailRow label="${label}" value={\`\${formatDate(selected${singularPascalCase}['${key}']?.start)} to \${formatDate(selected${singularPascalCase}['${key}']?.end)}\`} />`
+                        return `<DetailRow label="${label}" value={\`\${formatDate(selected${pluralPascalCase}['${key}']?.start)} to \${formatDate(selected${pluralPascalCase}['${key}']?.end)}\`} />`
                     case 'TIMERANGE':
-                        return `<DetailRow label="${label}" value={\`\${selected${singularPascalCase}['${key}']?.start || 'N/A'} to \${selected${singularPascalCase}['${key}']?.end || 'N/A'}\`} />`
+                        return `<DetailRow label="${label}" value={\`\${selected${pluralPascalCase}['${key}']?.start || 'N/A'} to \${selected${pluralPascalCase}['${key}']?.end || 'N/A'}\`} />`
                     case 'COLORPICKER':
                         return `<DetailRow
                                 label="${label}"
                                 value={
                                     <div className="flex items-center gap-2">
-                                        <span>{selected${singularPascalCase}['${key}']}</span>
+                                        <span>{selected${pluralPascalCase}['${key}']}</span>
                                         <div
                                             className="w-5 h-5 rounded-full border"
-                                            style={{ backgroundColor: selected${singularPascalCase}['${key}'] }}
+                                            style={{ backgroundColor: selected${pluralPascalCase}['${key}'] }}
                                         />
                                     </div>
                                 }
                             />`
                     default:
-                        return `<DetailRow label="${label}" value={selected${singularPascalCase}['${key}']} />`
+                        return `<DetailRow label="${label}" value={selected${pluralPascalCase}['${key}']} />`
                 }
             })
             .join('\n                            ')
@@ -168,33 +168,33 @@ import {
 } from '@/components/ui/dialog'
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../api/v1/model'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useGet${pluralPascalCase}ByIdQuery } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useGet${pluralPascalCase}ByIdQuery } from '../redux/rtk-api'
 
 const ViewNextComponents: React.FC = () => {
     const {
         isViewModalOpen,
-        selected${singularPascalCase},
+        selected${pluralPascalCase},
         toggleViewModal,
-        setSelected${singularPascalCase},
+        setSelected${pluralPascalCase},
     } = use${pluralPascalCase}Store()
 
     const { data: ${singularLowerCase}Data, refetch } = useGet${pluralPascalCase}ByIdQuery(
-        selected${singularPascalCase}?._id,
-        { skip: !selected${singularPascalCase}?._id }
+        selected${pluralPascalCase}?._id,
+        { skip: !selected${pluralPascalCase}?._id }
     )
 
     useEffect(() => {
-        if (selected${singularPascalCase}?._id) {
+        if (selected${pluralPascalCase}?._id) {
             refetch()
         }
-    }, [selected${singularPascalCase}?._id, refetch])
+    }, [selected${pluralPascalCase}?._id, refetch])
 
     useEffect(() => {
         if (${singularLowerCase}Data?.data) {
-            setSelected${singularPascalCase}(${singularLowerCase}Data.data)
+            setSelected${pluralPascalCase}(${singularLowerCase}Data.data)
         }
-    }, [${singularLowerCase}Data, setSelected${singularPascalCase}])
+    }, [${singularLowerCase}Data, setSelected${pluralPascalCase}])
 
     const formatDate = (date?: Date | string) => {
         if (!date) return 'N/A'
@@ -228,14 +228,14 @@ const ViewNextComponents: React.FC = () => {
         <Dialog open={isViewModalOpen} onOpenChange={toggleViewModal}>
             <DialogContent className="sm:max-w-[625px]">
                 <DialogHeader>
-                    <DialogTitle>${singularPascalCase} Details</DialogTitle>
+                    <DialogTitle>${pluralPascalCase} Details</DialogTitle>
                 </DialogHeader>
                 {selected${singularPascalCase} && (
                     <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                         <div className="grid gap-1">
                             ${detailRowsJsx}
-                            <DetailRow label="Created At" value={formatDate(selected${singularPascalCase}.createdAt)} />
-                            <DetailRow label="Updated At" value={formatDate(selected${singularPascalCase}.updatedAt)} />
+                            <DetailRow label="Created At" value={formatDate(selected${pluralPascalCase}.createdAt)} />
+                            <DetailRow label="Updated At" value={formatDate(selected${pluralPascalCase}.updatedAt)} />
                         </div>
                         ${imageViewerJsx}
                     </ScrollArea>
@@ -245,7 +245,7 @@ const ViewNextComponents: React.FC = () => {
                         variant="outline"
                         onClick={() => {
                             toggleViewModal(false)
-                            setSelected${singularPascalCase}(${defaultInstanceName} as ${interfaceName})
+                            setSelected${pluralPascalCase}(${defaultInstanceName} as ${interfaceName})
                         }}
                     >
                         Close

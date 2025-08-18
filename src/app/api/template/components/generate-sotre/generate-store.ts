@@ -40,12 +40,9 @@ function generateStoreFile(inputJson: string): string {
     const folderName = namingConvention.users_2_000___
     // The template for the store.ts file with placeholders.
     const template = `import { create } from 'zustand'
-import { IUsers_1_000___ } from '@/app/dashboard/${folderName}/all/api/v1/model'
-import { Users_1_000___Store } from '@/app/dashboard/${folderName}/all/store/StoreTypes'
-import {
-    baseIUsers_1_000___,
-    queryParams,
-} from '@/app/dashboard/${folderName}/all/store/StoreConstants'
+import { IUsers_1_000___ ,baseIUsers_1_000___} from '@/app/dashboard/${folderName}/all/api/v1/model'
+import { Users_1_000___Store } from '@/app/dashboard/${folderName}/all/store/store-type' 
+import { queryParams } from '@/app/dashboard/${folderName}/all/store/store-constant';
 
 export const useUsers_1_000___Store = create<Users_1_000___Store>((set) => ({
     queryPramsLimit: queryParams.limit,
