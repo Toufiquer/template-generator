@@ -135,9 +135,9 @@ import {
 } from '@/components/ui/select'
 
 import { ${interfaceName} } from '../api/v1/model'
-import { pageLimitArr } from '../store/StoreConstants'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useGet${pluralPascalCase}Query } from '../redux/rtk-Api'
+import { pageLimitArr } from '../store/store-constant'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
 import Pagination from './Pagination'
 import { handleSuccess } from './utils'
 
@@ -148,7 +148,7 @@ const ViewTableNextComponents: React.FC = () => {
     } | null>(null)
     
     const {
-        setSelected${singularPascalCase},
+        setSelected${pluralPascalCase},
         toggleBulkEditModal,
         toggleBulkUpdateModal,
         toggleViewModal,
@@ -228,13 +228,13 @@ const ViewTableNextComponents: React.FC = () => {
 
     const renderActions = (item: ${interfaceName}) => (
         <div className="flex gap-2 justify-end">
-            <Button variant="outline" size="sm" onClick={() => { setSelected${singularPascalCase}(item); toggleViewModal(true); }}>
+            <Button variant="outline" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleViewModal(true); }}>
                 <EyeIcon className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setSelected${singularPascalCase}(item); toggleEditModal(true); }}>
+            <Button variant="outline" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleEditModal(true); }}>
                 <PencilIcon className="w-4 h-4" />
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => { setSelected${singularPascalCase}(item); toggleDeleteModal(true); }}>
+            <Button variant="destructive" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleDeleteModal(true); }}>
                 <TrashIcon className="w-4 h-4" />
             </Button>
         </div>
