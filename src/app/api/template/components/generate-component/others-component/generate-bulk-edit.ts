@@ -116,8 +116,8 @@ import {
 } from '@/components/ui/dialog'
 
 import { ${interfaceName} } from '../api/v1/model'
-import { use${pluralPascalCase}Store } from '../store/Store'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-Api'
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
 
 const BulkEditNextComponents: React.FC = () => {
