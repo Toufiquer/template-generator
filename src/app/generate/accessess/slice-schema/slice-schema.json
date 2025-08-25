@@ -1,0 +1,29 @@
+{
+  "uid": "001",
+  "templateName": "Access Template",
+  "schema": {
+    "student": 
+      "STRING"
+    ,
+    "admin": 
+      "STRING"
+    ,
+    "moderator": 
+      "STRING"
+    ,
+    "mentor": 
+      "STRING"
+    ,
+    "instructor": 
+      "STRING"
+    
+  },
+  "namingConvention": {
+    "Users_1_000___": "Accesses",
+    "users_2_000___": "accessess",
+    "User_3_000___": "Access",
+    "user_4_000___": "access",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}

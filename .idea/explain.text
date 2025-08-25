@@ -16,17 +16,20 @@ Here is an example of Json file
   }
 }
 
-From this json this application can generate those file with features I write below,
-1. api 
-2. dashboard 
-    a. redux
-    b. main page with a table with CURD operation
-    c. zustand store for manage state
-    d. component for CURD operation
-3. a client component [that component render in client]
-4. a ssr [that render on server]
+From this json the application can generate those file with features I write below,
+1. api [@ global -> "@/api/..."]
+2. redux [@ global -> "@/redux/features/..."]
+3. component
+    a. main page
+      i. add, view with ssr and csr, reload.
+      ii. Bulk -> update, edit(cach), delete.
+      iii. search box -> that can search on database. or default search by field or query.
+      iv. table -> view, edit, delete
+      v. pagination
+    b. components [all others components]
+      
 
-5. in a single component we use those data type
+A. in a single component we use those data type and arr of them
   1. STRING - 
   2. EMAIL - 
   3. PASSWORD -
