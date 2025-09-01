@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import writeInFile from '../create-and-write'
 import generateStoreFile from './generate-store'
 import generateStoreConstant from './generate-store-constant'

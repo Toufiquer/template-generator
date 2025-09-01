@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for a dynamic ViewTable.tsx component file.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
@@ -38,7 +10,6 @@ export const generateViewTableComponentFile = (
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
     const pluralPascalCase = namingConvention.Users_1_000___
-    const singularPascalCase = namingConvention.User_3_000___
     const pluralLowerCase = namingConvention.users_2_000___
     const interfaceName = `I${pluralPascalCase}`
 

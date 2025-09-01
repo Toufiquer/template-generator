@@ -42,7 +42,13 @@ const JsonEditorSingleItem = ({
             <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-400 w-full">
                     <strong className="dark:text-white text-gray-900">
-                        {item.data.templateName} :{' '}
+                        {typeof item.data === 'object' &&
+                        item.data !== null &&
+                        'templateName' in item.data
+                            ? (item.data as unknown as { templateName: string })
+                                  .templateName
+                            : ''}{' '}
+                        :{' '}
                     </strong>
                     Saved at: {item.timestamp.toLocaleString()}
                 </span>
@@ -79,8 +85,12 @@ const JsonEditorSingleItem = ({
                     >
                         {collasp ? 'Colasp' : 'View'}
                     </Button>
+
                     <Button
-                        onClick={() => handleSetJosn(item.data)}
+                        onClick={() =>
+                            item.data &&
+                            handleSetJosn(JSON.stringify(item.data))
+                        }
                         variant="secondary"
                     >
                         Edit

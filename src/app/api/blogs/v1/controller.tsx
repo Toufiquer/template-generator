@@ -9,7 +9,11 @@ interface IResponse {
 }
 
 // Helper to format responses
-const formatResponse = (data: unknown, message: string, status: number): IResponse => ({
+const formatResponse = (
+    data: unknown,
+    message: string,
+    status: number
+): IResponse => ({
     data,
     message,
     status,
@@ -23,11 +27,7 @@ export async function createBlog(req: Request): Promise<IResponse> {
             const newBlog = await Blog.create({
                 ...blogData,
             })
-            return formatResponse(
-                newBlog,
-                'Blog created successfully',
-                201
-            )
+            return formatResponse(newBlog, 'Blog created successfully', 201)
         } catch (error: unknown) {
             if ((error as { code?: number }).code === 11000) {
                 const err = error as { keyValue?: Record<string, unknown> }
@@ -46,18 +46,12 @@ export async function createBlog(req: Request): Promise<IResponse> {
 export async function getBlogById(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const id = new URL(req.url).searchParams.get('id')
-        if (!id)
-            return formatResponse(null, 'Blog ID is required', 400)
+        if (!id) return formatResponse(null, 'Blog ID is required', 400)
 
         const blog = await Blog.findById(id)
-        if (!blog)
-            return formatResponse(null, 'Blog not found', 404)
+        if (!blog) return formatResponse(null, 'Blog not found', 404)
 
-        return formatResponse(
-            blog,
-            'Blog fetched successfully',
-            200
-        )
+        return formatResponse(blog, 'Blog fetched successfully', 200)
     })
 }
 
@@ -77,12 +71,32 @@ export async function getBlogs(req: Request): Promise<IResponse> {
         if (searchQuery) {
             searchFilter = {
                 $or: [
-                        { 'title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'title2': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md1.title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md1.title2': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md2.title1': { $regex: searchQuery, $options: 'i' } },
-                        { 'manager-md2.title2': { $regex: searchQuery, $options: 'i' } }
+                    { title1: { $regex: searchQuery, $options: 'i' } },
+                    { title2: { $regex: searchQuery, $options: 'i' } },
+                    {
+                        'manager-md1.title1': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    {
+                        'manager-md1.title2': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    {
+                        'manager-md2.title1': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    {
+                        'manager-md2.title2': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
                 ],
             }
         }
@@ -92,8 +106,7 @@ export async function getBlogs(req: Request): Promise<IResponse> {
             .skip(skip)
             .limit(limit)
 
-        const totalBlogs =
-            await Blog.countDocuments(searchFilter)
+        const totalBlogs = await Blog.countDocuments(searchFilter)
 
         return formatResponse(
             {
@@ -113,19 +126,13 @@ export async function updateBlog(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
             const { id, ...updateData } = await req.json()
-            const updatedBlog = await Blog.findByIdAndUpdate(
-                id,
-                updateData,
-                { new: true, runValidators: true }
-            )
+            const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, {
+                new: true,
+                runValidators: true,
+            })
 
-            if (!updatedBlog)
-                return formatResponse(null, 'Blog not found', 404)
-            return formatResponse(
-                updatedBlog,
-                'Blog updated successfully',
-                200
-            )
+            if (!updatedBlog) return formatResponse(null, 'Blog not found', 404)
+            return formatResponse(updatedBlog, 'Blog updated successfully', 200)
         } catch (error: unknown) {
             if ((error as { code?: number }).code === 11000) {
                 const err = error as { keyValue?: Record<string, unknown> }
@@ -143,7 +150,8 @@ export async function updateBlog(req: Request): Promise<IResponse> {
 // BULK UPDATE Blogs
 export async function bulkUpdateBlogs(req: Request): Promise<IResponse> {
     return withDB(async () => {
-        const updates: { id: string; updateData: Record<string, unknown> }[] = await req.json()
+        const updates: { id: string; updateData: Record<string, unknown> }[] =
+            await req.json()
         const results = await Promise.allSettled(
             updates.map(({ id, updateData }) =>
                 Blog.findByIdAndUpdate(id, updateData, {
@@ -154,11 +162,18 @@ export async function bulkUpdateBlogs(req: Request): Promise<IResponse> {
         )
 
         const successfulUpdates = results
-            .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled' && r.value)
+            .filter(
+                (r): r is PromiseFulfilledResult<unknown> =>
+                    r.status === 'fulfilled' && r.value
+            )
             .map((r) => r.value)
-            
+
         const failedUpdates = results
-            .map((r, i) => (r.status === 'rejected' || !('value' in r && r.value) ? updates[i].id : null))
+            .map((r, i) =>
+                r.status === 'rejected' || !('value' in r && r.value)
+                    ? updates[i].id
+                    : null
+            )
             .filter((id): id is string => id !== null)
 
         return formatResponse(
@@ -174,12 +189,7 @@ export async function deleteBlog(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { id } = await req.json()
         const deletedBlog = await Blog.findByIdAndDelete(id)
-        if (!deletedBlog)
-            return formatResponse(
-                null,
-                'Blog not found',
-                404
-            )
+        if (!deletedBlog) return formatResponse(null, 'Blog not found', 404)
         return formatResponse(
             { deletedCount: 1 },
             'Blog deleted successfully',

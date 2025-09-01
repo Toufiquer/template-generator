@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for the ImageDialog.tsx component file.
  * Note: This component is static and does not depend on the input JSON.
  *
@@ -39,6 +11,7 @@ export const generateImageDialogComponentFile = (
     // This component's logic is generic for handling image uploads and selections.
     // It interacts with a general '/api/media' endpoint and does not need
     // to be dynamically changed based on the schema or naming conventions.
+    console.log('inputJsonFile', inputJsonFile)
     return `import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'

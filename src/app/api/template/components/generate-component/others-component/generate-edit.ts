@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object, allowing for nested properties.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for a dynamic Edit.tsx component file based on a JSON schema.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
@@ -37,7 +9,6 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
     const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"

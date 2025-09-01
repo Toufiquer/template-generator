@@ -28,7 +28,6 @@ const JsonEditor: React.FC = () => {
 
     const { items, addItem, removeItem, clearItems } = useJsonStore()
 
-    console.log('items : ', items)
     const handleSave = async () => {
         setError('')
         setIsLoading(true)
@@ -38,7 +37,14 @@ const JsonEditor: React.FC = () => {
             const parsedJson = JSON.parse(jsonInput)
 
             const isAlreadyExist = items.find(
-                (i) => i.data.uid === parsedJson.uid
+                (i) =>
+                    // Ensure i.data is a non-null object AND 'uid' is a property in it
+                    typeof i.data === 'object' &&
+                    i.data !== null &&
+                    'uid' in i.data &&
+                    // Now it's safe to access .uid. We use `as any` or a more specific type
+                    // to help TypeScript, since `in` only proves existence.
+                    (i.data as { uid: string }).uid === parsedJson.uid
             )
             if (isAlreadyExist?.id) {
                 setError('Json already exist with this uid.')
@@ -48,8 +54,8 @@ const JsonEditor: React.FC = () => {
                 addItem(parsedJson)
                 setJsonInput('')
             }
-        } catch (err) {
-            setError('Invalid JSON format. Please check your syntax.')
+        } catch (err: unknown) {
+            setError(`Invalid JSON format. Please check your syntax. ${err}`)
         } finally {
             setIsLoading(false)
         }

@@ -78,7 +78,7 @@ export interface Users_1_000___Store {
 `
 
     // Perform replacements in a specific order to avoid partial-match errors.
-    let result = template
+    const result = template
         .replaceAll('IUsers_1_000___', `I${namingConvention.Users_1_000___}`)
         .replaceAll(
             'Users_1_000___Store',

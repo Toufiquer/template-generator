@@ -89,7 +89,7 @@ export const useUsers_1_000___Store = create<Users_1_000___Store>((set) => ({
 
     // Perform replacements in a specific order to avoid conflicts.
     // Replace more specific names before more general ones.
-    let result = template
+    const result = template
         .replaceAll(
             'baseIUsers_1_000___',
             `baseI${namingConvention.Users_1_000___}`
