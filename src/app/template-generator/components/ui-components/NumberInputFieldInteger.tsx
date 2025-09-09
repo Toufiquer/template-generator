@@ -4,7 +4,9 @@
 | @author: Toufiquer Rahman<toufiquer.0@gmail.com>
 | @copyright: template-generator, September, 2025
 |-----------------------------------------
-*/ import { Input } from '@/components/ui/input'
+*/
+
+import { Input } from '@/components/ui/input'
 import React, { useState } from 'react'
 
 const NumberInputFieldInteger = () => {

@@ -26,6 +26,9 @@ import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMul
 import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
 import TextareaFieldForDescriptionEditor from './ui-components/rich-text-editor/TextareaFieldForDescription'
 import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
+import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
+import { CheckboxField } from './ui-components/CheckboxField'
+import { BooleanInputField } from './ui-components/BooleanInputField'
 
 interface DataTypeItem {
     name: string
@@ -131,7 +134,7 @@ const allDataType: DataTypeItem[] = [
       type: Boolean,
       default: false
     }`,
-        ui: '<CheckboxField />',
+        ui: '<BooleanInputField />',
     },
     {
         name: 'DATE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
@@ -221,7 +224,7 @@ const allDataType: DataTypeItem[] = [
       type: Boolean,
       default: false
     }`,
-        ui: '<SingleCheckboxField />',
+        ui: '<CheckboxField />',
     },
     {
         name: 'MULTICHECKBOX', // This implies multiple selections (array of strings)
@@ -278,10 +281,12 @@ const ViewDataType = () => {
                 return <TextareaFieldForDescriptionEditor />
             case '<NumberInputFieldInteger />':
                 return <NumberInputFieldInteger />
-            // case '<NumberInputFieldFloat />':
-            //     return <NumberInputFieldFloat />
-            // case '<CheckboxField />':
-            //     return <CheckboxField />
+            case '<NumberInputFieldFloat />':
+                return <NumberInputFieldFloat />
+            case '<CheckboxField />':
+                return <CheckboxField />
+            case '<BooleanInputField />':
+                return <BooleanInputField />
             // case '<DateField />':
             //     return <DateField />
             // case '<TimeField />':
