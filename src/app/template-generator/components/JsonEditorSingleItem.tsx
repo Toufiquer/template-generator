@@ -34,7 +34,9 @@ const JsonEditorSingleItem = ({
     const [collasp, setCollasp] = useState(false)
 
     const handleSetJosn = (data: string) => {
-        setJsonInput(JSON.stringify(data, null, 2))
+        console.log('seved item data  : ', data)
+        setJsonInput(data)
+        // setJsonInput(JSON.stringify(data, null, 2))
     }
 
     return (

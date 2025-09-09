@@ -68,7 +68,15 @@ const JsonEditor: React.FC = () => {
     }
 
     const handleFormat = () => {
-        console.log('json : ', jsonInput)
+        try {
+            const parsedJson = JSON.parse(jsonInput)
+            const formattedJson = JSON.stringify(parsedJson, null, 2)
+            setJsonInput(formattedJson)
+        } catch (error) {
+            console.error('Invalid JSON input:', error)
+            setError('Invalid JSON input')
+            // Optionally, you can set an error state here to display a message to the user.
+        }
     }
     const handleGenerate = async () => {
         console.log('handle generate is start')

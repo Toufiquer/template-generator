@@ -3,7 +3,7 @@
   "templateName": "Basic Template",
   "schema": {
     "title": "STRING",
-    "email": "EMAIL", 
+    "email": "EMAIL",
     "password": "PASSWORD",
     "passcode": "PASSCODE",
     "area": "SELECT",
