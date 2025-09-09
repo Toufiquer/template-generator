@@ -22,6 +22,8 @@ import InputFieldForPassword from './ui-components/InputFieldForPassword'
 import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
+import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMultiple'
+import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
 
 interface DataTypeItem {
     name: string
@@ -266,10 +268,10 @@ const ViewDataType = () => {
                 return <SelectField />
             case '<DynamicSelectField />':
                 return <DynamicSelectField />
-            // case '<ImageUploadFieldMultiple />':
-            //     return <ImageUploadFieldMultiple />
-            // case '<ImageUploadFieldSingle />':
-            //     return <ImageUploadFieldSingle />
+            case '<ImageUploadFieldMultiple />':
+                return <ImageUploadFieldMultiple />
+            case '<ImageUploadFieldSingle />':
+                return <ImageUploadFieldSingle />
             // case '<TextareaFieldForDescription />':
             //     return <TextareaFieldForDescription />
             // case '<NumberInputFieldInteger />':
