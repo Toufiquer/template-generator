@@ -38,6 +38,8 @@ import UrlInputField from './ui-components/UrlInputField'
 import RichTextEditorField from './ui-components/rich-text-editor/RichTextEditorField'
 import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
 import AutocompleteField from './ui-components/AutocompleteField'
+import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
+import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 
 interface DataTypeItem {
     name: string
@@ -314,12 +316,10 @@ const ViewDataType = () => {
                 return <RichTextEditorField />
             case '<AutocompleteField />':
                 return <AutocompleteField />
-            // case '<RadioButtonGroupField />':
-            //     return <RadioButtonGroupField />
-            // case '<SingleCheckboxField />':
-            //     return <SingleCheckboxField />
-            // case '<MultiCheckboxGroupField />':
-            //     return <MultiCheckboxGroupField />
+            case '<RadioButtonGroupField />':
+                return <RadioButtonGroupField />
+            case '<MultiCheckboxGroupField />':
+                return <MultiCheckboxGroupField />
             default:
                 return (
                     <p className="text-muted-foreground">
