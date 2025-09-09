@@ -31,6 +31,11 @@ import { CheckboxField } from './ui-components/CheckboxField'
 import { BooleanInputField } from './ui-components/BooleanInputField'
 import { DateField } from './ui-components/DateField'
 import TimeField from './ui-components/TimeField'
+import DateRangePickerField from './ui-components/DateRangePickerField'
+import TimeRangePickerField from './ui-components/TimeRangePickerField'
+import ColorPickerField from './ui-components/ColorPickerField'
+import PhoneInputField from './ui-components/PhoneInputField'
+import UrlInputField from './ui-components/UrlInputField'
 
 interface DataTypeItem {
     name: string
@@ -293,16 +298,16 @@ const ViewDataType = () => {
                 return <DateField />
             case '<TimeField />':
                 return <TimeField />
-            // case '<DateRangePickerField />':
-            //     return <DateRangePickerField />
-            // case '<TimeRangePickerField />':
-            //     return <TimeRangePickerField />
-            // case '<ColorPickerField />':
-            //     return <ColorPickerField />
-            // case '<PhoneInputField />':
-            //     return <PhoneInputField />
-            // case '<UrlInputField />':
-            //     return <UrlInputField />
+            case '<DateRangePickerField />':
+                return <DateRangePickerField />
+            case '<TimeRangePickerField />':
+                return <TimeRangePickerField />
+            case '<ColorPickerField />':
+                return <ColorPickerField />
+            case '<PhoneInputField />':
+                return <PhoneInputField />
+            case '<UrlInputField />':
+                return <UrlInputField />
             // case '<RichTextEditorField />':
             //     return <RichTextEditorField />
             // case '<AutocompleteField />':
