@@ -17,7 +17,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 
 import MenuBar from './menu-bar'
 
-export default function TextareaFieldForDescriptionEditor() {
+export default function RichTextEditorField() {
     const content: string = ''
     const onChange = (content: string) => {
         console.log('content : ', content)

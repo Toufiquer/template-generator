@@ -24,7 +24,6 @@ import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
 import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMultiple'
 import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
-import TextareaFieldForDescriptionEditor from './ui-components/rich-text-editor/TextareaFieldForDescription'
 import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
 import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
 import { CheckboxField } from './ui-components/CheckboxField'
@@ -36,6 +35,9 @@ import TimeRangePickerField from './ui-components/TimeRangePickerField'
 import ColorPickerField from './ui-components/ColorPickerField'
 import PhoneInputField from './ui-components/PhoneInputField'
 import UrlInputField from './ui-components/UrlInputField'
+import RichTextEditorField from './ui-components/rich-text-editor/RichTextEditorField'
+import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
+import AutocompleteField from './ui-components/AutocompleteField'
 
 interface DataTypeItem {
     name: string
@@ -285,7 +287,7 @@ const ViewDataType = () => {
             case '<ImageUploadFieldSingle />':
                 return <ImageUploadFieldSingle />
             case '<TextareaFieldForDescription />':
-                return <TextareaFieldForDescriptionEditor />
+                return <TextareaFieldForDescription />
             case '<NumberInputFieldInteger />':
                 return <NumberInputFieldInteger />
             case '<NumberInputFieldFloat />':
@@ -308,10 +310,10 @@ const ViewDataType = () => {
                 return <PhoneInputField />
             case '<UrlInputField />':
                 return <UrlInputField />
-            // case '<RichTextEditorField />':
-            //     return <RichTextEditorField />
-            // case '<AutocompleteField />':
-            //     return <AutocompleteField />
+            case '<RichTextEditorField />':
+                return <RichTextEditorField />
+            case '<AutocompleteField />':
+                return <AutocompleteField />
             // case '<RadioButtonGroupField />':
             //     return <RadioButtonGroupField />
             // case '<SingleCheckboxField />':
