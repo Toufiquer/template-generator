@@ -1,11 +1,3 @@
-/*
-|-----------------------------------------
-| setting up Page for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
-
 'use client'
 
 /*
@@ -107,6 +99,9 @@ const TimeField = () => {
 
     return (
         <div className={cn('relative w-fit')}>
+            <div className="text-red-700">
+                This component works without popup
+            </div>
             <Popover open={isOpen} onOpenChange={setIsOpen}>
                 <PopoverTrigger asChild>
                     <Button

@@ -30,6 +30,7 @@ import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
 import { CheckboxField } from './ui-components/CheckboxField'
 import { BooleanInputField } from './ui-components/BooleanInputField'
 import { DateField } from './ui-components/DateField'
+import TimeField from './ui-components/TimeField'
 
 interface DataTypeItem {
     name: string
@@ -290,8 +291,8 @@ const ViewDataType = () => {
                 return <BooleanInputField />
             case '<DateField />':
                 return <DateField />
-            // case '<TimeField />':
-            //     return <TimeField />
+            case '<TimeField />':
+                return <TimeField />
             // case '<DateRangePickerField />':
             //     return <DateRangePickerField />
             // case '<TimeRangePickerField />':
