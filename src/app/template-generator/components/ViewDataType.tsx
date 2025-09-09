@@ -1,3 +1,5 @@
+// ViewDataType.tsx
+
 'use client'
 
 import {
@@ -18,6 +20,7 @@ import InputFieldForEmail from './ui-components/InputFieldForEmail'
 import InputFieldForPassword from './ui-components/InputFieldForPassword'
 import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 import { SelectField } from './ui-components/SelectField'
+import DynamicSelectField from './ui-components/DynamicSelectField'
 // import InputFieldForPassword from './ui-components/InputFieldForPassword'
 // import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 // import SelectField from './ui-components/SelectField'
@@ -280,8 +283,8 @@ const ViewDataType = () => {
                 return <InputFieldForPasscode />
             case '<SelectField />':
                 return <SelectField />
-            // case '<DynamicSelectField />':
-            //     return <DynamicSelectField />
+            case '<DynamicSelectField />':
+                return <DynamicSelectField />
             // case '<ImageUploadFieldMultiple />':
             //     return <ImageUploadFieldMultiple />
             // case '<ImageUploadFieldSingle />':
