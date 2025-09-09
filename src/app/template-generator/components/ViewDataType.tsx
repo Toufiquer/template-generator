@@ -1,10 +1,3 @@
-/*
-|-----------------------------------------
-| setting up ViewDataType for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, August, 2025
-|-----------------------------------------
-*/
 'use client'
 
 import {
@@ -14,219 +7,245 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify' // Ensure react-toastify is installed and configured
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button' // Assuming you have a Button component
 
-const ViewDataType = () => {
-    const allDataType = [
-        {
-            name: 'STRING',
-            mongooseSchema: `STRING: {
+// Define the structure of a DataType item
+interface DataTypeItem {
+    name: string
+    mongooseSchema: string
+    ui: string
+}
+
+const allDataType: DataTypeItem[] = [
+    {
+        name: 'STRING',
+        mongooseSchema: `STRING: {
       type: String,
       trim: true
     }`,
-            ui: '<InputFieldForString />',
+        ui: '<InputFieldForString />',
+    },
+    {
+        name: 'EMAIL',
+        mongooseSchema: `EMAIL: {
+      type: String,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+    }`,
+        ui: '<InputFieldForEmail />',
+    },
+    {
+        name: 'PASSWOR',
+        mongooseSchema: `PASSWORD: {
+      type: String,
+      select: false
+    }`,
+        ui: '<InputFieldForPassword />',
+    },
+    {
+        name: 'PASSCOD',
+        mongooseSchema: `PASSCODE: {
+      type: String,
+      select: false
+    }`,
+        ui: '<InputFieldForPasscode />',
+    },
+    {
+        name: 'SELECT',
+        mongooseSchema: `SELECT: {
+      type: String,
+      enum: ['Option 1', 'Option 2', 'Option 3']
+    }`,
+        ui: '<SelectField />',
+    },
+    {
+        name: 'DYNAMICSELECT',
+        mongooseSchema: `DYNAMICSELECT: {
+      type: Schema.Types.ObjectId,
+      ref: 'AnotherModel'
+    }`,
+        ui: '<DynamicSelectField />',
+    },
+    {
+        name: 'IMAGES',
+        mongooseSchema: `IMAGES: [{
+      type: String
+    }]`,
+        ui: '<ImageUploadFieldMultiple />',
+    },
+    {
+        name: 'IMAGE ',
+        mongooseSchema: `IMAGE: {
+      type: String
+    }`,
+        ui: '<ImageUploadFieldSingle />',
+    },
+    {
+        name: 'DESCRIPTION',
+        mongooseSchema: `DESCRIPTION: {
+      type: String,
+      trim: true
+    }`,
+        ui: '<TextareaFieldForDescription />',
+    },
+    {
+        name: 'INTNUMBER',
+        mongooseSchema: `INTNUMBER: {
+      type: Number,
+      validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} is not an integer value'
+      }
+    }`,
+        ui: '<NumberInputFieldInteger />',
+    },
+    {
+        name: 'FLOATNUMBER',
+        mongooseSchema: `FLOATNUMBER: {
+      type: Number
+    }`,
+        ui: '<NumberInputFieldFloat />',
+    },
+    {
+        name: 'BOOLEAN',
+        mongooseSchema: `BOOLEAN: {
+      type: Boolean,
+      default: false
+    }`,
+        ui: '<CheckboxField />',
+    },
+    {
+        name: 'DATE ',
+        mongooseSchema: `DATE: {
+      type: Date,
+      default: Date.now
+    }`,
+        ui: '<DateField />',
+    },
+    {
+        name: 'TIME',
+        mongooseSchema: `TIME: {
+      type: String
+    }`,
+        ui: '<TimeField />',
+    },
+    {
+        name: 'DATERANGE',
+        mongooseSchema: `DATERANGE: {
+      start: { type: Date },
+      end: { type: Date }
+    }`,
+        ui: '<DateRangePickerField />',
+    },
+    {
+        name: 'TIMERANGE',
+        mongooseSchema: `TIMERANGE: {
+      start: { type: String },
+      end: { type: String }
+    }`,
+        ui: '<TimeRangePickerField />',
+    },
+    {
+        name: 'COLOEPICKER',
+        mongooseSchema: `COLORPICKER: {
+      type: String,
+      match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+    }`,
+        ui: '<ColorPickerField />',
+    },
+    {
+        name: 'PHONE',
+        mongooseSchema: `PHONE: {
+      type: String,
+      validate: {
+        validator: function(v) {
+          return /\\d{3}-\\d{3}-\\d{4}/.test(v);
         },
-        {
-            name: 'EMAIL',
-            mongooseSchema: `EMAIL: {
-                    type: String,
-                    unique: true,
-                    trim: true,
-                    lowercase: true,
-                    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-                }`,
-            ui: '<InputFieldForEmail />',
-        },
-        {
-            name: 'PASSWOR', // Note: Corrected to PASSWORD in schema, keep consistent if possible
-            mongooseSchema: `PASSWORD: {
-                    type: String,
-                    select: false
-                }`,
-            ui: '<InputFieldForPassword />',
-        },
-        {
-            name: 'PASSCOD', // Note: Corrected to PASSCODE in schema, keep consistent if possible
-            mongooseSchema: `PASSCODE: {
-                    type: String,
-                    select: false
-                }`,
-            ui: '<InputFieldForPasscode />',
-        },
-        {
-            name: 'SELECT',
-            mongooseSchema: `SELECT: {
-                    type: String,
-                    enum: ['Option 1', 'Option 2', 'Option 3'] // Example options
-                }`,
-            ui: '<SelectField />',
-        },
-        {
-            name: 'DYNAMICSELECT',
-            mongooseSchema: `DYNAMICSELECT: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'AnotherModel' // Example of a dynamic reference to another model
-                }`,
-            ui: '<DynamicSelectField />',
-        },
-        {
-            name: 'IMAGES',
-            mongooseSchema: `IMAGES: [{
-                     type: String // Array of URLs to images
-                }]`,
-            ui: '<ImageUploadFieldMultiple />',
-        },
-        {
-            name: 'IMAGE ', // Note the trailing space, consider standardizing
-            mongooseSchema: `IMAGE: {
-                    type: String // URL to a single image
-                }`,
-            ui: '<ImageUploadFieldSingle />',
-        },
-        {
-            name: 'DESCRIPTION',
-            mongooseSchema: `DESCRIPTION: {
-                    type: String,
-                    trim: true
-                }`,
-            ui: '<TextareaFieldForDescription />',
-        },
-        {
-            name: 'INTNUMBER',
-            mongooseSchema: `INTNUMBER: {
-                    type: Number,
-                    validate: {
-                        validator: Number.isInteger,
-                        message: '{VALUE} is not an integer value'
-                    }
-                }`,
-            ui: '<NumberInputFieldInteger />',
-        },
-        {
-            name: 'FLOATNUMBER',
-            mongooseSchema: `FLOATNUMBER: {
-                    type: Number
-                }`,
-            ui: '<NumberInputFieldFloat />',
-        },
-        {
-            name: 'BOOLEAN',
-            mongooseSchema: `BOOLEAN: {
-                    type: Boolean,
-                    default: false
-                }`,
-            ui: '<CheckboxField />',
-        },
-        {
-            name: 'DATE ', // Note the trailing space, consider standardizing
-            mongooseSchema: `DATE: {
-                    type: Date,
-                    default: Date.now
-                }`,
-            ui: '<DateField />',
-        },
-        {
-            name: 'TIME',
-            mongooseSchema: `TIME: {
-                    type: String // Can be stored as a string in 'HH:MM:SS' format
-                }`,
-            ui: '<TimeField />',
-        },
-        {
-            name: 'DATERANGE',
-            mongooseSchema: `DATERANGE: {
-                    start: { type: Date },
-                    end: { type: Date }
-                }`,
-            ui: '<DateRangePickerField />',
-        },
-        {
-            name: 'TIMERANGE',
-            mongooseSchema: `TIMERANGE: {
-                    start: { type: String }, // 'HH:MM:SS'
-                    end: { type: String }   // 'HH:MM:SS'
-                }`,
-            ui: '<TimeRangePickerField />',
-        },
-        {
-            name: 'COLOEPICKER', // Corrected to COLORPICKER in schema, keep consistent if possible
-            mongooseSchema: `COLORPICKER: {
-                    type: String,
-                    match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
-                }`,
-            ui: '<ColorPickerField />',
-        },
-        {
-            name: 'PHONE',
-            mongooseSchema: `PHONE: {
-                    type: String,
-                    validate: {
-                        validator: function(v) {
-                        return /\\d{3}-\\d{3}-\\d{4}/.test(v); // Escaped backslashes for string literal
-                        },
-                        message: props => \`\${props.value} is not a valid phone number!\`
-                    }
-                }`,
-            ui: '<PhoneInputField />',
-        },
-        {
-            name: 'URL',
-            mongooseSchema: `URL: {
-                    type: String,
-                    trim: true
-                }`,
-            ui: '<UrlInputField />',
-        },
-        {
-            name: 'RICHTEXT',
-            mongooseSchema: `RICHTEXT: {
-                    type: String
-                }`,
-            ui: '<RichTextEditorField />',
-        },
-        {
-            name: 'AUTOCOMPLETE',
-            mongooseSchema: `AUTOCOMPLETE: {
-                    type: String
-                }`,
-            ui: '<AutocompleteField />',
-        },
-        {
-            name: 'RADIOBUTTON',
-            mongooseSchema: `RADIOBUTTON: {
-                    type: String,
-                    enum: ['Choice A', 'Choice B', 'Choice C'] // Example choices
-                }`,
-            ui: '<RadioButtonGroupField />',
-        },
-        {
-            name: 'CHECKBOX',
-            mongooseSchema: `CHECKBOX: {
-                    type: Boolean,
-                    default: false
-                }`,
-            ui: '<SingleCheckboxField />',
-        },
-        {
-            name: 'MULTICHECKBOX',
-            mongooseSchema: `MULTICHECKBOX: [{
-                    type: String // An array of strings representing the selected options
-                }]`,
-            ui: '<MultiCheckboxGroupField />',
-        },
-    ]
+        message: props => \`\${props.value} is not a valid phone number!\`
+      }
+    }`,
+        ui: '<PhoneInputField />',
+    },
+    {
+        name: 'URL',
+        mongooseSchema: `URL: {
+      type: String,
+      trim: true
+    }`,
+        ui: '<UrlInputField />',
+    },
+    {
+        name: 'RICHTEXT',
+        mongooseSchema: `RICHTEXT: {
+      type: String
+    }`,
+        ui: '<RichTextEditorField />',
+    },
+    {
+        name: 'AUTOCOMPLETE',
+        mongooseSchema: `AUTOCOMPLETE: {
+      type: String
+    }`,
+        ui: '<AutocompleteField />',
+    },
+    {
+        name: 'RADIOBUTTON',
+        mongooseSchema: `RADIOBUTTON: {
+      type: String,
+      enum: ['Choice A', 'Choice B', 'Choice C']
+    }`,
+        ui: '<RadioButtonGroupField />',
+    },
+    {
+        name: 'CHECKBOX',
+        mongooseSchema: `CHECKBOX: {
+      type: Boolean,
+      default: false
+    }`,
+        ui: '<SingleCheckboxField />',
+    },
+    {
+        name: 'MULTICHECKBOX',
+        mongooseSchema: `MULTICHECKBOX: [{
+      type: String
+    }]`,
+        ui: '<MultiCheckboxGroupField />',
+    },
+]
 
-    const copyToClipboard = (data: string) => {
+const ViewDataType = () => {
+    const copyToClipboard = (data: string, type: 'schema' | 'ui') => {
         navigator.clipboard
             .writeText(data)
             .then(() => {
-                toast.success('Copied to clipboard')
+                toast.success(
+                    `Copied ${type === 'schema' ? 'Mongoose Schema' : 'UI Component name'} to clipboard!`
+                )
             })
             .catch((err) => {
                 console.error('Failed to copy: ', err)
-                toast.error('Failed to copy to clipboard')
+                toast.error('Failed to copy to clipboard.')
             })
+    }
+
+    const viewComponent = (componentName: string) => {
+        // In a real application, you might dynamically render the component
+        // or navigate to a page where it's displayed.
+        // For this example, we'll just show it in a toast.
+        toast.info(`Attempting to view component: ${componentName}`, {
+            autoClose: 3000,
+        })
+        console.log(`Viewing UI Component: ${componentName}`)
+
+        // If you had a component registry and a way to render it:
+        // const ComponentToRender = componentRegistry[componentName];
+        // if (ComponentToRender) {
+        //   // Render ComponentToRender in a modal or new view
+        // }
     }
 
     return (
@@ -235,20 +254,48 @@ const ViewDataType = () => {
                 DataType
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="max-w-xl">
+                {' '}
+                {/* Increased max-width for better button layout */}
                 <DialogHeader>
-                    <DialogTitle>Click to copy</DialogTitle>
+                    <DialogTitle>Data Types Overview</DialogTitle>
                 </DialogHeader>
-                <ScrollArea className="h-[200px] w-full rounded-md border p-4">
-                    <div className="w-full gap-2 flex flex-col pt-4">
+                <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+                    {' '}
+                    {/* Increased height for more visibility */}
+                    <div className="w-full grid grid-cols-1 gap-3 pt-2">
+                        {' '}
+                        {/* Using grid for better layout */}
                         {allDataType.map((curr) => (
-                            <span
+                            <div
                                 key={curr.name}
-                                onClick={() => copyToClipboard(curr.name)}
-                                className="cursor-pointer p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
+                                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 border dark:border-slate-700"
                             >
-                                {curr.name}
-                            </span>
+                                <span className="font-semibold text-lg mb-2 sm:mb-0 sm:mr-4 flex-grow">
+                                    {curr.name}
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button
+                                        variant="outline" // Assuming 'outline' variant for your Button component
+                                        size="sm"
+                                        onClick={() => viewComponent(curr.ui)}
+                                    >
+                                        View UI
+                                    </Button>
+                                    <Button
+                                        variant="secondary" // Assuming 'secondary' variant
+                                        size="sm"
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                curr.mongooseSchema,
+                                                'schema'
+                                            )
+                                        }
+                                    >
+                                        Copy Schema
+                                    </Button>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </ScrollArea>
