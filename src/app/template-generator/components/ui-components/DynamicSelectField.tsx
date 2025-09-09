@@ -22,10 +22,6 @@ const DynamicSelectField = () => {
     const apiUrl = 'https://jsonplaceholder.typicode.com/users'
     const readOnly = false
 
-    const onSelectionChange = (selectedItems: string[]) => {
-        setSelectedItems(selectedItems)
-    }
-
     // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
@@ -51,12 +47,6 @@ const DynamicSelectField = () => {
 
         fetchData()
     }, [apiUrl])
-
-    useEffect(() => {
-        if (onSelectionChange) {
-            onSelectionChange(selectedItems)
-        }
-    }, [selectedItems, onSelectionChange])
 
     // Filter available options based on search term
     const getFilteredOptions = () => {

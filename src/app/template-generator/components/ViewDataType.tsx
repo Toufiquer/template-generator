@@ -24,6 +24,8 @@ import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
 import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMultiple'
 import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
+import TextareaFieldForDescriptionEditor from './ui-components/rich-text-editor/TextareaFieldForDescription'
+import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
 
 interface DataTypeItem {
     name: string
@@ -272,10 +274,10 @@ const ViewDataType = () => {
                 return <ImageUploadFieldMultiple />
             case '<ImageUploadFieldSingle />':
                 return <ImageUploadFieldSingle />
-            // case '<TextareaFieldForDescription />':
-            //     return <TextareaFieldForDescription />
-            // case '<NumberInputFieldInteger />':
-            //     return <NumberInputFieldInteger />
+            case '<TextareaFieldForDescription />':
+                return <TextareaFieldForDescriptionEditor />
+            case '<NumberInputFieldInteger />':
+                return <NumberInputFieldInteger />
             // case '<NumberInputFieldFloat />':
             //     return <NumberInputFieldFloat />
             // case '<CheckboxField />':
