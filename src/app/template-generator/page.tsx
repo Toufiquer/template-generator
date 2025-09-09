@@ -10,7 +10,7 @@ import JsonEditor from './components/JsonEditor'
 
 const Page = () => {
     return (
-        <main>
+        <main className="md:min-w-7xl mx-auto">
             <JsonEditor />
         </main>
     )
