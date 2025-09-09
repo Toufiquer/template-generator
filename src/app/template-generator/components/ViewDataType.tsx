@@ -7,11 +7,40 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { toast } from 'react-toastify' // Ensure react-toastify is installed and configured
+import { toast } from 'react-toastify'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button' // Assuming you have a Button component
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
 
-// Define the structure of a DataType item
+// Import all UI components
+import InputFieldForString from './ui-components/InputFieldForString'
+import InputFieldForEmail from './ui-components/InputFieldForEmail'
+import InputFieldForPassword from './ui-components/InputFieldForPassword'
+import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
+import { SelectField } from './ui-components/SelectField'
+// import InputFieldForPassword from './ui-components/InputFieldForPassword'
+// import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
+// import SelectField from './ui-components/SelectField'
+// import DynamicSelectField from './ui-components/DynamicSelectField'
+// import ImageUploadFieldMultiple from './ui-components/ImageUploadFieldMultiple'
+// import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
+// import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
+// import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
+// import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
+// import CheckboxField from './ui-components/CheckboxField' // Assuming this is for BOOLEAN
+// import DateField from './ui-components/DateField'
+// import TimeField from './ui-components/TimeField'
+// import DateRangePickerField from './ui-components/DateRangePickerField'
+// import TimeRangePickerField from './ui-components/TimeRangePickerField'
+// import ColorPickerField from './ui-components/ColorPickerField'
+// import PhoneInputField from './ui-components/PhoneInputField'
+// import UrlInputField from './ui-components/UrlInputField'
+// import RichTextEditorField from './ui-components/RichTextEditorField'
+// import AutocompleteField from './ui-components/AutocompleteField'
+// import RadioButtonGroupField from './ui-components/RadioButtonGroupField'
+// import SingleCheckboxField from './ui-components/SingleCheckboxField' // Assuming this is for CHECKBOX
+// import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
+
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -39,7 +68,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<InputFieldForEmail />',
     },
     {
-        name: 'PASSWOR',
+        name: 'PASSWORD',
         mongooseSchema: `PASSWORD: {
       type: String,
       select: false
@@ -47,7 +76,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<InputFieldForPassword />',
     },
     {
-        name: 'PASSCOD',
+        name: 'PASSCODE',
         mongooseSchema: `PASSCODE: {
       type: String,
       select: false
@@ -78,7 +107,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<ImageUploadFieldMultiple />',
     },
     {
-        name: 'IMAGE ',
+        name: 'IMAGE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
         mongooseSchema: `IMAGE: {
       type: String
     }`,
@@ -119,7 +148,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<CheckboxField />',
     },
     {
-        name: 'DATE ',
+        name: 'DATE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
         mongooseSchema: `DATE: {
       type: Date,
       default: Date.now
@@ -150,7 +179,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<TimeRangePickerField />',
     },
     {
-        name: 'COLOEPICKER',
+        name: 'COLORPICKER', // Corrected typo from COLOEPICKER
         mongooseSchema: `COLORPICKER: {
       type: String,
       match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
@@ -201,7 +230,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<RadioButtonGroupField />',
     },
     {
-        name: 'CHECKBOX',
+        name: 'CHECKBOX', // This typically implies a single checkbox (boolean)
         mongooseSchema: `CHECKBOX: {
       type: Boolean,
       default: false
@@ -209,7 +238,7 @@ const allDataType: DataTypeItem[] = [
         ui: '<SingleCheckboxField />',
     },
     {
-        name: 'MULTICHECKBOX',
+        name: 'MULTICHECKBOX', // This implies multiple selections (array of strings)
         mongooseSchema: `MULTICHECKBOX: [{
       type: String
     }]`,
@@ -218,6 +247,13 @@ const allDataType: DataTypeItem[] = [
 ]
 
 const ViewDataType = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [showPreviewDialog, setShowPreviewDialog] = useState(false)
+    const [currentPreviewComponent, setCurrentPreviewComponent] =
+        useState<React.ReactNode | null>(null)
+    const [currentPreviewComponentName, setCurrentPreviewComponentName] =
+        useState<string>('')
+
     const copyToClipboard = (data: string, type: 'schema' | 'ui') => {
         navigator.clipboard
             .writeText(data)
@@ -232,40 +268,81 @@ const ViewDataType = () => {
             })
     }
 
-    const viewComponent = (componentName: string) => {
-        // In a real application, you might dynamically render the component
-        // or navigate to a page where it's displayed.
-        // For this example, we'll just show it in a toast.
-        toast.info(`Attempting to view component: ${componentName}`, {
-            autoClose: 3000,
-        })
-        console.log(`Viewing UI Component: ${componentName}`)
+    const getComponentForPreview = (item: DataTypeItem): React.ReactNode => {
+        switch (item.ui) {
+            case '<InputFieldForString />':
+                return <InputFieldForString />
+            case '<InputFieldForEmail />':
+                return <InputFieldForEmail />
+            case '<InputFieldForPassword />':
+                return <InputFieldForPassword />
+            case '<InputFieldForPasscode />':
+                return <InputFieldForPasscode />
+            case '<SelectField />':
+                return <SelectField />
+            // case '<DynamicSelectField />':
+            //     return <DynamicSelectField />
+            // case '<ImageUploadFieldMultiple />':
+            //     return <ImageUploadFieldMultiple />
+            // case '<ImageUploadFieldSingle />':
+            //     return <ImageUploadFieldSingle />
+            // case '<TextareaFieldForDescription />':
+            //     return <TextareaFieldForDescription />
+            // case '<NumberInputFieldInteger />':
+            //     return <NumberInputFieldInteger />
+            // case '<NumberInputFieldFloat />':
+            //     return <NumberInputFieldFloat />
+            // case '<CheckboxField />':
+            //     return <CheckboxField />
+            // case '<DateField />':
+            //     return <DateField />
+            // case '<TimeField />':
+            //     return <TimeField />
+            // case '<DateRangePickerField />':
+            //     return <DateRangePickerField />
+            // case '<TimeRangePickerField />':
+            //     return <TimeRangePickerField />
+            // case '<ColorPickerField />':
+            //     return <ColorPickerField />
+            // case '<PhoneInputField />':
+            //     return <PhoneInputField />
+            // case '<UrlInputField />':
+            //     return <UrlInputField />
+            // case '<RichTextEditorField />':
+            //     return <RichTextEditorField />
+            // case '<AutocompleteField />':
+            //     return <AutocompleteField />
+            // case '<RadioButtonGroupField />':
+            //     return <RadioButtonGroupField />
+            // case '<SingleCheckboxField />':
+            //     return <SingleCheckboxField />
+            // case '<MultiCheckboxGroupField />':
+            //     return <MultiCheckboxGroupField />
+            default:
+                return <p>No preview available for {item.name}</p>
+        }
+    }
 
-        // If you had a component registry and a way to render it:
-        // const ComponentToRender = componentRegistry[componentName];
-        // if (ComponentToRender) {
-        //   // Render ComponentToRender in a modal or new view
-        // }
+    const handleViewUI = (item: DataTypeItem) => {
+        setCurrentPreviewComponent(getComponentForPreview(item))
+        setCurrentPreviewComponentName(item.name)
+        setShowPreviewDialog(true)
     }
 
     return (
-        <Dialog>
-            <DialogTrigger className="border-1 text-sm hover:bg-slate-800 text-white px-4 py-2 rounded-md cursor-pointer">
-                DataType
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+                <Button className="border-1 text-sm hover:bg-slate-800 text-white px-4 py-2 rounded-md cursor-pointer">
+                    DataType
+                </Button>
             </DialogTrigger>
 
             <DialogContent className="max-w-xl">
-                {' '}
-                {/* Increased max-width for better button layout */}
                 <DialogHeader>
                     <DialogTitle>Data Types Overview</DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="h-[400px] w-full rounded-md border p-4">
-                    {' '}
-                    {/* Increased height for more visibility */}
                     <div className="w-full grid grid-cols-1 gap-3 pt-2">
-                        {' '}
-                        {/* Using grid for better layout */}
                         {allDataType.map((curr) => (
                             <div
                                 key={curr.name}
@@ -276,14 +353,14 @@ const ViewDataType = () => {
                                 </span>
                                 <div className="flex flex-wrap gap-2">
                                     <Button
-                                        variant="outline" // Assuming 'outline' variant for your Button component
+                                        variant="outline"
                                         size="sm"
-                                        onClick={() => viewComponent(curr.ui)}
+                                        onClick={() => handleViewUI(curr)}
                                     >
                                         View UI
                                     </Button>
                                     <Button
-                                        variant="secondary" // Assuming 'secondary' variant
+                                        variant="secondary"
                                         size="sm"
                                         onClick={() =>
                                             copyToClipboard(
@@ -300,6 +377,23 @@ const ViewDataType = () => {
                     </div>
                 </ScrollArea>
             </DialogContent>
+
+            {/* Preview Dialog */}
+            <Dialog
+                open={showPreviewDialog}
+                onOpenChange={setShowPreviewDialog}
+            >
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>
+                            Preview: {currentPreviewComponentName}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="p-4 border rounded-md">
+                        {currentPreviewComponent}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Dialog>
     )
 }
