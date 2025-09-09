@@ -20,7 +20,6 @@ const DynamicSelectField = () => {
     const label = 'Select Team Members'
     const placeholder = 'Search and select members...'
     const apiUrl = 'https://jsonplaceholder.typicode.com/users'
-    const defaultSelected: string[] = []
     const readOnly = false
 
     const onSelectionChange = (selectedItems: string[]) => {
@@ -52,10 +51,6 @@ const DynamicSelectField = () => {
 
         fetchData()
     }, [apiUrl])
-
-    useEffect(() => {
-        setSelectedItems(defaultSelected)
-    }, [defaultSelected])
 
     useEffect(() => {
         if (onSelectionChange) {

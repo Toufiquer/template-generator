@@ -31,7 +31,7 @@ const DynamicSelectField = () => {
     const label = 'Select Data'
     const placeholder = 'Select an option'
     const apiUrl = 'https://jsonplaceholder.typicode.com/users'
-    const defaultSelected: string[] = []
+
     const readOnly = false
     const onSelectionChange = (selectedItems: string[]) => {
         setSelectedItems(selectedItems)
@@ -62,11 +62,6 @@ const DynamicSelectField = () => {
 
         fetchData()
     }, [apiUrl])
-
-    // Update selected items from props when they change
-    useEffect(() => {
-        setSelectedItems(defaultSelected)
-    }, [defaultSelected])
 
     // Notify parent component when selections change
     useEffect(() => {

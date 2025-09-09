@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Import all UI components
 import InputFieldForString from './ui-components/InputFieldForString'
@@ -21,28 +22,6 @@ import InputFieldForPassword from './ui-components/InputFieldForPassword'
 import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
-// import InputFieldForPassword from './ui-components/InputFieldForPassword'
-// import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
-// import SelectField from './ui-components/SelectField'
-// import DynamicSelectField from './ui-components/DynamicSelectField'
-// import ImageUploadFieldMultiple from './ui-components/ImageUploadFieldMultiple'
-// import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
-// import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
-// import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
-// import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
-// import CheckboxField from './ui-components/CheckboxField' // Assuming this is for BOOLEAN
-// import DateField from './ui-components/DateField'
-// import TimeField from './ui-components/TimeField'
-// import DateRangePickerField from './ui-components/DateRangePickerField'
-// import TimeRangePickerField from './ui-components/TimeRangePickerField'
-// import ColorPickerField from './ui-components/ColorPickerField'
-// import PhoneInputField from './ui-components/PhoneInputField'
-// import UrlInputField from './ui-components/UrlInputField'
-// import RichTextEditorField from './ui-components/RichTextEditorField'
-// import AutocompleteField from './ui-components/AutocompleteField'
-// import RadioButtonGroupField from './ui-components/RadioButtonGroupField'
-// import SingleCheckboxField from './ui-components/SingleCheckboxField' // Assuming this is for CHECKBOX
-// import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 
 interface DataTypeItem {
     name: string
@@ -252,18 +231,20 @@ const allDataType: DataTypeItem[] = [
 const ViewDataType = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [showPreviewDialog, setShowPreviewDialog] = useState(false)
-    const [currentPreviewComponent, setCurrentPreviewComponent] =
-        useState<React.ReactNode | null>(null)
-    const [currentPreviewComponentName, setCurrentPreviewComponentName] =
-        useState<string>('')
+    const [currentPreviewItem, setCurrentPreviewItem] =
+        useState<DataTypeItem | null>(null)
 
-    const copyToClipboard = (data: string, type: 'schema' | 'ui') => {
+    const copyToClipboard = (data: string, type: 'schema' | 'ui' | 'name') => {
         navigator.clipboard
             .writeText(data)
             .then(() => {
-                toast.success(
-                    `Copied ${type === 'schema' ? 'Mongoose Schema' : 'UI Component name'} to clipboard!`
-                )
+                if (type === 'name') {
+                    toast.success(`Copied "${data}" to clipboard!`)
+                } else {
+                    toast.success(
+                        `Copied ${type === 'schema' ? 'Mongoose Schema' : 'UI Component name'} to clipboard!`
+                    )
+                }
             })
             .catch((err) => {
                 console.error('Failed to copy: ', err)
@@ -322,13 +303,16 @@ const ViewDataType = () => {
             // case '<MultiCheckboxGroupField />':
             //     return <MultiCheckboxGroupField />
             default:
-                return <p>No preview available for {item.name}</p>
+                return (
+                    <p className="text-muted-foreground">
+                        No preview available for {item.name}
+                    </p>
+                )
         }
     }
 
-    const handleViewUI = (item: DataTypeItem) => {
-        setCurrentPreviewComponent(getComponentForPreview(item))
-        setCurrentPreviewComponentName(item.name)
+    const handleViewDetails = (item: DataTypeItem) => {
+        setCurrentPreviewItem(item)
         setShowPreviewDialog(true)
     }
 
@@ -358,21 +342,18 @@ const ViewDataType = () => {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handleViewUI(curr)}
+                                        onClick={() => handleViewDetails(curr)}
                                     >
-                                        View UI
+                                        View Details
                                     </Button>
                                     <Button
                                         variant="secondary"
                                         size="sm"
                                         onClick={() =>
-                                            copyToClipboard(
-                                                curr.mongooseSchema,
-                                                'schema'
-                                            )
+                                            copyToClipboard(curr.name, 'name')
                                         }
                                     >
-                                        Copy Schema
+                                        Copy Name
                                     </Button>
                                 </div>
                             </div>
@@ -381,19 +362,176 @@ const ViewDataType = () => {
                 </ScrollArea>
             </DialogContent>
 
-            {/* Preview Dialog */}
+            {/* Preview Dialog with Schema and UI */}
             <Dialog
                 open={showPreviewDialog}
                 onOpenChange={setShowPreviewDialog}
             >
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
                     <DialogHeader>
-                        <DialogTitle>
-                            Preview: {currentPreviewComponentName}
+                        <DialogTitle className="flex items-center justify-between mt-2">
+                            <span>Details: {currentPreviewItem?.name}</span>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        currentPreviewItem &&
+                                        copyToClipboard(
+                                            currentPreviewItem.mongooseSchema,
+                                            'schema'
+                                        )
+                                    }
+                                >
+                                    Copy Schema
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        currentPreviewItem &&
+                                        copyToClipboard(
+                                            currentPreviewItem.ui,
+                                            'ui'
+                                        )
+                                    }
+                                >
+                                    Copy UI Code
+                                </Button>
+                            </div>
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="p-4 border rounded-md">
-                        {currentPreviewComponent}
+
+                    <div className="h-full">
+                        <Tabs defaultValue="both" className="w-full h-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="both">Both</TabsTrigger>
+                                <TabsTrigger value="schema">
+                                    Schema Only
+                                </TabsTrigger>
+                                <TabsTrigger value="ui">UI Only</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="both" className="mt-4">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[500px]">
+                                    {/* Schema Section */}
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold">
+                                                Mongoose Schema
+                                            </h3>
+                                        </div>
+                                        <ScrollArea className="h-[220px] w-full rounded-md border">
+                                            <pre className="p-4 text-sm bg-muted/50 rounded-md overflow-x-auto">
+                                                <code>
+                                                    {
+                                                        currentPreviewItem?.mongooseSchema
+                                                    }
+                                                </code>
+                                            </pre>
+                                        </ScrollArea>
+                                    </div>
+
+                                    {/* UI Section */}
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold">
+                                                UI Component
+                                            </h3>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {/* Component Preview */}
+                                            <div className="p-4 border rounded-md bg-background min-h-[120px] flex items-center justify-center">
+                                                {currentPreviewItem &&
+                                                    getComponentForPreview(
+                                                        currentPreviewItem
+                                                    )}
+                                            </div>
+                                            {/* Component Code */}
+                                            <ScrollArea className="h-[80px] w-full rounded-md border">
+                                                <pre className="p-3 text-sm bg-muted/50 rounded-md">
+                                                    <code>
+                                                        {currentPreviewItem?.ui}
+                                                    </code>
+                                                </pre>
+                                            </ScrollArea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="schema" className="mt-4">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold">
+                                            Mongoose Schema
+                                        </h3>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                currentPreviewItem &&
+                                                copyToClipboard(
+                                                    currentPreviewItem.mongooseSchema,
+                                                    'schema'
+                                                )
+                                            }
+                                        >
+                                            Copy
+                                        </Button>
+                                    </div>
+                                    <ScrollArea className="h-[450px] w-full rounded-md border">
+                                        <pre className="p-4 text-sm bg-muted/50 rounded-md overflow-x-auto">
+                                            <code>
+                                                {
+                                                    currentPreviewItem?.mongooseSchema
+                                                }
+                                            </code>
+                                        </pre>
+                                    </ScrollArea>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="ui" className="mt-4">
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold">
+                                            UI Component
+                                        </h3>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                currentPreviewItem &&
+                                                copyToClipboard(
+                                                    currentPreviewItem.ui,
+                                                    'ui'
+                                                )
+                                            }
+                                        >
+                                            Copy Code
+                                        </Button>
+                                    </div>
+
+                                    {/* Component Preview */}
+                                    <div className="p-6 border rounded-md bg-background min-h-[200px] flex items-center justify-center">
+                                        {currentPreviewItem &&
+                                            getComponentForPreview(
+                                                currentPreviewItem
+                                            )}
+                                    </div>
+
+                                    {/* Component Code */}
+                                    <ScrollArea className="h-[200px] w-full rounded-md border">
+                                        <pre className="p-4 text-sm bg-muted/50 rounded-md">
+                                            <code>
+                                                {currentPreviewItem?.ui}
+                                            </code>
+                                        </pre>
+                                    </ScrollArea>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </DialogContent>
             </Dialog>
