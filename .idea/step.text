@@ -20,7 +20,7 @@
         . store
         . store-const
         . store-type
-6. page
+6. UI
 3. page
     a. main-page
 

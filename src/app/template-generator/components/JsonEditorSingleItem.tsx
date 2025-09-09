@@ -97,7 +97,14 @@ const JsonEditorSingleItem = ({
                                         typeof item.data === 'object' &&
                                         item.data !== null &&
                                         'schema' in item.data
-                                        ? (item.data as any).schema || {}
+                                        ? (
+                                              item.data as unknown as {
+                                                  schema: Record<
+                                                      string,
+                                                      unknown
+                                                  >
+                                              }
+                                          ).schema || {}
                                         : {}
                                 ).length
                             }{' '}
@@ -169,8 +176,8 @@ const JsonEditorSingleItem = ({
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
                                     This action cannot be undone. This will
-                                    permanently delete "{templateName}" from
-                                    your saved templates.
+                                    permanently delete &quot;{templateName}
+                                    &quot; from your saved templates.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

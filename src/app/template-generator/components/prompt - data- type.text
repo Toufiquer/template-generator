@@ -1,94 +1,38 @@
-Here is an example of Json file 
+Act as a seniour NextJs developer in typescript
 
-{
-  "uid": "000",
-  "templateName": "Basic Template",
-  "schema": {
-    "title": "STRING"
-  },
-  "namingConvention": {
-    "Users_1_000___": "Posts",
-    "users_2_000___": "posts",
-    "User_3_000___": "Post",
-    "user_4_000___": "post",
-    "ISelect_6_000___": "ISelect",
-    "select_5_000___": "select"
-  }
-}
+here is example of allDataType.
+```
+    const allDataType = [
+        'STRING',
+        'EMAIL',
+        'PASSWOR',
+        'PASSCOD',
+        'SELECT',
+        'DYNAMICSELECT',
+        'IMAGES',
+        'IMAGE ',
+        'DESCRIPTION',
+        'INTNUMBER',
+        'FLOATNUMBER',
+        'BOOLEAN',
+        'DATE ',
+        'TIME',
+        'DATERANGE',
+        'TIMERANGE',
+        'COLOEPICKER',
+        'PHONE',
+        'URL',
+        'RICHTEXT',
+        'AUTOCOMPLETE',
+        'RADIOBUTTON',
+        'CHECKBOX',
+        'MULTICHECKBOX',
+    ]
 
-From this json the application can generate those file with features I write below,
-1. api [@ global -> "@/api/..."]
-2. redux [@ global -> "@/redux/features/..."]
-3. component
-    a. main page
-      i. add, view with ssr and csr, reload.
-      ii. Bulk -> update, edit(cach), delete.
-      iii. search box -> that can search on database. or default search by field or query.
-      iv. table -> view, edit, delete
-      v. pagination
-    b. components [all others components]
-      
-
-A. in a single component we use those data type and arr of them
-  1. STRING - 
-  2. EMAIL - 
-  3. PASSWORD -
-  4. PASSCODE -
-  5. SELECT - 
-  6. DYNAMICSELECT - 
-  7. IMAGES - 
-  8. IMAGE  - 
-  9. DESCRIPTION - 
-  10. INTNUMBER - 
-  11. FLOATNUMBER - 
-  12. BOOLEAN - 
-  13. DATE  - 
-  14. TIME - 
-  15. DATERANGE - 
-  16. TIMERANGE - 
-  17. COLOEPICKER - 
-  18. PHONE - 
-  19. URL - 
-  20. RICHTEXT - 
-  21. AUTOCOMPLETE - 
-  22. RADIOBUTTON - 
-  23. CHECKBOX - 
-  24. MULTICHECKBOX - 
-  25. MULTISELECT - 
-  26. MULTIDYNAMICSELECT - 
+    ```
 
 
-all json example
------------------------------------------------------
-  "title" : "STRING",
-  "email" : "EMAIL",
-  "password" : "PASSWOR",
-  "passcode" : "PASSCOD",
-  "area" : "SELECT",
-  "sub-area" : "DYNAMICSELECT",
-  "products-images" : "IMAGES",
-  "parsonal-image" : "IMAGE ",
-  "description" : "DESCRIPTION",
-  "age" : "INTNUMBER",
-  "amount" : "FLOATNUMBER",
-  "isActive" : "BOOLEAN",
-  "start-date" : "DATE ",
-  "start-time" : "TIME",
-  "schedule-date" : "DATERANGE",
-  "schedule-time" : "TIMERANGE",
-  "favorite-color" : "COLOEPICKER",
-  "number" : "PHONE",
-  "profile" : "URL",
-  "test" : "RICHTEXT",
-  "info" : "AUTOCOMPLETE",
-  "shift" : "RADIOBUTTON",
-  "policy" : "CHECKBOX",
-  "hobbys" : "MULTICHECKBOX",
-  "books-list": "MULTISELECT",
-  "check-list": "MULTIDYNAMICSELECT"
-
-
-Databasetype and mongooseSchema Schema
+   and here is  Databasetype and mongooseSchema Schema relationship
 -----------------------------------------------------
   STRING : String,
   EMAIL : String,
@@ -119,7 +63,10 @@ Databasetype and mongooseSchema Schema
 
 
 
-const mySchema = new Schema({
+  and here is mongoose Schema example 
+
+
+  ```const mySchema = new Schema({
   STRING: {
     type: String, 
     trim: true
@@ -222,4 +169,34 @@ const mySchema = new Schema({
   }]
 }, {
   timestamps: true // Automatically adds createdAt and updatedAt fields. [8, 15]
-});
+});```
+
+
+
+Now I want to update the allDataType. 
+
+Here is example of updated allDataType[
+        {
+            name: 'STRING',
+            mongooseSchema: '  STRING: {
+                type: String, 
+                trim: true
+            }',
+            ui: '<InputFieldForString/>'
+        },
+        {
+            name: 'EMAIL',
+            mongooseSchema: '    EMAIL: {
+                type: String, 
+                trim: true,
+                lowercase: true,
+                match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+            }',
+            ui: '<InputFieldForEmail/>'
+        },
+        ...
+]
+
+
+
+Now please update addDataType and implement all keys from old allDataType to new allDataType.
