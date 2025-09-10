@@ -1,4 +1,4 @@
-import { IUsers_1_000___ } from '../api/v1/Model';
+import { IUsers_1_000___ } from '../api/v1/model';
 
 export const baseIUsers_1_000___PerPage = 2;
 export const queryParams = { q: '', page: 1, limit: baseIUsers_1_000___PerPage };

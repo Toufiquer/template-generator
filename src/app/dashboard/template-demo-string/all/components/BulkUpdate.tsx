@@ -13,7 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-import { IUsers_1_000___ } from '../api/v1/Model';
+import { IUsers_1_000___ } from '../api/v1/model';
 import { useUsers_1_000___Store } from '../store/Store';
 import { users_2_000___SelectorArr } from '../store/StoreConstants';
 import { useBulkUpdateUsers_1_000___Mutation } from '../redux/rtk-Api';

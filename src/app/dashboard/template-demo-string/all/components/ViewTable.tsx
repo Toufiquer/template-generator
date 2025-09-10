@@ -21,7 +21,7 @@ import ErrorMessageComponent from '@/components/common/Error';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { IUsers_1_000___ } from '../api/v1/Model';
+import { IUsers_1_000___ } from '../api/v1/model';
 import { pageLimitArr } from '../store/StoreConstants';
 import { useUsers_1_000___Store } from '../store/Store';
 import { useGetUsers_1_000___Query } from '../redux/rtk-Api';

@@ -1,5 +1,5 @@
 // import { IUsers_1_000___ } from '@/app/api/v1/users_1_000___/filename7Model';
-import { IUsers_1_000___ } from '../api/v1/Model';
+import { IUsers_1_000___ } from '../api/v1/model';
 
 export interface Users_1_000___Store {
   queryPramsLimit: number;

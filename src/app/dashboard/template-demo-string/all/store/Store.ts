@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IUsers_1_000___ } from '../api/v1/Model';
+import { IUsers_1_000___ } from '../api/v1/model';
 import { Users_1_000___Store } from './StoreTypes';
 import { baseIUsers_1_000___, queryParams } from './StoreConstants';
 
