@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import generateApi from './components/generate-api/main'
 import generateRtk from './components/generate-redux-toolkit/main'
-import generateStore from './components/generate-sotre/main'
+import generateStore from './components/generate-store/main'
 import generateSSRView from './components/generate-ssr-view/main'
 import generateMainPage from './components/generate-main-page/main'
 import generateClientView from './components/generate-client-view/main'

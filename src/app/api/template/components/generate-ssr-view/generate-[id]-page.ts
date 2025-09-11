@@ -14,7 +14,6 @@ interface Schema {
 export const generateDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    const singularName = namingConvention.user_4_000___ // e.g., "post"
     const modelName = namingConvention.User_3_000___ // e.g., "Post"
     const interfaceName = `I${modelName}` // e.g., "IPost"
 
@@ -113,6 +112,7 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
 
     // --- Final Template ---
 
+    const pluralName = namingConvention.users_2_000___ // e.g., "posts"
     return `import { notFound } from 'next/navigation'
 import HomeButton from './HomeButton'
 
@@ -141,7 +141,7 @@ const DataDetails = ({ data }: { data: ${interfaceName} }) => {
 }
 
 const getDataById = async (id: string): Promise<ApiResponse> => {
-    const backendUrl = \`http://localhost:3000/dashboard/${singularName}/all/api/v1?id=\${id}\`
+    const backendUrl = \`http://localhost:3000/generate/${pluralName}/all/api/v1?id=\${id}\`
 
     try {
         const res = await fetch(backendUrl, { next: { revalidate: 3600 } }) // 1 hour cache

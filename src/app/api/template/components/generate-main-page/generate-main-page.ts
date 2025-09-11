@@ -10,7 +10,6 @@ export const generateMainPageFile = (inputJsonFile: string): string => {
     // Extract names and format them for different uses
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
 
     // Construct the file content using a template literal
     return `'use client'
@@ -99,26 +98,7 @@ const MainNextPage: React.FC = () => {
                     )}
                 </h1>
                 <div className="w-full flex flex-col md:flex-row gap-2 item-center justify-end">
-                    <Button
-                        size="sm"
-                        variant="outlineGarden"
-                        onClick={() =>
-                            router.push('/dashboard/${singularLowerCase}/ssr-view')
-                        }
-                    >
-                        <BiRightArrowAlt className="w-4 h-4" />
-                        SSR View
-                    </Button>
-                    <Button
-                        size="sm"
-                        variant="outlineGarden"
-                        onClick={() =>
-                            router.push('/dashboard/${singularLowerCase}/client-view')
-                        }
-                    >
-                        <BiRightArrowAlt className="w-4 h-4" />
-                        Client View
-                    </Button>
+                    
                     <Button
                         size="sm"
                         variant="outlineGarden"

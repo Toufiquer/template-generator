@@ -14,7 +14,6 @@ export const generateMainPage = (inputJsonFile: string): string => {
 
     // 1. Extract the required names for API paths and data keys.
     const pluralName = namingConvention.users_2_000___ // e.g., "posts"
-    const singularName = namingConvention.user_4_000___ // e.g., "post"
 
     // 2. Intelligently find the display key.
     // It looks for the first top-level 'STRING' field in the schema to use as the item's name/title.
@@ -36,7 +35,7 @@ const Page = async () => {
         }
 
         const url =
-            'http://localhost:3000/dashboard/${singularName}/all/api/v1?page=1&limit=4'
+            'http://localhost:3000/generate/${pluralName}/all/api/v1?page=1&limit=4'
 
         try {
             const response = await fetch(url, {
@@ -62,7 +61,7 @@ const Page = async () => {
                     <div key={idx + i?.${displayKey}}>
                         <CustomLInk
                             name={i.${displayKey}}
-                            url={\`/dashboard/${singularName}/ssr-view/details/\${i._id}\`}
+                            url={\`/generate/${pluralName}/ssr-view/details/\${i._id}\`}
                         />
                     </div>
                 ))}

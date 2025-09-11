@@ -146,7 +146,7 @@ const JsonEditor: React.FC = () => {
                 parsedJson.namingConvention.users_2_000___
             )
             setPathButton(
-                `/generate/${parsedJson.namingConvention.users_2_000___}/all`
+                `/generate/${parsedJson.namingConvention.users_2_000___}`
             )
         } catch (error) {
             setError('Failed to fetch: ' + (error as Error).message)
@@ -155,6 +155,9 @@ const JsonEditor: React.FC = () => {
         }
         console.log('handle generate is End')
     }
+
+    const customBtn =
+        'px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
     return (
         <>
             <SuccessPopup
@@ -163,15 +166,31 @@ const JsonEditor: React.FC = () => {
             />
 
             <div className="w-full mx-auto p-6">
-                <div className="w-full flex items-center justify-center">
+                <div>
                     {pathButton !== '' && (
-                        <Link
-                            href={`${pathButton}`}
-                            target="_blank"
-                            className="px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
-                        >
-                            Go Live
-                        </Link>
+                        <div className="w-full flex items-center justify-center">
+                            <Link
+                                href={`${pathButton}/all`}
+                                target="_blank"
+                                className={customBtn}
+                            >
+                                Go Live
+                            </Link>
+                            <Link
+                                href={`${pathButton}/ssr-view`}
+                                target="_blank"
+                                className={customBtn}
+                            >
+                                SSR View
+                            </Link>
+                            <Link
+                                href={`${pathButton}/client-view`}
+                                target="_blank"
+                                className={customBtn}
+                            >
+                                Client view
+                            </Link>
+                        </div>
                     )}
                 </div>
                 <div className="rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl">

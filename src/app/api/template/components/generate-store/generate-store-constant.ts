@@ -39,7 +39,7 @@ const generateStoreConstant = (inputJson: string): string => {
 
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const result = `
-    export const defaultPageNumber = 0;
+    export const defaultPageNumber = 2;
 export const queryParams = { q: '', page: 1, limit: defaultPageNumber };
 export const pageLimitArr = [defaultPageNumber, 20, 30, 40, 50];
 export const  ${pluralLowerCase}SelectorArr  = ['Store Post 1', 'Store Post 2', 'Store Post 3'];
