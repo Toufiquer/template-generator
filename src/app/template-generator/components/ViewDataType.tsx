@@ -544,10 +544,37 @@ const ViewDataType = () => {
                                 <div className="space-y-6">
                                     {/* Schema Section */}
                                     <div className="space-y-3">
-                                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                        <div className="w-full flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                                    <svg
+                                                        className="w-3 h-3 text-white"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M4 7v10c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V7"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                Mongoose Schema
+                                            </h3>
+                                            <button
+                                                onClick={() =>
+                                                    copyToClipboard(
+                                                        currentPreviewItem.mongooseSchema ||
+                                                            '',
+                                                        'schema'
+                                                    )
+                                                }
+                                                className=" px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+                                            >
                                                 <svg
-                                                    className="w-3 h-3 text-white"
+                                                    className="w-3 h-3"
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -556,12 +583,11 @@ const ViewDataType = () => {
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
                                                         strokeWidth="2"
-                                                        d="M4 7v10c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V7"
+                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                                                     />
                                                 </svg>
-                                            </div>
-                                            Mongoose Schema
-                                        </h3>
+                                            </button>
+                                        </div>
                                         <div className="relative rounded-xl bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm border border-white/10">
                                             <pre className="p-4 text-sm text-emerald-300 font-mono overflow-x-auto">
                                                 <code>
@@ -575,10 +601,37 @@ const ViewDataType = () => {
 
                                     {/* UI Section */}
                                     <div className="space-y-3">
-                                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                                        <div className="w-full flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                                                    <svg
+                                                        className="w-3 h-3 text-white"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                UI Component
+                                            </h3>
+                                            <button
+                                                onClick={() =>
+                                                    copyToClipboard(
+                                                        currentPreviewItem.ui ||
+                                                            '',
+                                                        'ui'
+                                                    )
+                                                }
+                                                className=" px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+                                            >
                                                 <svg
-                                                    className="w-3 h-3 text-white"
+                                                    className="w-3 h-3"
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -587,12 +640,11 @@ const ViewDataType = () => {
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
                                                         strokeWidth="2"
-                                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                                                     />
                                                 </svg>
-                                            </div>
-                                            UI Component
-                                        </h3>
+                                            </button>
+                                        </div>
 
                                         {/* Component Preview */}
                                         <div className="p-6 rounded-xl bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border border-white/10 min-h-[120px] flex items-center justify-center">
@@ -681,10 +733,37 @@ const ViewDataType = () => {
 
                             {activeTab === 'schema' && (
                                 <div className="space-y-3">
-                                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                    <div className="w-full flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                                <svg
+                                                    className="w-3 h-3 text-white"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M4 7v10c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V7"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            Mongoose Schema
+                                        </h3>
+                                        <button
+                                            onClick={() =>
+                                                copyToClipboard(
+                                                    currentPreviewItem.mongooseSchema ||
+                                                        '',
+                                                    'schema'
+                                                )
+                                            }
+                                            className=" px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+                                        >
                                             <svg
-                                                className="w-3 h-3 text-white"
+                                                className="w-3 h-3"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -693,12 +772,11 @@ const ViewDataType = () => {
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     strokeWidth="2"
-                                                    d="M4 7v10c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V7"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                        </div>
-                                        Mongoose Schema
-                                    </h3>
+                                        </button>
+                                    </div>
                                     <div className="relative rounded-xl bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-sm border border-white/10">
                                         <pre className="p-6 text-sm text-emerald-300 font-mono overflow-x-auto">
                                             <code>
@@ -713,10 +791,36 @@ const ViewDataType = () => {
 
                             {activeTab === 'ui' && (
                                 <div className="space-y-6">
-                                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                                    <div className="w-full flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                                                <svg
+                                                    className="w-3 h-3 text-white"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            UI Component
+                                        </h3>
+                                        <button
+                                            onClick={() =>
+                                                copyToClipboard(
+                                                    currentPreviewItem.ui || '',
+                                                    'ui'
+                                                )
+                                            }
+                                            className=" px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+                                        >
                                             <svg
-                                                className="w-3 h-3 text-white"
+                                                className="w-3 h-3"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -725,12 +829,11 @@ const ViewDataType = () => {
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
                                                     strokeWidth="2"
-                                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                        </div>
-                                        UI Component
-                                    </h3>
+                                        </button>
+                                    </div>
 
                                     {/* Component Preview */}
                                     <div className="p-8 rounded-xl bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border border-white/10 min-h-[200px] flex items-center justify-center">
@@ -744,6 +847,32 @@ const ViewDataType = () => {
                                         <pre className="p-4 text-sm text-blue-300 font-mono">
                                             <code>{currentPreviewItem.ui}</code>
                                         </pre>
+                                        <div className="absolute top-4 right-4">
+                                            <button
+                                                onClick={() =>
+                                                    copyToClipboard(
+                                                        currentPreviewItem.ui ||
+                                                            '',
+                                                        'ui'
+                                                    )
+                                                }
+                                                className=" px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+                                            >
+                                                <svg
+                                                    className="w-3 h-3"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/* Core Code */}
