@@ -40,76 +40,6 @@ export const generateStoreData = (inputJsonFile: string): string => {
     // --- 1. Extract Naming Conventions ---
     const interfaceName = namingConvention.Users_1_000___ || 'Items'
 
-    // --- 2. Type Mapping Helpers ---
-
-    // Maps schema types to Mongoose schema definitions
-    const mapToMongooseSchema = (type: string): string => {
-        switch (type.toUpperCase()) {
-            case 'STRING':
-                return `{ type: String, required: true }`
-            case 'EMAIL':
-                return `{
-                    type: String,
-                    required: true,
-                    unique: true,
-                    match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email'],
-                }`
-            case 'PASSWORD':
-                return `{ type: String, required: true, select: false }`
-            case 'PASSCODE':
-                return `{ type: String, required: true, select: false }`
-            case 'SELECT':
-                return `{ type: String, required: true, enum: ['Option 1', 'Option 2'] }`
-            case 'DYNAMICSELECT':
-                return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
-            case 'IMAGES':
-                return `[{ type: String }]`
-            case 'IMAGE':
-                return `{ type: String }`
-            case 'DESCRIPTION':
-                return `{ type: String, trim: true }`
-            case 'INTNUMBER':
-                return `{ type: Number, validate: { validator: Number.isInteger, message: '{VALUE} is not an integer value' } }`
-            case 'FLOATNUMBER':
-                return `{ type: Number }`
-            case 'BOOLEAN':
-                return `{ type: Boolean, default: false }`
-            case 'DATE':
-                return `{ type: Date, default: Date.now }`
-            case 'TIME':
-                return `{ type: String }`
-            case 'DATERANGE':
-                return `{ start: { type: Date }, end: { type: Date } }`
-            case 'TIMERANGE':
-                return `{ start: { type: String }, end: { type: String } }`
-            case 'COLORPICKER':
-                return `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`
-            case 'PHONE':
-                return `{
-                    type: String,
-                    validate: {
-                      validator: function(v: string) {
-                        return /\d{3}-\d{3}-\d{4}/.test(v);
-                      },
-                      message: (props: { value: string }) => \`\${props.value} is not a valid phone number!\`
-                    }
-                }`
-            case 'URL':
-                return `{ type: String, trim: true }`
-            case 'RICHTEXT':
-            case 'AUTOCOMPLETE':
-                return `{ type: String }`
-            case 'RADIOBUTTON':
-                return `{ type: String, enum: ['Choice A', 'Choice B'] }`
-            case 'CHECKBOX':
-                return `{ type: Boolean, default: false }`
-            case 'MULTICHECKBOX':
-                return `[{ type: String }]`
-            default:
-                return `{ type: String, required: true }`
-        }
-    }
-
     // Maps schema types to TypeScript interface types
     const mapToInterfaceType = (type: string): string => {
         switch (type.toUpperCase()) {
@@ -154,28 +84,6 @@ export const generateStoreData = (inputJsonFile: string): string => {
             default:
                 return "''"
         }
-    }
-
-    // --- 3. Recursive Generation Functions (Corrected) ---
-
-    /**
-     * Recursively generates the Mongoose schema definition.
-     * All keys are quoted to handle special characters.
-     */
-    const generateSchemaFields = (
-        currentSchema: Schema,
-        depth: number
-    ): string => {
-        const indent = '    '.repeat(depth)
-        return Object.entries(currentSchema)
-            .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
-                if (typeof value === 'object' && !Array.isArray(value)) {
-                    return `${indent}${quotedKey}: {\n${generateSchemaFields(value, depth + 1)}\n${indent}}`
-                }
-                return `${indent}${quotedKey}: ${mapToMongooseSchema(value as string)}`
-            })
-            .join(',\n')
     }
 
     /**

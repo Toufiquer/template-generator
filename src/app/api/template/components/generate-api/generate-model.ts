@@ -38,7 +38,6 @@ export const generateModel = (inputJsonFile: string): string => {
     const { namingConvention, schema } = config
 
     // --- 1. Extract Naming Conventions ---
-    const interfaceName = namingConvention.Users_1_000___ || 'Items'
     const modelName = namingConvention.User_3_000___ || 'Item'
     const schemaVarName = `${namingConvention.user_4_000___ || 'item'}Schema`
 
@@ -112,54 +111,6 @@ export const generateModel = (inputJsonFile: string): string => {
         }
     }
 
-    // Maps schema types to TypeScript interface types
-    const mapToInterfaceType = (type: string): string => {
-        switch (type.toUpperCase()) {
-            case 'INTNUMBER':
-            case 'FLOATNUMBER':
-                return 'number'
-            case 'BOOLEAN':
-            case 'CHECKBOX':
-                return 'boolean'
-            case 'IMAGES':
-            case 'MULTICHECKBOX':
-                return 'string[]'
-            case 'DATE':
-                return 'Date'
-            case 'DATERANGE':
-                return '{ start: Date; end: Date }'
-            case 'TIMERANGE':
-                return '{ start: string; end: string }'
-            default:
-                return 'string'
-        }
-    }
-
-    // Maps schema types to default values for the default object
-    const mapToDefaultValue = (type: string): string => {
-        switch (type.toUpperCase()) {
-            case 'INTNUMBER':
-            case 'FLOATNUMBER':
-                return '0'
-            case 'BOOLEAN':
-            case 'CHECKBOX':
-                return 'false'
-            case 'IMAGES':
-            case 'MULTICHECKBOX':
-                return '[]'
-            case 'DATE':
-                return 'new Date()'
-            case 'DATERANGE':
-                return '{ start: new Date(), end: new Date() }'
-            case 'TIMERANGE':
-                return '{ start: "", end: "" }'
-            default:
-                return "''"
-        }
-    }
-
-    // --- 3. Recursive Generation Functions (Corrected) ---
-
     /**
      * Recursively generates the Mongoose schema definition.
      * All keys are quoted to handle special characters.
@@ -176,46 +127,6 @@ export const generateModel = (inputJsonFile: string): string => {
                     return `${indent}${quotedKey}: {\n${generateSchemaFields(value, depth + 1)}\n${indent}}`
                 }
                 return `${indent}${quotedKey}: ${mapToMongooseSchema(value as string)}`
-            })
-            .join(',\n')
-    }
-
-    /**
-     * Recursively generates the TypeScript interface definition.
-     * All keys are quoted to handle special characters.
-     */
-    const generateInterfaceFields = (
-        currentSchema: Schema,
-        depth: number
-    ): string => {
-        const indent = '    '.repeat(depth)
-        return Object.entries(currentSchema)
-            .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
-                if (typeof value === 'object' && !Array.isArray(value)) {
-                    return `${indent}${quotedKey}: {\n${generateInterfaceFields(value, depth + 1)}\n${indent}}`
-                }
-                return `${indent}${quotedKey}: ${mapToInterfaceType(value as string)}`
-            })
-            .join(';\n')
-    }
-
-    /**
-     * Recursively generates the default object definition.
-     * All keys are quoted to handle special characters.
-     */
-    const generateDefaultObjectFields = (
-        currentSchema: Schema,
-        depth: number
-    ): string => {
-        const indent = '    '.repeat(depth)
-        return Object.entries(currentSchema)
-            .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
-                if (typeof value === 'object' && !Array.isArray(value)) {
-                    return `${indent}${quotedKey}: {\n${generateDefaultObjectFields(value, depth + 1)}\n${indent}}`
-                }
-                return `${indent}${quotedKey}: ${mapToDefaultValue(value as string)}`
             })
             .join(',\n')
     }
