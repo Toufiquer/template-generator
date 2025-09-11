@@ -41,13 +41,14 @@ import AutocompleteField from './ui-components/AutocompleteField'
 import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
 import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 
-import {AutocompleteFieldData} from './core-code/AutocompleteFieldData'
+import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
+import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
 
 interface DataTypeItem {
     name: string
     mongooseSchema: string
     ui: string
-    coreCode?: string,
+    coreCode?: string
 }
 
 const allDataType: DataTypeItem[] = [
@@ -58,7 +59,7 @@ const allDataType: DataTypeItem[] = [
             trim: true
         }`,
         ui: '<InputFieldForString />',
-        coreCode: AutocompleteFieldData,
+        coreCode: InputFieldForStringCoreCode,
     },
     {
         name: 'EMAIL',
@@ -224,6 +225,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }`,
         ui: '<AutocompleteField />',
+        coreCode: AutocompleteFieldCoreCode,
     },
     {
         name: 'RADIOBUTTON',
@@ -256,16 +258,23 @@ const ViewDataType = () => {
     const [currentPreviewItem, setCurrentPreviewItem] =
         useState<DataTypeItem | null>(null)
 
-    const copyToClipboard = (data: string, type: 'schema' | 'ui' | 'name') => {
+    const copyToClipboard = (
+        data: string,
+        type: 'schema' | 'ui' | 'name' | 'corecode' | ' code'
+    ) => {
         navigator.clipboard
             .writeText(data)
             .then(() => {
                 if (type === 'name') {
                     toast.success(`Copied "${data}" to clipboard!`)
+                } else if (type === 'corecode') {
+                    toast.success(`Copied "Core Code" to clipboard!`)
+                } else if (type === 'schema') {
+                    toast.success(`Copied "Mongoose Schema" to clipboard!`)
+                } else if (type === 'ui') {
+                    toast.success(`Copied "UI Component" to clipboard!`)
                 } else {
-                    toast.success(
-                        `Copied ${type === 'schema' ? 'Mongoose Schema' : 'UI Component name'} to clipboard!`
-                    )
+                    toast.success(`Copied Code - "${data}" to clipboard!`)
                 }
             })
             .catch((err) => {
@@ -377,15 +386,20 @@ const ViewDataType = () => {
                                     >
                                         Copy Name
                                     </Button>
-                                   {curr.coreCode && <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() =>
-                                            copyToClipboard(curr.coreCode || "" , 'name')
-                                        }
-                                    >
-                                        Copy Code
-                                    </Button>}
+                                    {curr.coreCode && (
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={() =>
+                                                copyToClipboard(
+                                                    curr.coreCode || '',
+                                                    'name'
+                                                )
+                                            }
+                                        >
+                                            Copy Code
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -444,51 +458,96 @@ const ViewDataType = () => {
                             </TabsList>
 
                             <TabsContent value="both" className="mt-4">
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[500px]">
-                                    {/* Schema Section */}
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="text-lg font-semibold">
-                                                Mongoose Schema
-                                            </h3>
-                                        </div>
-                                        <ScrollArea className="h-[220px] w-full rounded-md border">
-                                            <pre className="p-4 text-sm bg-muted/50 rounded-md overflow-x-auto">
-                                                <code>
-                                                    {
-                                                        currentPreviewItem?.mongooseSchema
-                                                    }
-                                                </code>
-                                            </pre>
-                                        </ScrollArea>
-                                    </div>
-
-                                    {/* UI Section */}
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="text-lg font-semibold">
-                                                UI Component
-                                            </h3>
-                                        </div>
+                                <ScrollArea className="h-[600px] w-full rounded-md p-2 pb-8">
+                                    <div className="grid grid-cols-1 gap-6 h-[500px]">
+                                        {/* Schema Section */}
                                         <div className="space-y-3">
-                                            {/* Component Preview */}
-                                            <div className="p-4 border rounded-md bg-background min-h-[120px] flex items-center justify-center">
-                                                {currentPreviewItem &&
-                                                    getComponentForPreview(
-                                                        currentPreviewItem
-                                                    )}
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-lg font-semibold">
+                                                    Mongoose Schema
+                                                </h3>
                                             </div>
-                                            {/* Component Code */}
-                                            <ScrollArea className="h-[80px] w-full rounded-md border">
-                                                <pre className="p-3 text-sm bg-muted/50 rounded-md">
+                                            <ScrollArea className="h-[220px] w-full rounded-md border">
+                                                <pre className="p-4 text-sm bg-muted/50 rounded-md overflow-x-auto">
                                                     <code>
-                                                        {currentPreviewItem?.ui}
+                                                        {
+                                                            currentPreviewItem?.mongooseSchema
+                                                        }
                                                     </code>
                                                 </pre>
                                             </ScrollArea>
                                         </div>
+
+                                        {/* UI Section */}
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-lg font-semibold">
+                                                    UI Component
+                                                </h3>
+                                            </div>
+                                            <div className="space-y-3">
+                                                {/* Component Preview */}
+                                                <div className="p-4 border rounded-md bg-background min-h-[120px] flex items-center justify-center">
+                                                    {currentPreviewItem &&
+                                                        getComponentForPreview(
+                                                            currentPreviewItem
+                                                        )}
+                                                </div>
+                                                {/* Component Core Code */}
+                                                <ScrollArea className="h-[180px] w-full rounded-md border max-w-6xl">
+                                                    <div className="relative">
+                                                        <pre className="p-4 pt-8 rounded-lg border border-gray-300 dark:border-gray-600 text-sm overflow-x-wrap bg-gray-900 dark:bg-gray-950 text-green-400 font-mono shadow-inner">
+                                                            {
+                                                                currentPreviewItem?.coreCode
+                                                            }
+                                                        </pre>
+                                                        <div className="absolute top-2 right-2">
+                                                            <button
+                                                                onClick={() =>
+                                                                    copyToClipboard(
+                                                                        currentPreviewItem?.coreCode ||
+                                                                            '',
+                                                                        'corecode'
+                                                                    )
+                                                                }
+                                                                className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded-md transition-colors duration-200 flex items-center space-x-1"
+                                                                title="Copy to clipboard"
+                                                            >
+                                                                <svg
+                                                                    className="w-3 h-3"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth="2"
+                                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                                                    ></path>
+                                                                </svg>
+                                                                <span>
+                                                                    Copy
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </ScrollArea>
+
+                                                {/* Component Name */}
+                                                <ScrollArea className="h-[80px] w-full rounded-md border">
+                                                    <pre className="p-3 text-sm bg-muted/50 rounded-md">
+                                                        <code>
+                                                            {
+                                                                currentPreviewItem?.ui
+                                                            }
+                                                        </code>
+                                                    </pre>
+                                                </ScrollArea>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </ScrollArea>
                             </TabsContent>
 
                             <TabsContent value="schema" className="mt-4">
@@ -524,43 +583,83 @@ const ViewDataType = () => {
                             </TabsContent>
 
                             <TabsContent value="ui" className="mt-4">
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-lg font-semibold">
-                                            UI Component
-                                        </h3>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() =>
-                                                currentPreviewItem &&
-                                                copyToClipboard(
-                                                    currentPreviewItem.ui,
-                                                    'ui'
-                                                )
-                                            }
-                                        >
-                                            Copy Code
-                                        </Button>
-                                    </div>
+                                <ScrollArea className="h-[600px] w-full rounded-md max-w-6xl pb-8 p-2">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-lg font-semibold">
+                                                UI Component
+                                            </h3>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() =>
+                                                    currentPreviewItem &&
+                                                    copyToClipboard(
+                                                        currentPreviewItem.ui,
+                                                        'ui'
+                                                    )
+                                                }
+                                            >
+                                                Copy Code
+                                            </Button>
+                                        </div>
 
-                                    {/* Component Preview */}
-                                    <div className="p-6 border rounded-md bg-background min-h-[200px] flex items-center justify-center">
-                                        {currentPreviewItem &&
-                                            getComponentForPreview(
-                                                currentPreviewItem
-                                            )}
-                                    </div>
+                                        {/* Component Preview */}
+                                        <div className="p-6 border rounded-md bg-background min-h-[200px] flex items-center justify-center">
+                                            {currentPreviewItem &&
+                                                getComponentForPreview(
+                                                    currentPreviewItem
+                                                )}
+                                        </div>
 
-                                    {/* Component Code */}
-                                    <ScrollArea className="h-[200px] w-full rounded-md border">
-                                        <pre className="p-4 text-sm bg-muted/50 rounded-md">
-                                            <code>
-                                                {currentPreviewItem?.ui}
-                                            </code>
-                                        </pre>
-                                    </ScrollArea>
-                                </div>
+                                        {/* Component Code */}
+                                        <ScrollArea className="h-[200px] w-full rounded-md border">
+                                            <pre className="p-4 text-sm bg-muted/50 rounded-md">
+                                                <code>
+                                                    {currentPreviewItem?.ui}
+                                                </code>
+                                            </pre>
+                                        </ScrollArea>
+                                        {/* Component Core Code */}
+                                        <ScrollArea className="h-[180px] w-full rounded-md border max-w-6xl">
+                                            <div className="relative">
+                                                <pre className="p-4 pt-8 rounded-lg border border-gray-300 dark:border-gray-600 text-sm overflow-x-wrap bg-gray-900 dark:bg-gray-950 text-green-400 font-mono shadow-inner">
+                                                    {
+                                                        currentPreviewItem?.coreCode
+                                                    }
+                                                </pre>
+                                                <div className="absolute top-2 right-2">
+                                                    <button
+                                                        onClick={() =>
+                                                            copyToClipboard(
+                                                                currentPreviewItem?.coreCode ||
+                                                                    '',
+                                                                'corecode'
+                                                            )
+                                                        }
+                                                        className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded-md transition-colors duration-200 flex items-center space-x-1"
+                                                        title="Copy to clipboard"
+                                                    >
+                                                        <svg
+                                                            className="w-3 h-3"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth="2"
+                                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                                            ></path>
+                                                        </svg>
+                                                        <span>Copy</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+                                </ScrollArea>
                             </TabsContent>
                         </Tabs>
                     </div>
