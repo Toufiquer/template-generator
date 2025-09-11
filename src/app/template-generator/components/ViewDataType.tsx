@@ -52,6 +52,7 @@ import { TimeFieldCoreCode } from './core-code/TimeFieldCoreCode'
 import { RichTextEditorFieldCoreCode } from './core-code/RichTextEditorFieldCoreCode'
 import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSingleCoreCode'
 import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
+import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCode'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -123,7 +124,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }]`,
         ui: '<ImageUploadManager />',
-        // coreCode: ImageUploadFieldMultipleCoreCode,
+        coreCode: ImageUploadManagerCoreCode,
     },
     {
         name: 'IMAGE ',
