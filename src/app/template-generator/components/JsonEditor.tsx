@@ -168,7 +168,7 @@ const JsonEditor: React.FC = () => {
             <div className="w-full mx-auto p-6">
                 <div>
                     {pathButton !== '' && (
-                        <div className="w-full flex items-center justify-center">
+                        <div className="w-full flex items-center justify-center gap-4">
                             <Link
                                 href={`${pathButton}/all`}
                                 target="_blank"
