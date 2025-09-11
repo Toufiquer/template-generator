@@ -31,6 +31,25 @@ import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
 import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
 import { toast } from 'react-toastify'
+import { MultiCheckboxGroupFieldCoreCode } from './core-code/MultiCheckboxGroupFieldCoreCode'
+import { CheckboxFieldCoreCode } from './core-code/CheckboxFieldCoreCode'
+import { RadioButtonGroupFieldCoreCode } from './core-code/RadioButtonGroupFieldCoreCode'
+import { UrlInputFieldCoreCode } from './core-code/UrlInputFieldCoreCode'
+import { PhoneInputFieldCoreCode } from './core-code/PhoneInputFieldCoreCode'
+import { ColorPickerFieldCoreCode } from './core-code/ColorPickerFieldCoreCode'
+import { TimeRangePickerFieldCoreCode } from './core-code/TimeRangePickerFieldCoreCode'
+import { DateRangePickerFieldCoreCode } from './core-code/DateRangePickerFieldCoreCode'
+import { DateFieldCoreCode } from './core-code/DateFieldCoreCode'
+import { BooleanInputFieldCoreCode } from './core-code/BooleanInputFieldCoreCode'
+import { NumberInputFieldFloatCoreCode } from './core-code/NumberInputFieldFloatCoreCode'
+import { NumberInputFieldIntegerCoreCode } from './core-code/NumberInputFieldIntegerCoreCode'
+import { TextareaFieldForDescriptionCoreCode } from './core-code/TextareaFieldForDescriptionCoreCode'
+import { DynamicSelectFieldCoreCode } from './core-code/DynamicSelectFieldCoreCode'
+import { SelectFieldCoreCode } from './core-code/SelectFieldCoreCode'
+import { InputFieldForPasscodeCoreCode } from './core-code/InputFieldForPasscodeCoreCode'
+import { InputFieldForPasswordCoreCode } from './core-code/InputFieldForPasswordCoreCode'
+import { InputFieldForEmailCoreCode } from './core-code/InputFieldForEmailCoreCode'
+import { TimeFieldCoreCode } from './core-code/TimeFieldCoreCode'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -58,6 +77,7 @@ const allDataType: DataTypeItem[] = [
             match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
         }`,
         ui: '<InputFieldForEmail />',
+        coreCode: InputFieldForEmailCoreCode,
     },
     {
         name: 'PASSWORD',
@@ -66,6 +86,7 @@ const allDataType: DataTypeItem[] = [
             select: false
         }`,
         ui: '<InputFieldForPassword />',
+        coreCode: InputFieldForPasswordCoreCode,
     },
     {
         name: 'PASSCODE',
@@ -74,6 +95,7 @@ const allDataType: DataTypeItem[] = [
             select: false
         }`,
         ui: '<InputFieldForPasscode />',
+        coreCode: InputFieldForPasscodeCoreCode,
     },
     {
         name: 'SELECT',
@@ -82,6 +104,7 @@ const allDataType: DataTypeItem[] = [
             enum: ['Option 1', 'Option 2', 'Option 3']
         }`,
         ui: '<SelectField />',
+        coreCode: SelectFieldCoreCode,
     },
     {
         name: 'DYNAMICSELECT',
@@ -90,6 +113,7 @@ const allDataType: DataTypeItem[] = [
             ref: 'AnotherModel'
         }`,
         ui: '<DynamicSelectField />',
+        coreCode: DynamicSelectFieldCoreCode,
     },
     {
         name: 'IMAGES',
@@ -97,6 +121,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }]`,
         ui: '<ImageUploadFieldMultiple />',
+        // coreCode: ImageUploadFieldMultipleCoreCode,
     },
     {
         name: 'IMAGE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
@@ -104,6 +129,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }`,
         ui: '<ImageUploadFieldSingle />',
+        // coreCode: ImageUploadFieldSingleCoreCode,
     },
     {
         name: 'DESCRIPTION',
@@ -112,6 +138,7 @@ const allDataType: DataTypeItem[] = [
             trim: true
         }`,
         ui: '<TextareaFieldForDescription />',
+        coreCode: TextareaFieldForDescriptionCoreCode,
     },
     {
         name: 'INTNUMBER',
@@ -123,6 +150,7 @@ const allDataType: DataTypeItem[] = [
             }
         }`,
         ui: '<NumberInputFieldInteger />',
+        coreCode: NumberInputFieldIntegerCoreCode,
     },
     {
         name: 'FLOATNUMBER',
@@ -130,6 +158,7 @@ const allDataType: DataTypeItem[] = [
             type: Number
         }`,
         ui: '<NumberInputFieldFloat />',
+        coreCode: NumberInputFieldFloatCoreCode,
     },
     {
         name: 'BOOLEAN',
@@ -138,14 +167,16 @@ const allDataType: DataTypeItem[] = [
             default: false
         }`,
         ui: '<BooleanInputField />',
+        coreCode: BooleanInputFieldCoreCode,
     },
     {
-        name: 'DATE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
+        name: 'DATE ',
         mongooseSchema: `DATE: {
             type: Date,
             default: Date.now
         }`,
         ui: '<DateField />',
+        coreCode: DateFieldCoreCode,
     },
     {
         name: 'TIME',
@@ -153,6 +184,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }`,
         ui: '<TimeField />',
+        coreCode: TimeFieldCoreCode,
     },
     {
         name: 'DATERANGE',
@@ -161,6 +193,7 @@ const allDataType: DataTypeItem[] = [
             end: { type: Date }
         }`,
         ui: '<DateRangePickerField />',
+        coreCode: DateRangePickerFieldCoreCode,
     },
     {
         name: 'TIMERANGE',
@@ -169,14 +202,16 @@ const allDataType: DataTypeItem[] = [
             end: { type: String }
         }`,
         ui: '<TimeRangePickerField />',
+        coreCode: TimeRangePickerFieldCoreCode,
     },
     {
-        name: 'COLORPICKER', // Corrected typo from COLOEPICKER
+        name: 'COLORPICKER',
         mongooseSchema: `COLORPICKER: {
             type: String,
             match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
         }`,
         ui: '<ColorPickerField />',
+        coreCode: ColorPickerFieldCoreCode,
     },
     {
         name: 'PHONE',
@@ -190,6 +225,7 @@ const allDataType: DataTypeItem[] = [
             }
         }`,
         ui: '<PhoneInputField />',
+        coreCode: PhoneInputFieldCoreCode,
     },
     {
         name: 'URL',
@@ -198,6 +234,7 @@ const allDataType: DataTypeItem[] = [
             trim: true
         }`,
         ui: '<UrlInputField />',
+        coreCode: UrlInputFieldCoreCode,
     },
     {
         name: 'RICHTEXT',
@@ -205,6 +242,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }`,
         ui: '<RichTextEditorField />',
+        // coreCode: RichTextEditorFieldCoreCode,
     },
     {
         name: 'AUTOCOMPLETE',
@@ -221,21 +259,24 @@ const allDataType: DataTypeItem[] = [
             enum: ['Choice A', 'Choice B', 'Choice C']
         }`,
         ui: '<RadioButtonGroupField />',
+        coreCode: RadioButtonGroupFieldCoreCode,
     },
     {
-        name: 'CHECKBOX', // This typically implies a single checkbox (boolean)
+        name: 'CHECKBOX',
         mongooseSchema: `CHECKBOX: {
             type: Boolean,
             default: false
         }`,
         ui: '<CheckboxField />',
+        coreCode: CheckboxFieldCoreCode,
     },
     {
-        name: 'MULTICHECKBOX', // This implies multiple selections (array of strings)
+        name: 'MULTICHECKBOX',
         mongooseSchema: `MULTICHECKBOX: [{
             type: String
         }]`,
         ui: '<MultiCheckboxGroupField />',
+        coreCode: MultiCheckboxGroupFieldCoreCode,
     },
 ]
 const ViewDataType = () => {
