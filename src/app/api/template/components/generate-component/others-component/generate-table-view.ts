@@ -257,7 +257,7 @@ const ViewTableNextComponents: React.FC = () => {
                  <div className="py-12 text-center text-2xl text-slate-500">Ops! Nothing was found.</div>
             ) : (
                 <Table className="border">
-                    <TableHeader className="bg-slate-100">
+                    <TableHeader className="bg-accent">
                         <TableRow>
                             <TableHead>
                                 <Checkbox

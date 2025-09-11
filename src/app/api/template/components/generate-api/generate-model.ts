@@ -53,7 +53,7 @@ export const generateModel = (inputJsonFile: string): string => {
                     type: String,
                     required: true,
                     unique: true,
-                    match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email'],
+                     match:  [/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please enter a valid email'],
                 }`
             case 'PASSWORD':
                 return `{ type: String, required: true, select: false }`
