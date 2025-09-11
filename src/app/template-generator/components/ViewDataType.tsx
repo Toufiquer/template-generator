@@ -9,7 +9,6 @@ import InputFieldForPassword from './ui-components/InputFieldForPassword'
 import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
-import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMultiple'
 import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
 import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
 import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
@@ -22,11 +21,12 @@ import TimeRangePickerField from './ui-components/TimeRangePickerField'
 import ColorPickerField from './ui-components/ColorPickerField'
 import PhoneInputField from './ui-components/PhoneInputField'
 import UrlInputField from './ui-components/UrlInputField'
-import RichTextEditorField from './ui-components/rich-text-editor/RichTextEditorField'
 import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
 import AutocompleteField from './ui-components/AutocompleteField'
 import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
 import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
+import RichTextEditorField from './ui-components/RichTextEditorField'
+import ImageUploadManager from './ui-components/ImageUploadManager'
 
 import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
 import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
@@ -50,6 +50,8 @@ import { InputFieldForPasscodeCoreCode } from './core-code/InputFieldForPasscode
 import { InputFieldForPasswordCoreCode } from './core-code/InputFieldForPasswordCoreCode'
 import { InputFieldForEmailCoreCode } from './core-code/InputFieldForEmailCoreCode'
 import { TimeFieldCoreCode } from './core-code/TimeFieldCoreCode'
+import { RichTextEditorFieldCoreCode } from './core-code/RichTextEditorFieldCoreCode'
+import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSingleCoreCode'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -120,16 +122,16 @@ const allDataType: DataTypeItem[] = [
         mongooseSchema: `IMAGES: [{
             type: String
         }]`,
-        ui: '<ImageUploadFieldMultiple />',
+        ui: '<ImageUploadManager />',
         // coreCode: ImageUploadFieldMultipleCoreCode,
     },
     {
-        name: 'IMAGE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
+        name: 'IMAGE ',
         mongooseSchema: `IMAGE: {
             type: String
         }`,
         ui: '<ImageUploadFieldSingle />',
-        // coreCode: ImageUploadFieldSingleCoreCode,
+        coreCode: ImageUploadFieldSingleCoreCode,
     },
     {
         name: 'DESCRIPTION',
@@ -242,7 +244,7 @@ const allDataType: DataTypeItem[] = [
             type: String
         }`,
         ui: '<RichTextEditorField />',
-        // coreCode: RichTextEditorFieldCoreCode,
+        coreCode: RichTextEditorFieldCoreCode,
     },
     {
         name: 'AUTOCOMPLETE',
@@ -325,8 +327,8 @@ const ViewDataType = () => {
                 return <SelectField />
             case '<DynamicSelectField />':
                 return <DynamicSelectField />
-            case '<ImageUploadFieldMultiple />':
-                return <ImageUploadFieldMultiple />
+            case '<ImageUploadManager />':
+                return <ImageUploadManager />
             case '<ImageUploadFieldSingle />':
                 return <ImageUploadFieldSingle />
             case '<TextareaFieldForDescription />':
