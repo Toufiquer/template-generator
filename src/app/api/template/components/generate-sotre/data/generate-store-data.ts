@@ -33,14 +33,12 @@ interface InputConfig {
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Controller.ts file as a string.
  */
-export const generateModel = (inputJsonFile: string): string => {
+export const generateStoreData = (inputJsonFile: string): string => {
     const config: InputConfig = JSON.parse(inputJsonFile)
     const { namingConvention, schema } = config
 
     // --- 1. Extract Naming Conventions ---
     const interfaceName = namingConvention.Users_1_000___ || 'Items'
-    const modelName = namingConvention.User_3_000___ || 'Item'
-    const schemaVarName = `${namingConvention.user_4_000___ || 'item'}Schema`
 
     // --- 2. Type Mapping Helpers ---
 
@@ -222,15 +220,23 @@ export const generateModel = (inputJsonFile: string): string => {
 
     // --- 4. Assemble the Final File Content ---
 
-    const schemaContent = generateSchemaFields(schema, 1)
+    const interfaceContent = generateInterfaceFields(schema, 1)
+    const defaultObjectContent = generateDefaultObjectFields(schema, 1)
 
-    return `import mongoose, { Schema } from 'mongoose'
+    return `
 
-const ${schemaVarName} = new Schema({
-${schemaContent}
-}, { timestamps: true })
+export interface I${interfaceName} {
+${interfaceContent};
+    createdAt: Date;
+    updatedAt: Date;
+    _id: string;
+}
 
-export default mongoose.models.${modelName} || mongoose.model('${modelName}', ${schemaVarName})
- 
+export const default${interfaceName} = {
+${defaultObjectContent},
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    _id: '',
+}
 `
 }

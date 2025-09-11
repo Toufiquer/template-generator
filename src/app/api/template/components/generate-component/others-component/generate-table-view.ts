@@ -105,7 +105,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 
-import { ${interfaceName} } from '../api/v1/model'
+import { ${interfaceName} } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'

@@ -32,7 +32,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { ${interfaceName}, default${pluralPascalCase} } from '../api/v1/model'
+import { ${interfaceName}, default${pluralPascalCase} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useDelete${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'

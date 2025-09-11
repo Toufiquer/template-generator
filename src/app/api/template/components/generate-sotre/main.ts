@@ -1,4 +1,5 @@
 import writeInFile from '../create-and-write'
+import { generateStoreData } from './data/generate-store-data'
 import generateStoreFile from './generate-store'
 import generateStoreConstant from './generate-store-constant'
 import generateStoreTypeFile from './generate-store-type'
@@ -17,6 +18,7 @@ const generateStore = async (data: string) => {
     const storeTemplate = generateStoreFile(data)
     const storeConstantTemplate = generateStoreConstant(data)
     const storeTypeTemplate = generateStoreTypeFile(data)
+    const storeDataTemplate = generateStoreData(data)
     writeInFile(
         storeTemplate,
         `src/app/generate/${folderName}/all/store/store.ts`
@@ -28,6 +30,10 @@ const generateStore = async (data: string) => {
     writeInFile(
         storeTypeTemplate,
         `src/app/generate/${folderName}/all/store/store-type.ts`
+    )
+    writeInFile(
+        storeDataTemplate,
+        `src/app/generate/${folderName}/all/store/data/data.ts`
     )
 }
 export default generateStore

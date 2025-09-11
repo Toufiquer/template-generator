@@ -146,7 +146,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { ${interfaceName}, ${defaultInstanceName} } from '../api/v1/model'
+import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useGet${pluralPascalCase}ByIdQuery } from '../redux/rtk-api'
 

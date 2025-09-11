@@ -87,7 +87,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { ${interfaceName} } from '../api/v1/model'
+import { ${interfaceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'

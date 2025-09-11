@@ -246,7 +246,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 
-import { ${interfaceName}, ${defaultInstanceName} } from '../api/v1/model'
+import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
