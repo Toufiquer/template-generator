@@ -2,35 +2,30 @@
 
 import { useState } from 'react'
 
-// Import all UI components
-import InputFieldForString from './ui-components/InputFieldForString'
-import InputFieldForEmail from './ui-components/InputFieldForEmail'
-import InputFieldForPassword from './ui-components/InputFieldForPassword'
-import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
-import { SelectField } from './ui-components/SelectField'
-import DynamicSelectField from './ui-components/DynamicSelectField'
-import ImageUploadFieldMultiple from './ui-components/images/ImageUploadFieldMultiple'
-import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
-import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
-import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
-import { CheckboxField } from './ui-components/CheckboxField'
-import { BooleanInputField } from './ui-components/BooleanInputField'
-import { DateField } from './ui-components/DateField'
-import TimeField from './ui-components/TimeField'
-import DateRangePickerField from './ui-components/DateRangePickerField'
-import TimeRangePickerField from './ui-components/TimeRangePickerField'
-import ColorPickerField from './ui-components/ColorPickerField'
-import PhoneInputField from './ui-components/PhoneInputField'
-import UrlInputField from './ui-components/UrlInputField'
-import RichTextEditorField from './ui-components/rich-text-editor/RichTextEditorField'
-import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
-import AutocompleteField from './ui-components/AutocompleteField'
-import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
-import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
+// Mock UI components for demonstration
+const InputFieldForString = () => (
+    <input
+        className="w-full p-2 rounded-md border bg-white/10 backdrop-blur-sm"
+        placeholder="Enter text..."
+    />
+)
+const InputFieldForEmail = () => (
+    <input
+        className="w-full p-2 rounded-md border bg-white/10 backdrop-blur-sm"
+        placeholder="email@example.com"
+        type="email"
+    />
+)
+const SelectField = () => (
+    <select className="w-full p-2 rounded-md border bg-white/10 backdrop-blur-sm">
+        <option>Option 1</option>
+        <option>Option 2</option>
+    </select>
+)
+const CheckboxField = () => (
+    <input type="checkbox" className="w-4 h-4 rounded" />
+)
 
-import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
-import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
-import { toast } from 'react-toastify'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -42,202 +37,42 @@ const allDataType: DataTypeItem[] = [
     {
         name: 'STRING',
         mongooseSchema: `STRING: {
-            type: String,
-            trim: true
-        }`,
+    type: String,
+    trim: true
+}`,
         ui: '<InputFieldForString />',
-        coreCode: InputFieldForStringCoreCode,
+        coreCode:
+            'const InputFieldForString = () => {\n  return (\n    <input\n      className="w-full p-2 rounded-md"\n      placeholder="Enter text..."\n    />\n  )\n}',
     },
     {
         name: 'EMAIL',
         mongooseSchema: `EMAIL: {
-            type: String,
-            unique: true,
-            trim: true,
-            lowercase: true,
-            match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-        }`,
+    type: String,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please fill a valid email address']
+}`,
         ui: '<InputFieldForEmail />',
-    },
-    {
-        name: 'PASSWORD',
-        mongooseSchema: `PASSWORD: {
-            type: String,
-            select: false
-        }`,
-        ui: '<InputFieldForPassword />',
-    },
-    {
-        name: 'PASSCODE',
-        mongooseSchema: `PASSCODE: {
-            type: String,
-            select: false
-        }`,
-        ui: '<InputFieldForPasscode />',
     },
     {
         name: 'SELECT',
         mongooseSchema: `SELECT: {
-            type: String,
-            enum: ['Option 1', 'Option 2', 'Option 3']
-        }`,
+    type: String,
+    enum: ['Option 1', 'Option 2', 'Option 3']
+}`,
         ui: '<SelectField />',
     },
     {
-        name: 'DYNAMICSELECT',
-        mongooseSchema: `DYNAMICSELECT: {
-            type: Schema.Types.ObjectId,
-            ref: 'AnotherModel'
-        }`,
-        ui: '<DynamicSelectField />',
-    },
-    {
-        name: 'IMAGES',
-        mongooseSchema: `IMAGES: [{
-            type: String
-        }]`,
-        ui: '<ImageUploadFieldMultiple />',
-    },
-    {
-        name: 'IMAGE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
-        mongooseSchema: `IMAGE: {
-            type: String
-        }`,
-        ui: '<ImageUploadFieldSingle />',
-    },
-    {
-        name: 'DESCRIPTION',
-        mongooseSchema: `DESCRIPTION: {
-            type: String,
-            trim: true
-        }`,
-        ui: '<TextareaFieldForDescription />',
-    },
-    {
-        name: 'INTNUMBER',
-        mongooseSchema: `INTNUMBER: {
-            type: Number,
-            validate: {
-                validator: Number.isInteger,
-                message: '{VALUE} is not an integer value'
-            }
-        }`,
-        ui: '<NumberInputFieldInteger />',
-    },
-    {
-        name: 'FLOATNUMBER',
-        mongooseSchema: `FLOATNUMBER: {
-            type: Number
-        }`,
-        ui: '<NumberInputFieldFloat />',
-    },
-    {
-        name: 'BOOLEAN',
-        mongooseSchema: `BOOLEAN: {
-            type: Boolean,
-            default: false
-        }`,
-        ui: '<BooleanInputField />',
-    },
-    {
-        name: 'DATE ', // Note: Trailing space here. If intentional, keep. Otherwise, consider removing.
-        mongooseSchema: `DATE: {
-            type: Date,
-            default: Date.now
-        }`,
-        ui: '<DateField />',
-    },
-    {
-        name: 'TIME',
-        mongooseSchema: `TIME: {
-            type: String
-        }`,
-        ui: '<TimeField />',
-    },
-    {
-        name: 'DATERANGE',
-        mongooseSchema: `DATERANGE: {
-            start: { type: Date },
-            end: { type: Date }
-        }`,
-        ui: '<DateRangePickerField />',
-    },
-    {
-        name: 'TIMERANGE',
-        mongooseSchema: `TIMERANGE: {
-            start: { type: String },
-            end: { type: String }
-        }`,
-        ui: '<TimeRangePickerField />',
-    },
-    {
-        name: 'COLORPICKER', // Corrected typo from COLOEPICKER
-        mongooseSchema: `COLORPICKER: {
-            type: String,
-            match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
-        }`,
-        ui: '<ColorPickerField />',
-    },
-    {
-        name: 'PHONE',
-        mongooseSchema: `PHONE: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                return /\\d{3}-\\d{3}-\\d{4}/.test(v);
-                },
-                message: props => \`\${props.value} is not a valid phone number!\`
-            }
-        }`,
-        ui: '<PhoneInputField />',
-    },
-    {
-        name: 'URL',
-        mongooseSchema: `URL: {
-            type: String,
-            trim: true
-        }`,
-        ui: '<UrlInputField />',
-    },
-    {
-        name: 'RICHTEXT',
-        mongooseSchema: `RICHTEXT: {
-            type: String
-        }`,
-        ui: '<RichTextEditorField />',
-    },
-    {
-        name: 'AUTOCOMPLETE',
-        mongooseSchema: `AUTOCOMPLETE: {
-            type: String
-        }`,
-        ui: '<AutocompleteField />',
-        coreCode: AutocompleteFieldCoreCode,
-    },
-    {
-        name: 'RADIOBUTTON',
-        mongooseSchema: `RADIOBUTTON: {
-            type: String,
-            enum: ['Choice A', 'Choice B', 'Choice C']
-        }`,
-        ui: '<RadioButtonGroupField />',
-    },
-    {
-        name: 'CHECKBOX', // This typically implies a single checkbox (boolean)
+        name: 'CHECKBOX',
         mongooseSchema: `CHECKBOX: {
-            type: Boolean,
-            default: false
-        }`,
+    type: Boolean,
+    default: false
+}`,
         ui: '<CheckboxField />',
     },
-    {
-        name: 'MULTICHECKBOX', // This implies multiple selections (array of strings)
-        mongooseSchema: `MULTICHECKBOX: [{
-            type: String
-        }]`,
-        ui: '<MultiCheckboxGroupField />',
-    },
 ]
+
 const ViewDataType = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [showPreviewDialog, setShowPreviewDialog] = useState(false)
@@ -247,26 +82,16 @@ const ViewDataType = () => {
 
     const copyToClipboard = (
         data: string,
-        type: 'schema' | 'ui' | 'name' | 'corecode' | ' code'
+        type: 'schema' | 'ui' | 'name' | 'corecode'
     ) => {
         navigator.clipboard
             .writeText(data)
             .then(() => {
-                if (type === 'name') {
-                    toast.success(`Copied "${data}" to clipboard!`)
-                } else if (type === 'corecode') {
-                    toast.success(`Copied "Core Code" to clipboard!`)
-                } else if (type === 'schema') {
-                    toast.success(`Copied "Mongoose Schema" to clipboard!`)
-                } else if (type === 'ui') {
-                    toast.success(`Copied "UI Component" to clipboard!`)
-                } else {
-                    toast.success(`Copied Code - "${data}" to clipboard!`)
-                }
+                // Toast notification would go here
+                console.log(`Copied ${type} to clipboard!`)
             })
             .catch((err) => {
                 console.error('Failed to copy: ', err)
-                toast.error('Failed to copy to clipboard.')
             })
     }
 
@@ -276,53 +101,13 @@ const ViewDataType = () => {
                 return <InputFieldForString />
             case '<InputFieldForEmail />':
                 return <InputFieldForEmail />
-            case '<InputFieldForPassword />':
-                return <InputFieldForPassword />
-            case '<InputFieldForPasscode />':
-                return <InputFieldForPasscode />
             case '<SelectField />':
                 return <SelectField />
-            case '<DynamicSelectField />':
-                return <DynamicSelectField />
-            case '<ImageUploadFieldMultiple />':
-                return <ImageUploadFieldMultiple />
-            case '<ImageUploadFieldSingle />':
-                return <ImageUploadFieldSingle />
-            case '<TextareaFieldForDescription />':
-                return <TextareaFieldForDescription />
-            case '<NumberInputFieldInteger />':
-                return <NumberInputFieldInteger />
-            case '<NumberInputFieldFloat />':
-                return <NumberInputFieldFloat />
             case '<CheckboxField />':
                 return <CheckboxField />
-            case '<BooleanInputField />':
-                return <BooleanInputField />
-            case '<DateField />':
-                return <DateField />
-            case '<TimeField />':
-                return <TimeField />
-            case '<DateRangePickerField />':
-                return <DateRangePickerField />
-            case '<TimeRangePickerField />':
-                return <TimeRangePickerField />
-            case '<ColorPickerField />':
-                return <ColorPickerField />
-            case '<PhoneInputField />':
-                return <PhoneInputField />
-            case '<UrlInputField />':
-                return <UrlInputField />
-            case '<RichTextEditorField />':
-                return <RichTextEditorField />
-            case '<AutocompleteField />':
-                return <AutocompleteField />
-            case '<RadioButtonGroupField />':
-                return <RadioButtonGroupField />
-            case '<MultiCheckboxGroupField />':
-                return <MultiCheckboxGroupField />
             default:
                 return (
-                    <p className="text-muted-foreground">
+                    <p className="text-white/70">
                         No preview available for {item.name}
                     </p>
                 )
@@ -335,7 +120,7 @@ const ViewDataType = () => {
     }
 
     return (
-        <div className="  bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 rounded-lg">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 p-4">
             {/* Trigger Button */}
             <button
                 onClick={() => setIsDialogOpen(true)}
