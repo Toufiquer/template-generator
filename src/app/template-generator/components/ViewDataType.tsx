@@ -9,7 +9,6 @@ import InputFieldForPassword from './ui-components/InputFieldForPassword'
 import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
 import { SelectField } from './ui-components/SelectField'
 import DynamicSelectField from './ui-components/DynamicSelectField'
-import ImageUploadFieldSingle from './ui-components/images/ImageUploadFieldSingle'
 import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
 import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
 import { CheckboxField } from './ui-components/CheckboxField'
@@ -52,6 +51,7 @@ import { InputFieldForEmailCoreCode } from './core-code/InputFieldForEmailCoreCo
 import { TimeFieldCoreCode } from './core-code/TimeFieldCoreCode'
 import { RichTextEditorFieldCoreCode } from './core-code/RichTextEditorFieldCoreCode'
 import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSingleCoreCode'
+import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
 interface DataTypeItem {
     name: string
     mongooseSchema: string

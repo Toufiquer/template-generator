@@ -1,10 +1,3 @@
-/*
-|-----------------------------------------
-| Profile Image Uploader Component
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com> (adapted)
-| @copyright: varse-project, May, 2025
-|-----------------------------------------
-*/
 
 import Image from 'next/image'
 import { toast } from 'react-toastify'
@@ -48,7 +41,7 @@ const ImageUploadFieldSingle = () => {
 
             // Upload to imgbb
             const response = await fetch(
-                `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+                `https://api.imgbb.com/1/upload?key=\${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
                 {
                     method: 'POST',
                     body: formData,
@@ -134,3 +127,4 @@ const ImageUploadFieldSingle = () => {
 }
 
 export default ImageUploadFieldSingle
+
