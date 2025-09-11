@@ -10,7 +10,6 @@ import { withDB } from '@/app/api/utils/db'
 
 import User_3_000___ from './model'
 import { IResponse } from './jwt-verify'
-import { connectRedis, getRedisData } from './redis'
 
 // Helper to format responses
 const formatResponse = (data: unknown, message: string, status: number) => ({
@@ -67,11 +66,35 @@ export async function getUser_3_000___ById(req: Request) {
 
 // GET all Users_1_000___ with pagination
 export async function getUsers_1_000___(req: Request) {
-    await connectRedis()
-    const getValue = await getRedisData('users_2_000___')
-    if (getValue) {
-        const { users_2_000___, totalUsers_1_000___, page, limit } =
-            JSON.parse(getValue)
+    return withDB(async () => {
+        const url = new URL(req.url)
+        const page = parseInt(url.searchParams.get('page') || '1', 10)
+        const limit = parseInt(url.searchParams.get('limit') || '10', 10)
+        const skip = (page - 1) * limit
+
+        const searchQuery = url.searchParams.get('q')
+
+        let searchFilter = {}
+
+        // Apply search filter only if search query is provided
+        if (searchQuery) {
+            searchFilter = {
+                $or: [
+                    { name: { $regex: searchQuery, $options: 'i' } },
+                    { email: { $regex: searchQuery, $options: 'i' } },
+                    { alias: { $regex: searchQuery, $options: 'i' } },
+                ],
+            }
+        }
+
+        const users_2_000___ = await User_3_000___.find(searchFilter)
+            .sort({ updatedAt: -1, createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+
+        const totalUsers_1_000___ =
+            await User_3_000___.countDocuments(searchFilter)
+
         return formatResponse(
             {
                 users_2_000___: users_2_000___ || [],
@@ -82,48 +105,7 @@ export async function getUsers_1_000___(req: Request) {
             'Users_1_000___ fetched successfully',
             200
         )
-    } else {
-        return withDB(async () => {
-            const url = new URL(req.url)
-            const page = parseInt(url.searchParams.get('page') || '1', 10)
-            const limit = parseInt(url.searchParams.get('limit') || '10', 10)
-            const skip = (page - 1) * limit
-
-            const searchQuery = url.searchParams.get('q')
-
-            let searchFilter = {}
-
-            // Apply search filter only if search query is provided
-            if (searchQuery) {
-                searchFilter = {
-                    $or: [
-                        { name: { $regex: searchQuery, $options: 'i' } },
-                        { email: { $regex: searchQuery, $options: 'i' } },
-                        { alias: { $regex: searchQuery, $options: 'i' } },
-                    ],
-                }
-            }
-
-            const users_2_000___ = await User_3_000___.find(searchFilter)
-                .sort({ updatedAt: -1, createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-
-            const totalUsers_1_000___ =
-                await User_3_000___.countDocuments(searchFilter)
-
-            return formatResponse(
-                {
-                    users_2_000___: users_2_000___ || [],
-                    total: totalUsers_1_000___,
-                    page,
-                    limit,
-                },
-                'Users_1_000___ fetched successfully',
-                200
-            )
-        })
-    }
+    })
 }
 
 // UPDATE single User_3_000___ by ID
