@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import ViewDataType from './ViewDataType'
+import Link from 'next/link'
 
 // Success Popup Component
 const SuccessPopup = ({
@@ -52,6 +53,7 @@ const SuccessPopup = ({
 }
 
 const JsonEditor: React.FC = () => {
+    const [pathButton, setPathButton] = useState('')
     const [jsonInput, setJsonInput] = useState<string>(
         '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT",\n    "books-list": "MULTISELECT",\n    "check-list": "MULTIDYNAMICSELECT",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON",\n    "policy": "CHECKBOX",\n    "hobbys": "MULTICHECKBOX"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
     )
@@ -138,6 +140,14 @@ const JsonEditor: React.FC = () => {
             const result = await response.json()
             console.log('Success:', result)
             showSuccess('Template generated successfully!')
+            const parsedJson = JSON.parse(jsonInput)
+            console.log(
+                'parseJson ',
+                parsedJson.namingConvention.users_2_000___
+            )
+            setPathButton(
+                `/generate/${parsedJson.namingConvention.users_2_000___}/all`
+            )
         } catch (error) {
             setError('Failed to fetch: ' + (error as Error).message)
         } finally {
@@ -145,7 +155,6 @@ const JsonEditor: React.FC = () => {
         }
         console.log('handle generate is End')
     }
-
     return (
         <>
             <SuccessPopup
@@ -154,6 +163,17 @@ const JsonEditor: React.FC = () => {
             />
 
             <div className="w-full mx-auto p-6">
+                <div className="w-full flex items-center justify-center">
+                    {pathButton !== '' && (
+                        <Link
+                            href={`${pathButton}`}
+                            target="_blank"
+                            className="px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+                        >
+                            Go Live
+                        </Link>
+                    )}
+                </div>
                 <div className="rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl">
                     <div className="w-full flex items-center justify-between">
                         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">

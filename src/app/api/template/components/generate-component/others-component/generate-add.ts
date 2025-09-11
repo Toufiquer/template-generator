@@ -256,7 +256,7 @@ import {
 
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
-import { ${interfaceName}, ${defaultInstanceName} } from '@/app/dashboard/${pluralLowerCase}/all/api/v1/model'
+import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/api/v1/model'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const InputField: React.FC<{

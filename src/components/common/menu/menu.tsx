@@ -28,6 +28,7 @@ const MenuBarNextComponent = () => {
             <Link className="px-4" href="/design">
                 Design
             </Link>
+
             <Link className="px-4" href="/dashboard/template-demo/all">
                 Demo All
             </Link>
