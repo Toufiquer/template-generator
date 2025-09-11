@@ -346,7 +346,9 @@ const AddNextComponents: React.FC = () => {
 
     const handleAdd${singularPascalCase} = async () => {
         try {
-            const added${singularPascalCase} = await add${pluralPascalCase}(new${singularPascalCase}).unwrap()
+            const { _id, ...update${pluralPascalCase} } = new${singularPascalCase}
+            console.log('_id', _id)
+            const added${singularPascalCase} = await add${pluralPascalCase}(update${pluralPascalCase}).unwrap()
             set${pluralPascalCase}([added${singularPascalCase}])
             toggleAddModal(false)
             setNew${singularPascalCase}(${defaultInstanceName})
