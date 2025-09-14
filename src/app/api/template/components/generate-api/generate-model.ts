@@ -47,20 +47,18 @@ export const generateModel = (inputJsonFile: string): string => {
     const mapToMongooseSchema = (type: string): string => {
         switch (type.toUpperCase()) {
             case 'STRING':
-                return `{ type: String, required: true }`
+                return `{ type: String, }`
             case 'EMAIL':
                 return `{
                     type: String,
-                    required: true,
-                    unique: true,
                      match:  [/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please enter a valid email'],
                 }`
             case 'PASSWORD':
-                return `{ type: String, required: true, select: false }`
+                return `{ type: String, select: false }`
             case 'PASSCODE':
-                return `{ type: String, required: true, select: false }`
+                return `{ type: String, select: false }`
             case 'SELECT':
-                return `{ type: String, required: true, enum: ['Option 1', 'Option 2'] }`
+                return `{ type: String, enum: ['Option 1', 'Option 2'] }`
             case 'DYNAMICSELECT':
                 return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
             case 'IMAGES':
@@ -107,7 +105,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'MULTICHECKBOX':
                 return `[{ type: String }]`
             default:
-                return `{ type: String, required: true }`
+                return `{ type: String }`
         }
     }
 

@@ -19,7 +19,7 @@ export const apiSlice = createApi({
         'tagTypeNews2es',
         'tagTypeNews3es',
         'tagTypeNews4es',
-        'tagTypeNews5es',
+        'tagTypeEmails',
     ],
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
