@@ -15,15 +15,13 @@ const InputFieldForPasscode = () => {
 
     const handlePasscodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-        // Ensure only numeric input is processed
         const numericValue = value.replace(/[^0-9]/g, '')
         setPasscode(numericValue)
 
-        // Validate if the field has input but is not exactly 6 digits
         if (numericValue.length > 0 && numericValue.length < 6) {
             setError('Passcode must be exactly 6 digits.')
         } else {
-            setError('') // Clear error if valid or empty
+            setError('')
         }
     }
 

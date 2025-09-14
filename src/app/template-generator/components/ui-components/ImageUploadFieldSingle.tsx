@@ -12,9 +12,9 @@ const ImageUploadFieldSingle = () => {
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
 
     useEffect(() => {
-        // Example: Fetch user's current profile image if not provided initially
+        // Fetch user's current profile image if not provided initially
         // const fetchProfileImage = async () => {
-        //   const response = await fetch('/api/user/profile-image');
+        //   const response = await fetch('/api/user/profile');
         //   const data = await response.json();
         //   if (data.url) {
         //     setProfileImageUrl(data.url);
@@ -52,9 +52,7 @@ const ImageUploadFieldSingle = () => {
             if (data.success) {
                 const newImageUrl = data.data.url
 
-                // Save image data to your server, specifically for profile image
                 const saveResponse = await fetch('/api/media', {
-                    // Changed endpoint to distinguish from generic media
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
