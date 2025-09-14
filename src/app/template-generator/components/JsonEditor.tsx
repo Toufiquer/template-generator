@@ -430,21 +430,29 @@ const JsonEditor: React.FC = () => {
                         </div>
                     ) : (
                         <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                            {items.map((item, index) => (
-                                <div
-                                    key={item.id}
-                                    className="animate-in slide-in-from-left-2 duration-300"
-                                    style={{
-                                        animationDelay: `${index * 100}ms`,
-                                    }}
-                                >
-                                    <JsonEditorSingleItem
-                                        item={item}
-                                        removeItem={removeItem}
-                                        setJsonInput={setJsonInput}
-                                    />
-                                </div>
-                            ))}
+                            {items
+                                .sort((a, b) => {
+                                    if (a.timestamp > b.timestamp) {
+                                        return -1
+                                    } else {
+                                        return 1
+                                    }
+                                })
+                                .map((item, index) => (
+                                    <div
+                                        key={item.id}
+                                        className="animate-in slide-in-from-left-2 duration-300"
+                                        style={{
+                                            animationDelay: `${index * 100}ms`,
+                                        }}
+                                    >
+                                        <JsonEditorSingleItem
+                                            item={item}
+                                            removeItem={removeItem}
+                                            setJsonInput={setJsonInput}
+                                        />
+                                    </div>
+                                ))}
                         </div>
                     )}
                 </div>

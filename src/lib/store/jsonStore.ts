@@ -22,12 +22,12 @@ export const useJsonStore = create<JsonStore>()(
             addItem: (data) =>
                 set((state) => ({
                     items: [
-                        ...state.items,
                         {
                             id: Date.now().toString(),
                             data,
                             timestamp: new Date(),
                         },
+                        ...state.items,
                     ],
                 })),
             removeItem: (id) =>
