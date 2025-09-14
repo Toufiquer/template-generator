@@ -1,4 +1,5 @@
-// RichTextEditor.tsx
+// RichTextEditorField.tsx
+
 'use client'
 
 import React from 'react'
@@ -20,14 +21,13 @@ import {
     ListOrdered,
     Strikethrough,
 } from 'lucide-react'
-import { Toggle } from '@/components/ui/toggle' // Assuming this path is correct for your Toggle component
+import { Toggle } from '@/components/ui/toggle'
 
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
 import TextAlign from '@tiptap/extension-text-align'
 import { EditorContent, useEditor, Editor } from '@tiptap/react'
 
-// Define the MenuBar component directly within this file
 function EditorMenuBar({ editor }: { editor: Editor | null }) {
     if (!editor) {
         return null

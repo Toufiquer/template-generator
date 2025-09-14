@@ -1,11 +1,6 @@
+// TimeRangePickerField.tsx
+
 'use client'
-/*
-|-----------------------------------------
-| setting up TimeRangePickerField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
 
 import * as React from 'react'
 import { Clock } from 'lucide-react'

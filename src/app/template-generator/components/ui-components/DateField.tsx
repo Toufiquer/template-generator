@@ -1,18 +1,5 @@
-/*
-|-----------------------------------------
-| setting up DateField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+// DateField.tsx
 
-/*
-|-----------------------------------------
-| setting up DateField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
 'use client'
 
 import * as React from 'react'
@@ -32,7 +19,6 @@ export function DateField() {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
 
-    // Add a useEffect to log changes in date for debugging
     React.useEffect(() => {
         console.log(
             'Current selected date:',
@@ -67,8 +53,8 @@ export function DateField() {
                         mode="single"
                         selected={date}
                         captionLayout="dropdown"
-                        fromYear={1900} // Added required prop for dropdown layout
-                        toYear={new Date().getFullYear()} // Current year as upper bound
+                        fromYear={1900}
+                        toYear={new Date().getFullYear()}
                         onSelect={(selectedDate) => {
                             console.log(
                                 'Date selected in calendar:',

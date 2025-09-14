@@ -1,14 +1,7 @@
+// TimeField.tsx
+
 'use client'
 
-/*
-|-----------------------------------------
-| setting up TimeField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
-
-// components/ui/time-picker.tsx
 import * as React from 'react'
 import { Clock } from 'lucide-react'
 
@@ -28,7 +21,6 @@ const TimeField = () => {
     const hourScrollRef = React.useRef<HTMLDivElement>(null)
     const minuteScrollRef = React.useRef<HTMLDivElement>(null)
 
-    // Format time for display in the trigger button
     const formatTime = (date: Date | undefined): string => {
         if (!date) return ''
 
@@ -36,33 +28,29 @@ const TimeField = () => {
         const minutes = date.getMinutes()
         const ampm = hours >= 12 ? 'PM' : 'AM'
         hours = hours % 12
-        hours = hours === 0 ? 12 : hours // The hour '0' should be '12'
+        hours = hours === 0 ? 12 : hours
         return `${hours.toString().padStart(2, '0')}:${minutes
             .toString()
             .padStart(2, '0')} ${ampm}`
     }
 
-    // Handle hour selection
     const handleHourSelect = (hour: number) => {
         const newDate = selectedDate ? new Date(selectedDate) : new Date()
         newDate.setHours(hour, newDate.getMinutes(), 0, 0)
         setSelectedDate(newDate)
     }
 
-    // Handle minute selection
     const handleMinuteSelect = (minute: number) => {
         const newDate = selectedDate ? new Date(selectedDate) : new Date()
         newDate.setMinutes(minute, 0, 0)
         setSelectedDate(newDate)
     }
 
-    // Scroll to selected hour/minute when popover opens
     React.useEffect(() => {
         if (isOpen && selectedDate) {
             const currentHour = selectedDate.getHours()
             const currentMinute = selectedDate.getMinutes()
 
-            // Scroll hour into view
             if (hourScrollRef.current) {
                 const hourElement = hourScrollRef.current.querySelector(
                     `[data-hour="${currentHour}"]`
@@ -75,7 +63,6 @@ const TimeField = () => {
                 }
             }
 
-            // Scroll minute into view
             if (minuteScrollRef.current) {
                 const minuteElement = minuteScrollRef.current.querySelector(
                     `[data-minute="${currentMinute}"]`
@@ -90,9 +77,8 @@ const TimeField = () => {
         }
     }, [isOpen, selectedDate])
 
-    // Generate lists of hours and minutes
-    const hours = Array.from({ length: 24 }, (_, i) => i) // 0-23
-    const minutes = Array.from({ length: 60 }, (_, i) => i) // 0-59
+    const hours = Array.from({ length: 24 }, (_, i) => i)
+    const minutes = Array.from({ length: 60 }, (_, i) => i)
 
     const currentHour = selectedDate?.getHours()
     const currentMinute = selectedDate?.getMinutes()
@@ -126,7 +112,6 @@ const TimeField = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 z-50">
                     <div className="flex max-h-48">
-                        {/* Hours */}
                         <ScrollArea
                             className="h-48 w-20 border-r"
                             ref={hourScrollRef}
@@ -167,7 +152,6 @@ const TimeField = () => {
                             </div>
                         </ScrollArea>
 
-                        {/* Minutes */}
                         <ScrollArea className="h-48 w-20" ref={minuteScrollRef}>
                             <div className="flex flex-col p-1">
                                 {minutes.map((minute) => {

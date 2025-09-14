@@ -1,3 +1,5 @@
+// DynamicSelectField.tsx
+
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -22,7 +24,6 @@ const DynamicSelectField = () => {
     const apiUrl = 'https://jsonplaceholder.typicode.com/users'
     const readOnly = false
 
-    // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true)
@@ -48,7 +49,6 @@ const DynamicSelectField = () => {
         fetchData()
     }, [apiUrl])
 
-    // Filter available options based on search term
     const getFilteredOptions = () => {
         return availableData
             .filter((item) => !selectedItems.includes(item))
@@ -57,7 +57,6 @@ const DynamicSelectField = () => {
             )
     }
 
-    // Handle selection with animation
     const handleSelect = (value: string) => {
         if (!readOnly) {
             setAnimatingItems((prev) => new Set(prev).add(value))
@@ -68,7 +67,6 @@ const DynamicSelectField = () => {
             setSearchTerm('')
             setIsOpen(false)
 
-            // Remove animation class after animation completes
             setTimeout(() => {
                 setAnimatingItems((prev) => {
                     const newSet = new Set(prev)
@@ -79,7 +77,6 @@ const DynamicSelectField = () => {
         }
     }
 
-    // Remove item with animation
     const handleRemove = (itemToRemove: string) => {
         if (!readOnly) {
             setAnimatingItems((prev) => new Set(prev).add(itemToRemove))
@@ -99,13 +96,11 @@ const DynamicSelectField = () => {
 
     return (
         <div className="space-y-4 w-full max-w-2xl">
-            {/* Label */}
             <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {label}
                 </label>
 
-                {/* Custom Select Dropdown */}
                 <div className="relative">
                     <div
                         className={`
@@ -148,10 +143,8 @@ const DynamicSelectField = () => {
                         </div>
                     </div>
 
-                    {/* Dropdown Menu */}
                     {isOpen && (
                         <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-200">
-                            {/* Search Input */}
                             <div className="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -168,7 +161,6 @@ const DynamicSelectField = () => {
                                 </div>
                             </div>
 
-                            {/* Options List */}
                             <div className="max-h-64 overflow-y-auto">
                                 {error ? (
                                     <div className="p-4 text-center text-red-500 text-sm">
@@ -210,7 +202,6 @@ const DynamicSelectField = () => {
                 </div>
             </div>
 
-            {/* Selected Items */}
             {selectedItems.length > 0 && (
                 <div className="space-y-2">
                     <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
@@ -251,7 +242,6 @@ const DynamicSelectField = () => {
                 </div>
             )}
 
-            {/* Click outside to close */}
             {isOpen && (
                 <div
                     className="fixed inset-0 z-40"

@@ -1,4 +1,5 @@
 // ImageUploadManager.tsx
+
 'use client'
 
 import Image from 'next/image'
@@ -17,7 +18,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 
-// ImageDialog logic integrated here
 const InternalImageDialog = ({
     handleAddImages,
 }: {
@@ -173,7 +173,6 @@ const InternalImageDialog = ({
     )
 }
 
-// ImageUploadFieldMultiple logic integrated here
 export default function ImageUploadManager() {
     const [allMyImages, setAllMyImages] = useState<string[]>([])
 
@@ -195,7 +194,6 @@ export default function ImageUploadManager() {
         return (
             <div>
                 <Dialog>
-                    {/* CRITICAL FIX: Ensure no whitespace/newlines between DialogTrigger and its child */}
                     <DialogTrigger asChild>
                         <Button className="border-slate-500 text-slate-600 hover:border-slate-600 border-1 cursor-pointer flex items-center justify-center px-2 rounded-lg text-sm py-1">
                             <Plus className="w-4 h-4 mr-1" /> Add Image

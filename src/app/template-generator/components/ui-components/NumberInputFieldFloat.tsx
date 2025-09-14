@@ -1,32 +1,24 @@
-/*
-|-----------------------------------------
-| setting up NumberInputFieldFloat for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+// NumberInputFieldFloat.tsx
+
 import { Input } from '@/components/ui/input'
 import React, { useState } from 'react'
 
 const NumberInputFieldFloat = () => {
-    // Renamed component to reflect its new purpose
     const min = 0
     const max = 100000
-    const step = 0.01 // Added a default step for float values
+    const step = 0.01
 
-    const [quantity, setQuantity] = useState<number | undefined>(1.0) // Initial quantity can now be a float
+    const [quantity, setQuantity] = useState<number | undefined>(1.0)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value
-        const parsedValue = parseFloat(rawValue) // Changed to parseFloat
+        const parsedValue = parseFloat(rawValue)
 
-        // If the input is empty or not a valid number after parsing
         if (isNaN(parsedValue) || rawValue.trim() === '') {
-            setQuantity(undefined) // Pass undefined for empty/invalid
+            setQuantity(undefined)
         } else {
             let finalValue = parsedValue
 
-            // Apply min/max constraints
             if (min !== undefined && finalValue < min) {
                 finalValue = min
             }
@@ -37,7 +29,6 @@ const NumberInputFieldFloat = () => {
         }
     }
 
-    // Ensure the displayed value is a string representation of the float or an empty string
     const displayValue =
         quantity !== undefined && quantity !== null ? String(quantity) : ''
 
@@ -45,14 +36,11 @@ const NumberInputFieldFloat = () => {
         <Input
             placeholder="Quantity"
             type="number"
-            inputMode="decimal" // Changed to 'decimal' for better mobile keyboard
-            pattern="[0-9]*\.?[0-9]*" // Pattern allowing optional decimal point
+            inputMode="decimal"
+            pattern="[0-9]*\.?[0-9]*"
             value={displayValue}
             onChange={handleChange}
             onKeyDown={(e) => {
-                // Allow decimal points (remove e.key === '.')
-                // Prevent 'e' for scientific notation
-                // Allow '-' only at the beginning and only once
                 if (
                     e.key === 'e' ||
                     (e.key === '-' &&
@@ -64,7 +52,7 @@ const NumberInputFieldFloat = () => {
             }}
             min={min}
             max={max}
-            step={step} // Added step prop for float increments
+            step={step}
         />
     )
 }

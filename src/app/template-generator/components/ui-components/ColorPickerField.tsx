@@ -1,12 +1,6 @@
-'use client'
+// ColorPickerField.tsx
 
-/*
-|-----------------------------------------
-| setting up ColorPickerField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+'use client'
 
 import * as React from 'react'
 import { Palette } from 'lucide-react'

@@ -1,12 +1,6 @@
-'use client'
+// DateRangePickerField.tsx
 
-/*
-|-----------------------------------------
-| setting up DateRangePickerField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+'use client'
 
 import * as React from 'react'
 import { CalendarIcon } from 'lucide-react'

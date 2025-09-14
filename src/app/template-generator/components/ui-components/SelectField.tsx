@@ -1,10 +1,5 @@
-/*
-|-----------------------------------------
-| setting up InputFieldForEmail for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+// SelectField.tsx
+
 import * as React from 'react'
 
 import {

@@ -1,10 +1,4 @@
-/*
-|-----------------------------------------
-| setting up InputFieldForString for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+// CheckboxField.tsx
 
 'use client'
 

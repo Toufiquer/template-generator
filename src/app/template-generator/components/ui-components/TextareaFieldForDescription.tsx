@@ -1,10 +1,5 @@
-/*
-|-----------------------------------------
-| setting up TextareaFieldForDescription for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, September, 2025
-|-----------------------------------------
-*/
+// TextareaFieldForDescription.tsx
+
 'use client'
 
 import * as React from 'react'
