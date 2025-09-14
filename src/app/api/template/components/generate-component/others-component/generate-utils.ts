@@ -53,7 +53,7 @@ export function formatDuplicateKeyError(errorString: string) {
 
     if (!jsonMatch || !jsonMatch[0]) {
         console.warn('Could not find JSON part in error string:', errorString)
-        return 'A duplicate entry error occurred. Please check your input.'
+        return errorString || 'Please check your input.'
     }
 
     const jsonString = jsonMatch[0]
