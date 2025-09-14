@@ -35,6 +35,8 @@ import { useGet${pluralPascalCase}Query } from './redux/rtk-api'
 import View${pluralPascalCase}Table from './components/TableView'
 import BulkUpdate${pluralPascalCase} from './components/BulkUpdate'
 import BulkDynamicUpdate${pluralPascalCase} from './components/BulkDynamicUpdate'
+import { handleSuccess } from './components/utils'
+import { IoReloadCircleOutline } from 'react-icons/io5'
 
 const MainNextPage: React.FC = () => {
     const [hashSearchText, setHashSearchText] = useState('')
@@ -50,13 +52,16 @@ const MainNextPage: React.FC = () => {
     const {
         data: getResponseData,
         isSuccess,
+        isLoading,
+        refetch,
         status: statusCode,
     } = useGet${pluralPascalCase}Query(
         { q: queryPramsQ, page: queryPramsPage, limit: queryPramsLimit },
         {
-            selectFromResult: ({ data, isSuccess, status, error }) => ({
+            selectFromResult: ({ data, isSuccess,isLoading, status, error }) => ({
                 data,
                 isSuccess,
+                isLoading,
                 status:
                     'status' in (error || {})
                         ? (error as FetchBaseQueryError).status
@@ -98,7 +103,18 @@ const MainNextPage: React.FC = () => {
                     )}
                 </h1>
                 <div className="w-full flex flex-col md:flex-row gap-2 item-center justify-end">
-                    
+                       <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                            refetch()
+                            handleSuccess('Reloaded!')
+                        }}
+                        disabled={isLoading}
+                    >
+                        <IoReloadCircleOutline className="w-4 h-4 mr-1" />{' '}
+                        Reload
+                    </Button>
                     <Button
                         size="sm"
                         variant="outlineGarden"
