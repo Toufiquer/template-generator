@@ -53,6 +53,8 @@ import { RichTextEditorFieldCoreCode } from './core-code/RichTextEditorFieldCore
 import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSingleCoreCode'
 import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
 import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCode'
+import { MULTIOPTIONSFieldCoreCode } from './core-code/MULTIOPTIONSFieldCoreCode'
+import MULTIOPTIONSField from './ui-components/MULTIOPTIONSField'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -65,7 +67,6 @@ const allDataType: DataTypeItem[] = [
         name: 'STRING',
         mongooseSchema: `STRING: {
             type: String,
-            trim: true
         }`,
         ui: '<InputFieldForString />',
         coreCode: InputFieldForStringCoreCode,
@@ -74,8 +75,7 @@ const allDataType: DataTypeItem[] = [
         name: 'EMAIL',
         mongooseSchema: `EMAIL: {
             type: String,
-            unique: true,
-            trim: true,
+            ,
             lowercase: true,
             match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
         }`,
@@ -138,7 +138,7 @@ const allDataType: DataTypeItem[] = [
         name: 'DESCRIPTION',
         mongooseSchema: `DESCRIPTION: {
             type: String,
-            trim: true
+            
         }`,
         ui: '<TextareaFieldForDescription />',
         coreCode: TextareaFieldForDescriptionCoreCode,
@@ -234,7 +234,7 @@ const allDataType: DataTypeItem[] = [
         name: 'URL',
         mongooseSchema: `URL: {
             type: String,
-            trim: true
+            
         }`,
         ui: '<UrlInputField />',
         coreCode: UrlInputFieldCoreCode,
@@ -280,6 +280,14 @@ const allDataType: DataTypeItem[] = [
         }]`,
         ui: '<MultiCheckboxGroupField />',
         coreCode: MultiCheckboxGroupFieldCoreCode,
+    },
+    {
+        name: 'MULTIOPTIONS',
+        mongooseSchema: `MULTIOPTIONS: [{
+            type: String
+        }]`,
+        ui: '<MULTIOPTIONSField />',
+        coreCode: MULTIOPTIONSFieldCoreCode,
     },
 ]
 const ViewDataType = () => {
@@ -364,6 +372,8 @@ const ViewDataType = () => {
                 return <RadioButtonGroupField />
             case '<MultiCheckboxGroupField />':
                 return <MultiCheckboxGroupField />
+            case '<MULTIOPTIONSField />':
+                return <MULTIOPTIONSField />
             default:
                 return (
                     <p className="text-muted-foreground">
