@@ -15,6 +15,11 @@ export const apiSlice = createApi({
         'tagTypeBooks',
         'tagTypeNewses',
         'tagTypeParsons',
+        'tagTypeNews1es',
+        'tagTypeNews2es',
+        'tagTypeNews3es',
+        'tagTypeNews4es',
+        'tagTypeNews5es',
     ],
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
