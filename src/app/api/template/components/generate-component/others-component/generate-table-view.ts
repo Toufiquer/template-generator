@@ -242,7 +242,9 @@ const ViewTableNextComponents: React.FC = () => {
                             : String(item[header.key] ?? '')}
                      </TableCell>
                 ))}
-                <TableCell className="text-right">{renderActions(item)}</TableCell>
+                <TableCell className="text-right max-w-[10px]">
+                    {renderActions(item)}
+                </TableCell>
             </TableRow>
         ))
 
