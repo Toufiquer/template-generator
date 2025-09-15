@@ -25,7 +25,7 @@ const TextareaFieldForDescription = ({
     }
 
     return (
-        <div className={cn('grid w-full gap-2', className)}>
+        <div id={id} className={cn('grid w-full gap-2', className)}>
             <Label htmlFor="description">Description</Label>
             <Textarea
                 id="description"

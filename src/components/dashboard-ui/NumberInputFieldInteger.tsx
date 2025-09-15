@@ -1,7 +1,7 @@
 // NumberInputFieldInteger.tsx
 
 import { Input } from '@/components/ui/input'
-import React, { useState } from 'react'
+import React from 'react'
 
 const NumberInputFieldInteger = ({
     id,
@@ -38,6 +38,7 @@ const NumberInputFieldInteger = ({
         value !== undefined && value !== null ? String(Math.floor(value)) : ''
     return (
         <Input
+             id={id} 
             placeholder="Quantity"
             type="number"
             inputMode="numeric"

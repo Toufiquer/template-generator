@@ -25,7 +25,7 @@ const ColorPickerField = ({
     }
 
     return (
-        <div className={cn('grid gap-2', className)}>
+        <div id={id} className={cn('grid gap-2', className)}>
             <Label htmlFor="color-picker">
                 <div className="mb-2 flex items-center">
                     <Palette className="mr-2 h-4 w-4" />
