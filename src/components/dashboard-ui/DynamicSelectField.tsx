@@ -42,7 +42,7 @@ export default function DynamicSelectField({
     label,
     value,
     onChange,
-    apiUrl,
+    apiUrl = 'https://jsonplaceholder.typicode.com/users',
     placeholder = 'Search and select...',
     readOnly = false,
     dataMapper = (item: IResponseData) => item.name,
