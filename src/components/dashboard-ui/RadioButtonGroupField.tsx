@@ -33,7 +33,10 @@ export function RadioButtonGroupField({
     className,
 }: RadioButtonGroupFieldProps) {
     // The component is now fully controlled and stateless.
-
+    let updateOptions:RadioOption[] = []
+    if (options?.length>0) {
+        updateOptions = options
+    }
     return (
         // Using a <fieldset> is semantically correct for grouping radio buttons
         <fieldset className={cn('grid w-full items-center gap-2.5', className)}>
@@ -51,7 +54,7 @@ export function RadioButtonGroupField({
                 className="flex flex-col gap-2"
             >
                 {/* Map over the dynamic options array to render each radio button */}
-                {options.map((option) => (
+                {updateOptions.map((option) => (
                     <div
                         key={option.value}
                         className="flex items-center space-x-2"

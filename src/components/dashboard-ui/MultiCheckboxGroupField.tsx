@@ -47,6 +47,11 @@ export default function MultiCheckboxGroupField({
         }
     }
 
+     let updateCheckboxOptions:CheckboxOption[] = []
+        if (options?.length>0) {
+         updateCheckboxOptions = options
+    }
+    
     return (
         // Use a <fieldset> for semantic grouping and better accessibility
         <fieldset className={cn('grid w-full gap-2.5', className)}>
@@ -59,7 +64,7 @@ export default function MultiCheckboxGroupField({
 
             <div className="flex flex-col gap-2">
                 {/* Dynamically render checkboxes from the options prop */}
-                {options.map((option) => (
+                {updateCheckboxOptions.map((option) => (
                     <div
                         key={option.value}
                         className="flex items-center space-x-2"
