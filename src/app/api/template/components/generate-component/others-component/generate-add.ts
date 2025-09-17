@@ -21,231 +21,133 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             .replace(/-/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase())
 
+        // Generic wrapper for consistent layout
+        const formFieldWrapper = (
+            label: string,
+            componentJsx: string
+        ): string => `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            <div className="col-span-3">
+                                ${componentJsx}
+                            </div>
+                        </div>`
+
+        let componentJsx: string
+
         switch (type.toUpperCase()) {
             case 'STRING':
-            case 'URL':
-            case 'AUTOCOMPLETE':
-            case 'DYNAMICSELECT': // Handled as simple text for now
-            case 'MULTISELECT':
-            case 'MULTIDYNAMICSELECT':
-            case 'IMAGE':
-            case 'PHONE':
-            case 'RICHTEXT':
-            case 'TEST':
-            case 'INFO':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
+                componentJsx = `<InputFieldForString id="${key}"       placeholder="${label}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'EMAIL':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="email"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
-
+                componentJsx = `<InputFieldForEmail id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'PASSWORD':
+                componentJsx = `<InputFieldForPassword id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'PASSCODE':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="password"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
-
+                componentJsx = `<InputFieldForPasscode id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
+            case 'URL':
+                componentJsx = `<UrlInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
+            case 'PHONE':
+                componentJsx = `<PhoneInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             case 'DESCRIPTION':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="textarea"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
-
+                componentJsx = `<TextareaFieldForDescription id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
+            case 'RICHTEXT':
+                componentJsx = `<RichTextEditorField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             case 'INTNUMBER':
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'FLOATNUMBER':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="number"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
-
+                componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'BOOLEAN':
+                componentJsx = `<BooleanInputField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
             case 'CHECKBOX':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right">
-                                ${label}
-                            </Label>
-                            <Checkbox
-                                id="${key}"
-                                name="${key}"
-                                checked={new${singularPascalCase}['${key}']}
-                                onCheckedChange={(checked) => handleCheckboxChange('${key}', !!checked)}
-                            />
-                        </div>`
-
-            case 'SELECT':
-            case 'RADIOBUTTON':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right">
-                                ${label}
-                            </Label>
-                            <Select
-                                onValueChange={(value) => handleSelectChange('${key}', value)}
-                                value={new${singularPascalCase}['${key}']}
-                            >
-                                <SelectTrigger className="col-span-3">
-                                    <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Option 1">Option 1</SelectItem>
-                                    <SelectItem value="Option 2">Option 2</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>`
-
-            case 'IMAGES':
-            case 'MULTICHECKBOX':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label} (comma separated)"
-                            value={(new${singularPascalCase}['${key}'] as string[]).join(',')}
-                            onChange={(e) => handleArrayChange('${key}', e.target.value)}
-                        />`
-
+                componentJsx = `<CheckboxField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
             case 'DATE':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="date"
-                            value={new${singularPascalCase}['${key}'] ? new Date(new${singularPascalCase}['${key}']).toISOString().split('T')[0] : ''}
-                            onChange={(e) => handleDateChange(e, '${key}')}
-                        />`
+                componentJsx = `<DateField id="${key}" selected={new${singularPascalCase}['${key}']} onSelect={(date) => handleFieldChange('${key}', date)} />`
+                break
             case 'TIME':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="time"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={(e) => handleTimeChange(e, '${key}')}
-                        />`
-
+                componentJsx = `<TimeField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
+                break
             case 'DATERANGE':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
-                            <Input
-                                id="${key}-start"
-                                name="${key}-start"
-                                type="date"
-                                value={new${singularPascalCase}['${key}'].start ? new Date(new${singularPascalCase}['${key}'].start).toISOString().split('T')[0] : ''}
-                                onChange={(e) => handleDateChange(e, '${key}', 'start')}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
-                            <Input
-                                id="${key}-end"
-                                name="${key}-end"
-                                type="date"
-                                value={new${singularPascalCase}['${key}'].end ? new Date(new${singularPascalCase}['${key}'].end).toISOString().split('T')[0] : ''}
-                                onChange={(e) => handleDateChange(e, '${key}', 'end')}
-                                className="col-span-3"
-                            />
-                        </div>`
+                componentJsx = `<DateRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
             case 'TIMERANGE':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
-                            <Input
-                                id="${key}-start"
-                                name="${key}-start"
-                                type="time"
-                                value={new${singularPascalCase}['${key}'].start}
-                                onChange={(e) => handleTimeChange(e, '${key}', 'start')}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
-                            <Input
-                                id="${key}-end"
-                                name="${key}-end"
-                                type="time"
-                                value={new${singularPascalCase}['${key}'].end}
-                                onChange={(e) => handleTimeChange(e, '${key}', 'end')}
-                                className="col-span-3"
-                            />
-                        </div>`
-
+                componentJsx = `<TimeRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
             case 'COLORPICKER':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="color"
-                            value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
-                        />`
+                componentJsx = `<ColorPickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
+            case 'SELECT':
+                componentJsx = `<SelectField value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'RADIOBUTTON':
+                componentJsx = `<RadioButtonGroupField options={options} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'DYNAMICSELECT':
+                componentJsx = `<DynamicSelectField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'IMAGE':
+                componentJsx = `<ImageUploadFieldSingle value={new${singularPascalCase}['${key}']} onImageUploadSuccess={(url) => handleFieldChange('${key}', url)} />`
+                break
+            case 'IMAGES':
+                componentJsx = `<ImageUploadManager value={new${singularPascalCase}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
+                break
+            case 'MULTICHECKBOX':
+                componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'MULTIDYNAMICSELECT':
+                componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'AUTOCOMPLETE':
+                componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             default:
-                return `
-                        {/* Field type '${type}' is not supported yet. */}
-                        <InputField
+                componentJsx = `
+                        <Input
                             id="${key}"
                             name="${key}"
-                            label="${label}"
                             value={new${singularPascalCase}['${key}']}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleFieldChange('${key}', e.target.value)}
+                            placeholder="Unsupported field type: ${type}"
+                            className="col-span-3"
+                            disabled
                         />`
+                // Return a simplified version for the default case
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            ${componentJsx}
+                        </div>`
         }
+
+        return formFieldWrapper(label, componentJsx)
     }
 
     const formFieldsJsx = Object.entries(schema)
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
+    // --- FINAL TEMPLATE STRING ---
     return `import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
 import {
     Dialog,
     DialogContent,
@@ -254,110 +156,61 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
+// Import all UI components
+import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
+import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
+import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
+import { SelectField } from '@/components/dashboard-ui/SelectField'
+import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
+import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
+import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
+import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
+import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
+import { DateField } from '@/components/dashboard-ui/DateField'
+import TimeField from '@/components/dashboard-ui/TimeField'
+import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
+import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
+import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
+import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
+import UrlInputField from '@/components/dashboard-ui/UrlInputField'
+import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
+import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'
+import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'
+import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'
+
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
-
-const InputField: React.FC<{
-    id: string
-    name: string
-    label: string
-    type?: string
-    value: string | number
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-}> = ({ id, name, label, type = 'text', value, onChange }) => (
-    <div className="grid grid-cols-4 items-center gap-4 pr-1">
-        <Label htmlFor={id} className="text-right">
-            {label}
-        </Label>
-        {type === 'textarea' ? (
-            <Textarea
-                id={id}
-                name={name}
-                value={value as string}
-                onChange={onChange}
-                className="col-span-3"
-            />
-        ) : (
-            <Input
-                id={id}
-                name={name}
-                type={type}
-                value={value}
-                onChange={onChange}
-                className="col-span-3"
-            />
-        )}
-    </div>
-)
 
 const AddNextComponents: React.FC = () => {
     const { toggleAddModal, isAddModalOpen, set${pluralPascalCase} } = use${pluralPascalCase}Store()
     const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value })
-    }
-
-    const handleCheckboxChange = (name: string, checked: boolean) => {
-        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: checked })
-    }
-
-    const handleSelectChange = (name: string, value: string) => {
-        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value })
-    }
-
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
-        const { value } = e.target
-        if (nestedField) {
-            setNew${singularPascalCase}({
-                ...new${singularPascalCase},
-                [field]: {
-                    ...(new${singularPascalCase}[field as keyof ${interfaceName}] as object),
-                    [nestedField]: new Date(value),
-                },
-            })
-        } else {
-            setNew${singularPascalCase}({ ...new${singularPascalCase}, [field]: new Date(value) })
-        }
-    }
-
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
-        const { value } = e.target
-        if (nestedField) {
-            setNew${singularPascalCase}({
-                ...new${singularPascalCase},
-                [field]: {
-                    ...(new${singularPascalCase}[field as keyof ${interfaceName}] as object),
-                    [nestedField]: value,
-                },
-            })
-        } else {
-            setNew${singularPascalCase}({ ...new${singularPascalCase}, [field]: value })
-        }
-    }
-
-    const handleArrayChange = (name: string, value: string) => {
-        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value.split(',').map(item => item.trim()) })
-    }
+    const handleFieldChange = (name: string, value: any) => {
+        setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleAdd${singularPascalCase} = async () => {
         try {
-            const { _id, ...update${pluralPascalCase} } = new${singularPascalCase}
-            console.log('_id', _id)
-            const added${singularPascalCase} = await add${pluralPascalCase}(update${pluralPascalCase}).unwrap()
+            const { _id, ...updateData } = new${singularPascalCase}
+            console.log('Adding new record:', updateData)
+            const added${singularPascalCase} = await add${pluralPascalCase}(updateData).unwrap()
             set${pluralPascalCase}([added${singularPascalCase}])
             toggleAddModal(false)
             setNew${singularPascalCase}(${defaultInstanceName})
-            handleSuccess('Added Successful')
+            handleSuccess('Added Successfully')
         } catch (error: unknown) {
-            console.error(error)
+            console.error('Failed to add record:', error)
             let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage = formatDuplicateKeyError(error.data.message) || 'API error'
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
@@ -365,6 +218,10 @@ const AddNextComponents: React.FC = () => {
         }
     }
 
+    const  options=[
+            { label: 'OP 1', value: 'op1' },
+            { label: 'OP 2', value: 'op2' },
+        ]
     return (
         <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
             <DialogContent className="sm:max-w-[625px]">

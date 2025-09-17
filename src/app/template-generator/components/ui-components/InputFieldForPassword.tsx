@@ -19,13 +19,10 @@ const InputFieldForPassword = () => {
         const value = e.target.value
         setPassword(value)
 
-        // Validate the password length.
-        // The error will now primarily trigger for lengths under 6,
-        // as maxLength prevents typing beyond 12.
         if (value.length > 0 && (value.length < 6 || value.length > 12)) {
             setError('Password must be between 6 and 12 characters.')
         } else {
-            setError('') // Clear error if the password is valid or the field is empty
+            setError('')
         }
     }
 

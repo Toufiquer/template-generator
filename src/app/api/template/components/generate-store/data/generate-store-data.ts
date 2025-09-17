@@ -55,7 +55,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'DATE':
                 return 'Date'
             case 'DATERANGE':
-                return '{ start: Date; end: Date }'
+                return '{ from: Date; to: Date }'
             case 'TIMERANGE':
                 return '{ start: string; end: string }'
             default:
@@ -78,7 +78,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'DATE':
                 return 'new Date()'
             case 'DATERANGE':
-                return '{ start: new Date(), end: new Date() }'
+                return '{ from: new Date(), to: new Date() }'
             case 'TIMERANGE':
                 return '{ start: "", end: "" }'
             default:
@@ -132,6 +132,8 @@ export const generateStoreData = (inputJsonFile: string): string => {
     const defaultObjectContent = generateDefaultObjectFields(schema, 1)
 
     return `
+
+    import { DateRange } from 'react-day-picker'
 
 export interface I${interfaceName} {
 ${interfaceContent};

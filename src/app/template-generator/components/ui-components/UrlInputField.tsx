@@ -27,7 +27,7 @@ const UrlInputField = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
                     placeholder="https://example.com"
                     value={url}
                     onChange={handleUrlChange}
-                    className="pl-10" // Padding for the icon
+                    className="pl-10"
                 />
             </div>
         </div>

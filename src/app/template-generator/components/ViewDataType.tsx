@@ -62,7 +62,7 @@ interface DataTypeItem {
     coreCode?: string
 }
 
-const allDataType: DataTypeItem[] = [
+export const allDataType: DataTypeItem[] = [
     {
         name: 'STRING',
         mongooseSchema: `STRING: {
