@@ -12,9 +12,8 @@ export function BooleanInputField({
     onCheckedChange: (checked: boolean) => void
 }) {
     return (
-        <div id={id} className="flex items-center space-x-2">
+        <div id={id} className="flex items-center space-x-2 justify-end">
             <Switch checked={checked} onCheckedChange={onCheckedChange} />
-            <Label htmlFor={id}>{id}</Label>
         </div>
     )
 }
