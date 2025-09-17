@@ -17,7 +17,7 @@ import {
     AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import ViewDataType from './ViewDataType'
+import ViewDataType, { allDataType } from './ViewDataType' // MODIFICATION: Import allDataType
 import Link from 'next/link'
 
 // Success Popup Component
@@ -55,7 +55,7 @@ const SuccessPopup = ({
 const JsonEditor: React.FC = () => {
     const [pathButton, setPathButton] = useState('')
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT",\n    "books-list": "MULTISELECT",\n    "check-list": "MULTIDYNAMICSELECT",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON",\n    "policy": "CHECKBOX",\n    "hobbys": "MULTICHECKBOX",\n    "ideas": "MULTIOPTIONS"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
+        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON",\n    "policy": "CHECKBOX",\n    "hobbys": "MULTICHECKBOX",\n    "ideas": "MULTIOPTIONS"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -78,6 +78,36 @@ const JsonEditor: React.FC = () => {
         try {
             // Validate JSON
             const parsedJson = JSON.parse(jsonInput)
+
+            // --- START: NEW VALIDATION LOGIC ---
+            const schema = parsedJson.schema
+            if (!schema || typeof schema !== 'object') {
+                setError(
+                    'Validation Error: The JSON must include a "schema" object.'
+                )
+                setIsLoading(false)
+                return
+            }
+
+            // Create a Set of valid data type names for efficient, case-sensitive lookups.
+            const validDataTypes = new Set(
+                allDataType.map((item) => item.name.trim())
+            )
+
+            // Find the first schema entry with an invalid data type.
+            const invalidEntry = Object.entries(schema).find(
+                ([key, value]) => !validDataTypes.has(value as string)
+            )
+
+            if (invalidEntry) {
+                const [fieldName, invalidType] = invalidEntry
+                setError(
+                    `Validation Error: The type "${invalidType}" for field "${fieldName}" is invalid. Please ensure it's a valid, case-sensitive name from the DataType Library.`
+                )
+                setIsLoading(false)
+                return
+            }
+            // --- END: NEW VALIDATION LOGIC ---
 
             const isAlreadyExist = items.find(
                 (i) =>
