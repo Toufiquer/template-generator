@@ -39,7 +39,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
 
         switch (type.toUpperCase()) {
             case 'STRING':
-                componentJsx = `<InputFieldForString id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                componentJsx = `<InputFieldForString id="${key}"       placeholder="${label}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
                 break
             case 'EMAIL':
                 componentJsx = `<InputFieldForEmail id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`

@@ -5,11 +5,20 @@ const InputFieldForString = ({
     id,
     value,
     onChange,
+    placeholder = 'Please write...',
 }: {
     id: string
     value: string
     onChange: (e: unknown) => void
+    placeholder?: string
 }) => {
-    return <Input id={id} value={value} onChange={onChange} />
+    return (
+        <Input
+            id={id}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+        />
+    )
 }
 export default InputFieldForString
