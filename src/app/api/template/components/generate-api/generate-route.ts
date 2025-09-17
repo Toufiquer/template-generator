@@ -56,7 +56,7 @@ import {
 
 import {
     formatResponse,
-    handleTokenVerify,
+//    handleTokenVerify,
     IResponse,
 } from '@/app/api/utils/jwt-verify';
 
@@ -65,8 +65,8 @@ export async function GET(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const tokenResponse = handleTokenVerify(req);
-    if (tokenResponse) return tokenResponse;
+//    const tokenResponse = handleTokenVerify(req);
+//   if (tokenResponse) return tokenResponse;
 
     const id = new URL(req.url).searchParams.get('id');
     const result: IResponse = id
@@ -80,8 +80,8 @@ export async function POST(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const tokenResponse = handleTokenVerify(req);
-    if (tokenResponse) return tokenResponse;
+//    const tokenResponse = handleTokenVerify(req);
+//    if (tokenResponse) return tokenResponse;
 
     const result = await ${createSingular}(req);
     return formatResponse(result.data, result.message, result.status);
@@ -92,8 +92,8 @@ export async function PUT(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const tokenResponse = handleTokenVerify(req);
-    if (tokenResponse) return tokenResponse;
+//    const tokenResponse = handleTokenVerify(req);
+//    if (tokenResponse) return tokenResponse;
 
     const isBulk = new URL(req.url).searchParams.get('bulk') === 'true';
     const result = isBulk
@@ -108,8 +108,8 @@ export async function DELETE(req: Request) {
     const rateLimitResponse = handleRateLimit(req);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const tokenResponse = handleTokenVerify(req);
-    if (tokenResponse) return tokenResponse;
+//    const tokenResponse = handleTokenVerify(req);
+//    if (tokenResponse) return tokenResponse;
 
     const isBulk = new URL(req.url).searchParams.get('bulk') === 'true';
     const result = isBulk

@@ -2,7 +2,7 @@
 
 import { withDB } from '@/app/api/utils/db';
 
-import User_3_000___ from './Model';
+import User_3_000___ from './model';
 import { IResponse } from './jwt-verify';
 import { connectRedis, getRedisData } from './redis';
 

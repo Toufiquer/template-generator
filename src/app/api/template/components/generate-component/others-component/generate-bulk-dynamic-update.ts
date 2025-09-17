@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for a BulkDynamicUpdate.tsx component file.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
@@ -170,25 +142,4 @@ const BulkDynamicUpdateNextComponents: React.FC = () => {
 
 export default BulkDynamicUpdateNextComponents
 `
-}
-
-// --- EXAMPLE USAGE ---
-
-const inputJsonFile: InputJsonFile = {
-    uid: '000',
-    templateName: 'Basic Template',
-    schema: {
-        title: 'STRING', // The generator will pick 'title' as the display key
-        email: 'EMAIL',
-        description: 'DESCRIPTION',
-        dataArr: 'MULTICHECKBOX', // This field is targeted by the component's logic
-    },
-    namingConvention: {
-        Users_1_000___: 'Posts',
-        users_2_000___: 'posts',
-        User_3_000___: 'Post',
-        user_4_000___: 'post',
-        ISelect_6_000___: 'ISelect',
-        select_5_000___: 'select',
-    },
 }

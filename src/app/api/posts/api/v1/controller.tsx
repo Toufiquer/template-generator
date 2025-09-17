@@ -9,7 +9,11 @@ interface IResponse {
 }
 
 // Helper to format responses
-const formatResponse = (data: unknown, message: string, status: number): IResponse => ({
+const formatResponse = (
+    data: unknown,
+    message: string,
+    status: number
+): IResponse => ({
     data,
     message,
     status,
@@ -23,11 +27,7 @@ export async function createPost(req: Request): Promise<IResponse> {
             const newPost = await Post.create({
                 ...postData,
             })
-            return formatResponse(
-                newPost,
-                'Post created successfully',
-                201
-            )
+            return formatResponse(newPost, 'Post created successfully', 201)
         } catch (error: unknown) {
             if ((error as { code?: number }).code === 11000) {
                 const err = error as { keyValue?: Record<string, unknown> }
@@ -46,18 +46,12 @@ export async function createPost(req: Request): Promise<IResponse> {
 export async function getPostById(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const id = new URL(req.url).searchParams.get('id')
-        if (!id)
-            return formatResponse(null, 'Post ID is required', 400)
+        if (!id) return formatResponse(null, 'Post ID is required', 400)
 
         const post = await Post.findById(id)
-        if (!post)
-            return formatResponse(null, 'Post not found', 404)
+        if (!post) return formatResponse(null, 'Post not found', 404)
 
-        return formatResponse(
-            post,
-            'Post fetched successfully',
-            200
-        )
+        return formatResponse(post, 'Post fetched successfully', 200)
     })
 }
 
@@ -77,32 +71,47 @@ export async function getPosts(req: Request): Promise<IResponse> {
         if (searchQuery) {
             searchFilter = {
                 $or: [
-                        { 'title': { $regex: searchQuery, $options: 'i' } },
-                        { 'email': { $regex: searchQuery, $options: 'i' } },
-                        { 'password': { $regex: searchQuery, $options: 'i' } },
-                        { 'passcode': { $regex: searchQuery, $options: 'i' } },
-                        { 'area': { $regex: searchQuery, $options: 'i' } },
-                        { 'books-list': { $regex: searchQuery, $options: 'i' } },
-                        { 'check-list': { $regex: searchQuery, $options: 'i' } },
-                        { 'sub-area': { $regex: searchQuery, $options: 'i' } },
-                        { 'products-images': { $regex: searchQuery, $options: 'i' } },
-                        { 'personal-image': { $regex: searchQuery, $options: 'i' } },
-                        { 'description': { $regex: searchQuery, $options: 'i' } },
-                        { 'age': { $regex: searchQuery, $options: 'i' } },
-                        { 'amount': { $regex: searchQuery, $options: 'i' } },
-                        { 'isActive': { $regex: searchQuery, $options: 'i' } },
-                        { 'start-date': { $regex: searchQuery, $options: 'i' } },
-                        { 'start-time': { $regex: searchQuery, $options: 'i' } },
-                        { 'schedule-date': { $regex: searchQuery, $options: 'i' } },
-                        { 'schedule-time': { $regex: searchQuery, $options: 'i' } },
-                        { 'favorite-color': { $regex: searchQuery, $options: 'i' } },
-                        { 'number': { $regex: searchQuery, $options: 'i' } },
-                        { 'profile': { $regex: searchQuery, $options: 'i' } },
-                        { 'test': { $regex: searchQuery, $options: 'i' } },
-                        { 'info': { $regex: searchQuery, $options: 'i' } },
-                        { 'shift': { $regex: searchQuery, $options: 'i' } },
-                        { 'policy': { $regex: searchQuery, $options: 'i' } },
-                        { 'hobbys': { $regex: searchQuery, $options: 'i' } }
+                    { title: { $regex: searchQuery, $options: 'i' } },
+                    { email: { $regex: searchQuery, $options: 'i' } },
+                    { password: { $regex: searchQuery, $options: 'i' } },
+                    { passcode: { $regex: searchQuery, $options: 'i' } },
+                    { area: { $regex: searchQuery, $options: 'i' } },
+                    { 'books-list': { $regex: searchQuery, $options: 'i' } },
+                    { 'check-list': { $regex: searchQuery, $options: 'i' } },
+                    { 'sub-area': { $regex: searchQuery, $options: 'i' } },
+                    {
+                        'products-images': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    {
+                        'personal-image': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    { description: { $regex: searchQuery, $options: 'i' } },
+                    { age: { $regex: searchQuery, $options: 'i' } },
+                    { amount: { $regex: searchQuery, $options: 'i' } },
+                    { isActive: { $regex: searchQuery, $options: 'i' } },
+                    { 'start-date': { $regex: searchQuery, $options: 'i' } },
+                    { 'start-time': { $regex: searchQuery, $options: 'i' } },
+                    { 'schedule-date': { $regex: searchQuery, $options: 'i' } },
+                    { 'schedule-time': { $regex: searchQuery, $options: 'i' } },
+                    {
+                        'favorite-color': {
+                            $regex: searchQuery,
+                            $options: 'i',
+                        },
+                    },
+                    { number: { $regex: searchQuery, $options: 'i' } },
+                    { profile: { $regex: searchQuery, $options: 'i' } },
+                    { test: { $regex: searchQuery, $options: 'i' } },
+                    { info: { $regex: searchQuery, $options: 'i' } },
+                    { shift: { $regex: searchQuery, $options: 'i' } },
+                    { policy: { $regex: searchQuery, $options: 'i' } },
+                    { hobbys: { $regex: searchQuery, $options: 'i' } },
                 ],
             }
         }
@@ -112,8 +121,7 @@ export async function getPosts(req: Request): Promise<IResponse> {
             .skip(skip)
             .limit(limit)
 
-        const totalPosts =
-            await Post.countDocuments(searchFilter)
+        const totalPosts = await Post.countDocuments(searchFilter)
 
         return formatResponse(
             {
@@ -133,19 +141,13 @@ export async function updatePost(req: Request): Promise<IResponse> {
     return withDB(async () => {
         try {
             const { id, ...updateData } = await req.json()
-            const updatedPost = await Post.findByIdAndUpdate(
-                id,
-                updateData,
-                { new: true, runValidators: true }
-            )
+            const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
+                new: true,
+                runValidators: true,
+            })
 
-            if (!updatedPost)
-                return formatResponse(null, 'Post not found', 404)
-            return formatResponse(
-                updatedPost,
-                'Post updated successfully',
-                200
-            )
+            if (!updatedPost) return formatResponse(null, 'Post not found', 404)
+            return formatResponse(updatedPost, 'Post updated successfully', 200)
         } catch (error: unknown) {
             if ((error as { code?: number }).code === 11000) {
                 const err = error as { keyValue?: Record<string, unknown> }
@@ -163,7 +165,8 @@ export async function updatePost(req: Request): Promise<IResponse> {
 // BULK UPDATE Posts
 export async function bulkUpdatePosts(req: Request): Promise<IResponse> {
     return withDB(async () => {
-        const updates: { id: string; updateData: Record<string, unknown> }[] = await req.json()
+        const updates: { id: string; updateData: Record<string, unknown> }[] =
+            await req.json()
         const results = await Promise.allSettled(
             updates.map(({ id, updateData }) =>
                 Post.findByIdAndUpdate(id, updateData, {
@@ -174,11 +177,18 @@ export async function bulkUpdatePosts(req: Request): Promise<IResponse> {
         )
 
         const successfulUpdates = results
-            .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled' && r.value)
+            .filter(
+                (r): r is PromiseFulfilledResult<unknown> =>
+                    r.status === 'fulfilled' && r.value
+            )
             .map((r) => r.value)
-            
+
         const failedUpdates = results
-            .map((r, i) => (r.status === 'rejected' || !('value' in r && r.value) ? updates[i].id : null))
+            .map((r, i) =>
+                r.status === 'rejected' || !('value' in r && r.value)
+                    ? updates[i].id
+                    : null
+            )
             .filter((id): id is string => id !== null)
 
         return formatResponse(
@@ -194,12 +204,7 @@ export async function deletePost(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const { id } = await req.json()
         const deletedPost = await Post.findByIdAndDelete(id)
-        if (!deletedPost)
-            return formatResponse(
-                null,
-                'Post not found',
-                404
-            )
+        if (!deletedPost) return formatResponse(null, 'Post not found', 404)
         return formatResponse(
             { deletedCount: 1 },
             'Post deleted successfully',

@@ -1,36 +1,8 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
- * Generates the content for a dynamic ViewTable.tsx component file.
+ * Generates the content for a dynamic ViewTable.tsx component file with column visibility controls.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete ViewTable.tsx file content as a string.
+ * @returns {string} The complete, updated ViewTable.tsx file content as a string.
  */
 export const generateViewTableComponentFile = (
     inputJsonFile: string
@@ -38,9 +10,9 @@ export const generateViewTableComponentFile = (
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
     const pluralPascalCase = namingConvention.Users_1_000___
-    const singularPascalCase = namingConvention.User_3_000___
     const pluralLowerCase = namingConvention.users_2_000___
     const interfaceName = `I${pluralPascalCase}`
+    const displayableKeysTypeName = `Displayable${pluralPascalCase}Keys`
 
     // 1. Dynamically determine which fields are suitable for table columns.
     const suitableTypes = [
@@ -67,7 +39,7 @@ export const generateViewTableComponentFile = (
         .filter(
             ([key, type]) =>
                 typeof type === 'string' &&
-                !key.includes('-') && // Exclude keys with hyphens that are harder to sort
+                !key.includes('-') &&
                 suitableTypes.includes(type.toUpperCase()) &&
                 !excludedKeys.includes(key.toLowerCase())
         )
@@ -80,38 +52,19 @@ export const generateViewTableComponentFile = (
         }))
     tableHeaders.push({ key: 'createdAt', label: 'Created At' })
 
-    // 2. Generate the JSX for the table cells in each row.
-    const renderTableCellsJsx = tableHeaders
-        .map(({ key }) => {
-            const type = schema[key] as string
-            if (
-                type &&
-                (type.toUpperCase() === 'BOOLEAN' ||
-                    type.toUpperCase() === 'CHECKBOX')
-            ) {
-                return `<TableCell>
-                    <span className={\`px-2 py-1 rounded-full text-xs font-medium \${item['${key}'] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}\`}>
-                        {item['${key}'] ? 'Yes' : 'No'}
-                    </span>
-                </TableCell>`
-            }
-            if (
-                key === 'createdAt' ||
-                (type && type.toUpperCase() === 'DATE')
-            ) {
-                return `<TableCell>{formatDate(item['${key}'])}</TableCell>`
-            }
-            return `<TableCell>{(item as any)['${key}']}</TableCell>`
-        })
-        .join('\n                ')
+    // 2. Generate the dynamic types for column keys.
+    const displayableKeysType = `type ${displayableKeysTypeName} = \n    | '${tableHeaders
+        .map((h) => h.key)
+        .join("'\n    | '")}'`
 
-    // 3. Construct the entire component string.
+    const columnVisibilityStateType = `type ColumnVisibilityState = Record<${displayableKeysTypeName}, boolean>`
+
+    // 3. Construct the entire component string with the new features.
     return `'use client'
 
 import { format } from 'date-fns'
 import React, { useState, useMemo } from 'react'
-import { IoReloadCircleOutline } from 'react-icons/io5'
-import { EyeIcon, PencilIcon, TrashIcon } from 'lucide-react'
+import { MoreHorizontalIcon, EyeIcon, PencilIcon, TrashIcon } from 'lucide-react'
 
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -133,17 +86,30 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-import { ${interfaceName} } from '../api/v1/model'
+import { ${interfaceName} } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
 import Pagination from './Pagination'
 import { handleSuccess } from './utils'
 
+// Dynamically generated types for type safety
+${displayableKeysType}
+${columnVisibilityStateType}
+
+
 const ViewTableNextComponents: React.FC = () => {
     const [sortConfig, setSortConfig] = useState<{
-        key: keyof ${interfaceName}
+        key: ${displayableKeysTypeName}
         direction: 'asc' | 'desc'
     } | null>(null)
     
@@ -153,7 +119,6 @@ const ViewTableNextComponents: React.FC = () => {
         toggleBulkUpdateModal,
         toggleViewModal,
         queryPramsLimit,
-        toggleBulkDynamicUpdateModal,
         queryPramsPage,
         queryPramsQ,
         toggleEditModal,
@@ -182,6 +147,31 @@ const ViewTableNextComponents: React.FC = () => {
         [getResponseData]
     )
 
+    const tableHeaders: { key: ${displayableKeysTypeName}; label: string }[] = [
+        ${tableHeaders.map((h) => `{ key: '${h.key}', label: '${h.label}' }`).join(',\n        ')}
+    ];
+
+
+    const [columnVisibility, setColumnVisibility] =
+        useState<ColumnVisibilityState>(() => {
+            const initialState = {} as ColumnVisibilityState
+            let counter = 0
+            for (const header of tableHeaders) {
+                if (counter > 3) {
+                    initialState[header.key] = false
+                } else {
+                    initialState[header.key] = true
+                }
+                counter++
+            }
+            return initialState
+        })
+            
+    const visibleHeaders = useMemo(
+        () => tableHeaders.filter(header => columnVisibility[header.key]),
+        [columnVisibility]
+    );
+
     const formatDate = (date?: Date | string) => {
         if (!date) return 'N/A'
         try {
@@ -191,7 +181,7 @@ const ViewTableNextComponents: React.FC = () => {
         }
     }
 
-    const handleSort = (key: keyof ${interfaceName}) => {
+    const handleSort = (key: ${displayableKeysTypeName}) => {
         setSortConfig((prev) =>
             prev?.key === key
                 ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
@@ -222,10 +212,6 @@ const ViewTableNextComponents: React.FC = () => {
                 : bulkData.filter((i) => i._id !== item._id)
         )
 
-    const tableHeaders: { key: keyof ${interfaceName}; label: string }[] = [
-        ${tableHeaders.map((h) => `{ key: '${h.key}', label: '${h.label}' }`).join(',\n        ')}
-    ];
-
     const renderActions = (item: ${interfaceName}) => (
         <div className="flex gap-2 justify-end">
             <Button variant="outline" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleViewModal(true); }}>
@@ -249,8 +235,16 @@ const ViewTableNextComponents: React.FC = () => {
                         checked={bulkData.some((i) => i._id === item._id)}
                     />
                 </TableCell>
-                ${renderTableCellsJsx}
-                <TableCell>{renderActions(item)}</TableCell>
+                {visibleHeaders.map(header => (
+                     <TableCell key={header.key}>
+                        {header.key === 'createdAt' 
+                            ? formatDate(item.createdAt) 
+                            : String(item[header.key] ?? '')}
+                     </TableCell>
+                ))}
+                <TableCell className="text-right max-w-[10px]">
+                    {renderActions(item)}
+                </TableCell>
             </TableRow>
         ))
 
@@ -275,9 +269,33 @@ const ViewTableNextComponents: React.FC = () => {
                         <Button size="sm" variant="destructive" onClick={() => toggleBulkDeleteModal(true)} disabled={bulkData.length === 0}>
                             <TrashIcon className="w-4 h-4 mr-1" /> B.Delete
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => { refetch(); handleSuccess('Reloaded!'); }} disabled={isLoading}>
-                            <IoReloadCircleOutline className="w-4 h-4 mr-1" /> Reload
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <MoreHorizontalIcon className="w-4 h-4 mr-2" />
+                                    Columns
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {tableHeaders.map((header) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={header.key}
+                                        className="capitalize"
+                                        checked={columnVisibility[header.key]}
+                                        onCheckedChange={(value) =>
+                                            setColumnVisibility(prev => ({
+                                                ...prev,
+                                                [header.key]: !!value
+                                            }))
+                                        }
+                                    >
+                                        {header.label}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </div>
@@ -286,7 +304,7 @@ const ViewTableNextComponents: React.FC = () => {
                  <div className="py-12 text-center text-2xl text-slate-500">Ops! Nothing was found.</div>
             ) : (
                 <Table className="border">
-                    <TableHeader className="bg-slate-100">
+                    <TableHeader className="bg-accent">
                         <TableRow>
                             <TableHead>
                                 <Checkbox
@@ -294,8 +312,8 @@ const ViewTableNextComponents: React.FC = () => {
                                     checked={bulkData.length === allData.length && allData.length > 0}
                                 />
                             </TableHead>
-                            {tableHeaders.map(({ key, label }) => (
-                                <TableHead key={key} className="cursor-pointer" onClick={() => handleSort(key as keyof ${interfaceName})}>
+                            {visibleHeaders.map(({ key, label }) => (
+                                <TableHead key={key} className="cursor-pointer" onClick={() => handleSort(key)}>
                                     {label}{' '}
                                     {sortConfig?.key === key && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                                 </TableHead>

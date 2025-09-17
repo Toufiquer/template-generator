@@ -35,5 +35,5 @@
         ".idea/ai-prompt/store/store-type/StoreTypes-in.ts",
         ".idea/ai-prompt/store/store-type/StoreTypes-out.ts"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", ".idea"]
 }

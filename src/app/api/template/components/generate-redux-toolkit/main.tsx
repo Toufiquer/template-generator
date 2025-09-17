@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import writeInFile from '../create-and-write'
 import generateRtkApiFile from './generate-toolkit'
 

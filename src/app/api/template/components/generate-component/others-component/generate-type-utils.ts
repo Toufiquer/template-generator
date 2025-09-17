@@ -1,17 +1,3 @@
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-}
-
 /**
  * Generates the entire Controller.ts file content as a string based on a JSON configuration.
  *
@@ -24,8 +10,8 @@ interface NamingConvention {
  * @returns {string} The complete, formatted Controller.ts file as a string.
  */
 export const generateTypeUtils = (inputJsonFile: string): string => {
-    const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
-    const folderName = namingConvention.users_2_000___
+    console.log('inputJsonFile', inputJsonFile)
+
     return `
     
 export interface ApiErrorDataPayload {

@@ -6,27 +6,6 @@ interface Schema {
 }
 
 /**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allow for other potential keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for a dynamic details page (page.tsx) based on a JSON schema.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object containing the schema and naming conventions.
@@ -35,7 +14,6 @@ interface InputJsonFile {
 export const generateDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    const singularName = namingConvention.user_4_000___ // e.g., "post"
     const modelName = namingConvention.User_3_000___ // e.g., "Post"
     const interfaceName = `I${modelName}` // e.g., "IPost"
 
@@ -134,6 +112,7 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
 
     // --- Final Template ---
 
+    const pluralName = namingConvention.users_2_000___ // e.g., "posts"
     return `import { notFound } from 'next/navigation'
 import HomeButton from './HomeButton'
 
@@ -162,7 +141,7 @@ const DataDetails = ({ data }: { data: ${interfaceName} }) => {
 }
 
 const getDataById = async (id: string): Promise<ApiResponse> => {
-    const backendUrl = \`http://localhost:3000/dashboard/${singularName}/all/api/v1?id=\${id}\`
+    const backendUrl = \`http://localhost:3000/generate/${pluralName}/all/api/v1?id=\${id}\`
 
     try {
         const res = await fetch(backendUrl, { next: { revalidate: 3600 } }) // 1 hour cache

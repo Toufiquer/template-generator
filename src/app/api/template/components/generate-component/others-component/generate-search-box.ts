@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_0_0_0___: string
-    users_2_0_0_0___: string
-    User_3_0_0_0___: string
-    user_4_0_0_0___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for the SearchBox.tsx component file.
  * Note: This component is static and does not depend on the input JSON.
  *
@@ -39,6 +11,7 @@ export const generateSearchBoxComponentFile = (
     // This component is a generic UI element for search functionality.
     // Its logic is self-contained and does not need to be altered
     // based on the provided schema or naming conventions.
+    console.log('inputJsonFile', inputJsonFile)
     return `'use client';
 
 import { Search, X } from 'lucide-react';

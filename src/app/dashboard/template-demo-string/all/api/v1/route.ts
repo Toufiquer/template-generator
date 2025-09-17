@@ -9,7 +9,7 @@ import {
     getUser_3_000___ById,
     bulkUpdateUsers_1_000___,
     bulkDeleteUsers_1_000___,
-} from './Controller'
+} from './controller'
 
 // import { formatResponse, handleTokenVerify, IResponse } from './jwt-verify';
 import { formatResponse, IResponse } from './jwt-verify'

@@ -1,0 +1,20 @@
+Act as a seniour webApplication developwer in NextJs with Typescript.
+
+look at the code ```
+import { Input } from '@/components/ui/input'
+const AutocompleteField = () => {
+    return <Input placeholder="Your Name Read Only" readOnly />
+}
+export default AutocompleteField
+```
+
+
+It Can only take input. 
+Please Update the full component.which have those features.
+
+- There is two store 1. allData type:String[], and 2. selectedData: String[]
+- In first render it show a search bar. and bottom there is some option from allData. I can choose multiple option. 
+- If there is no option found, It show a small add button at the right side. If I click it it will add data to allData. and also it store data in selectedData.
+- Also there is a option for remove the selectedData. 
+
+Now please generate the now Component with those features.

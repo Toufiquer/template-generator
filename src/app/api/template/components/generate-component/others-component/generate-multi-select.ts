@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for the MultiSelect.tsx component file.
  * Note: This component is static and does not depend on the input JSON.
  *
@@ -39,6 +11,8 @@ export const generateMultiSelectComponentFile = (
     // The content of this component is static and reusable.
     // It fetches data from a provided API URL and manages its own state.
     // It does not need to be changed based on the schema or naming conventions.
+    console.log('inputJsonFile', inputJsonFile)
+
     return `'use client'
 
 import { useEffect, useState } from 'react'

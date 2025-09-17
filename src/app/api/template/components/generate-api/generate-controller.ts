@@ -240,7 +240,7 @@ export async function bulkUpdate${replacements.Users_1_000___}(req: Request): Pr
         )
 
         const successfulUpdates = results
-            .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled' && r.value)
+            .filter((r): r is PromiseFulfilledResult<unknown> => r.status === 'fulfilled' && r.value)
             .map((r) => r.value)
             
         const failedUpdates = results

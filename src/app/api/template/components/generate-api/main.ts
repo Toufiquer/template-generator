@@ -1,5 +1,3 @@
-import { users_2_000___Api } from './../../../../dashboard/template-demo-string/all/redux/rtk-Api'
-import { NextRequest } from 'next/server'
 import generateController from './generate-controller'
 import writeInFile from '../create-and-write'
 import { generateModel } from './generate-model'

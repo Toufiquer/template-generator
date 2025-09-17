@@ -4,13 +4,13 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 export interface JsonItem {
     id: string
-    data: any
+    data: undefined | string | object | { uid: string; templateName: string }
     timestamp: Date
 }
 
 export interface JsonStore {
     items: JsonItem[]
-    addItem: (data: any) => void
+    addItem: (data: undefined | string) => void
     removeItem: (id: string) => void
     clearItems: () => void
 }
@@ -22,12 +22,12 @@ export const useJsonStore = create<JsonStore>()(
             addItem: (data) =>
                 set((state) => ({
                     items: [
-                        ...state.items,
                         {
                             id: Date.now().toString(),
                             data,
                             timestamp: new Date(),
                         },
+                        ...state.items,
                     ],
                 })),
             removeItem: (id) =>

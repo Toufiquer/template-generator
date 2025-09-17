@@ -1,0 +1,768 @@
+Act as a seniour webApplication developwer in NextJs with Typescript.
+
+look at the Add.tsx code 
+````
+/**
+ * Generates the content for a dynamic Add.tsx component file based on a JSON schema.
+ *
+ * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
+ * @returns {string} The complete Add.tsx file content as a string.
+ */
+export const generateAddComponentFile = (inputJsonFile: string): string => {
+    const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
+
+    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
+    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
+    const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
+
+    /**
+     * Generates the JSX for a specific form field based on its schema type.
+     */
+    const generateFormFieldJsx = (key: string, type: string): string => {
+        const label = key
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, (l) => l.toUpperCase())
+
+        switch (type.toUpperCase()) {
+            case 'STRING':
+            case 'URL':
+            case 'AUTOCOMPLETE':
+            case 'DYNAMICSELECT': // Handled as simple text for now
+            case 'MULTISELECT':
+            case 'MULTIDYNAMICSELECT':
+            case 'IMAGE':
+            case 'PHONE':
+            case 'RICHTEXT':
+            case 'TEST':
+            case 'INFO':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+            case 'EMAIL':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="email"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+
+            case 'PASSWORD':
+            case 'PASSCODE':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="password"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+
+            case 'DESCRIPTION':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="textarea"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+
+            case 'INTNUMBER':
+            case 'FLOATNUMBER':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="number"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+
+            case 'BOOLEAN':
+            case 'CHECKBOX':
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            <Checkbox
+                                id="${key}"
+                                name="${key}"
+                                checked={new${singularPascalCase}['${key}']}
+                                onCheckedChange={(checked) => handleCheckboxChange('${key}', !!checked)}
+                            />
+                        </div>`
+
+            case 'SELECT':
+            case 'RADIOBUTTON':
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            <Select
+                                onValueChange={(value) => handleSelectChange('${key}', value)}
+                                value={new${singularPascalCase}['${key}']}
+                            >
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Option 1">Option 1</SelectItem>
+                                    <SelectItem value="Option 2">Option 2</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>`
+
+            case 'IMAGES':
+            case 'MULTICHECKBOX':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label} (comma separated)"
+                            value={(new${singularPascalCase}['${key}'] as string[]).join(',')}
+                            onChange={(e) => handleArrayChange('${key}', e.target.value)}
+                        />`
+
+            case 'DATE':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="date"
+                            value={new${singularPascalCase}['${key}'] ? new Date(new${singularPascalCase}['${key}']).toISOString().split('T')[0] : ''}
+                            onChange={(e) => handleDateChange(e, '${key}')}
+                        />`
+            case 'TIME':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="time"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={(e) => handleTimeChange(e, '${key}')}
+                        />`
+
+            case 'DATERANGE':
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
+                            <Input
+                                id="${key}-start"
+                                name="${key}-start"
+                                type="date"
+                                value={new${singularPascalCase}['${key}'].start ? new Date(new${singularPascalCase}['${key}'].start).toISOString().split('T')[0] : ''}
+                                onChange={(e) => handleDateChange(e, '${key}', 'start')}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
+                            <Input
+                                id="${key}-end"
+                                name="${key}-end"
+                                type="date"
+                                value={new${singularPascalCase}['${key}'].end ? new Date(new${singularPascalCase}['${key}'].end).toISOString().split('T')[0] : ''}
+                                onChange={(e) => handleDateChange(e, '${key}', 'end')}
+                                className="col-span-3"
+                            />
+                        </div>`
+            case 'TIMERANGE':
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
+                            <Input
+                                id="${key}-start"
+                                name="${key}-start"
+                                type="time"
+                                value={new${singularPascalCase}['${key}'].start}
+                                onChange={(e) => handleTimeChange(e, '${key}', 'start')}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
+                            <Input
+                                id="${key}-end"
+                                name="${key}-end"
+                                type="time"
+                                value={new${singularPascalCase}['${key}'].end}
+                                onChange={(e) => handleTimeChange(e, '${key}', 'end')}
+                                className="col-span-3"
+                            />
+                        </div>`
+
+            case 'COLORPICKER':
+                return `
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            type="color"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+            default:
+                return `
+                        {/* Field type '${type}' is not supported yet. */}
+                        <InputField
+                            id="${key}"
+                            name="${key}"
+                            label="${label}"
+                            value={new${singularPascalCase}['${key}']}
+                            onChange={handleInputChange}
+                        />`
+        }
+    }
+
+    const formFieldsJsx = Object.entries(schema)
+        .map(([key, value]) => generateFormFieldJsx(key, value as string))
+        .join('')
+
+    return `import { useState } from 'react'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Textarea } from '@/components/ui/textarea'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+import { use${pluralPascalCase}Store } from '../store/store'
+import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
+import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
+
+const InputField: React.FC<{
+    id: string
+    name: string
+    label: string
+    type?: string
+    value: string | number
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+}> = ({ id, name, label, type = 'text', value, onChange }) => (
+    <div className="grid grid-cols-4 items-center gap-4 pr-1">
+        <Label htmlFor={id} className="text-right">
+            {label}
+        </Label>
+        {type === 'textarea' ? (
+            <Textarea
+                id={id}
+                name={name}
+                value={value as string}
+                onChange={onChange}
+                className="col-span-3"
+            />
+        ) : (
+            <Input
+                id={id}
+                name={name}
+                type={type}
+                value={value}
+                onChange={onChange}
+                className="col-span-3"
+            />
+        )}
+    </div>
+)
+
+const AddNextComponents: React.FC = () => {
+    const { toggleAddModal, isAddModalOpen, set${pluralPascalCase} } = use${pluralPascalCase}Store()
+    const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
+    const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value })
+    }
+
+    const handleCheckboxChange = (name: string, checked: boolean) => {
+        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: checked })
+    }
+
+    const handleSelectChange = (name: string, value: string) => {
+        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value })
+    }
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
+        const { value } = e.target
+        if (nestedField) {
+            setNew${singularPascalCase}({
+                ...new${singularPascalCase},
+                [field]: {
+                    ...(new${singularPascalCase}[field as keyof ${interfaceName}] as object),
+                    [nestedField]: new Date(value),
+                },
+            })
+        } else {
+            setNew${singularPascalCase}({ ...new${singularPascalCase}, [field]: new Date(value) })
+        }
+    }
+
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
+        const { value } = e.target
+        if (nestedField) {
+            setNew${singularPascalCase}({
+                ...new${singularPascalCase},
+                [field]: {
+                    ...(new${singularPascalCase}[field as keyof ${interfaceName}] as object),
+                    [nestedField]: value,
+                },
+            })
+        } else {
+            setNew${singularPascalCase}({ ...new${singularPascalCase}, [field]: value })
+        }
+    }
+
+    const handleArrayChange = (name: string, value: string) => {
+        setNew${singularPascalCase}({ ...new${singularPascalCase}, [name]: value.split(',').map(item => item.trim()) })
+    }
+
+    const handleAdd${singularPascalCase} = async () => {
+        try {
+            const { _id, ...update${pluralPascalCase} } = new${singularPascalCase}
+            console.log('_id', _id)
+            const added${singularPascalCase} = await add${pluralPascalCase}(update${pluralPascalCase}).unwrap()
+            set${pluralPascalCase}([added${singularPascalCase}])
+            toggleAddModal(false)
+            setNew${singularPascalCase}(${defaultInstanceName})
+            handleSuccess('Added Successful')
+        } catch (error: unknown) {
+            console.error(error)
+            let errMessage: string = 'An unknown error occurred.'
+            if (isApiErrorResponse(error)) {
+                errMessage = formatDuplicateKeyError(error.data.message) || 'API error'
+            } else if (error instanceof Error) {
+                errMessage = error.message
+            }
+            handleError(errMessage)
+        }
+    }
+
+    return (
+        <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
+            <DialogContent className="sm:max-w-[625px]">
+                <DialogHeader>
+                    <DialogTitle>Add New ${singularPascalCase}</DialogTitle>
+                </DialogHeader>
+
+                <ScrollArea className="h-[500px] w-full rounded-md border p-4">
+                    <div className="grid gap-4 py-4">
+                        ${formFieldsJsx}
+                    </div>
+                </ScrollArea>
+
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => toggleAddModal(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={isLoading}
+                        onClick={handleAdd${singularPascalCase}}
+                    >
+                        {isLoading ? 'Adding...' : 'Add ${singularPascalCase}'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default AddNextComponents
+`
+}
+
+````
+
+
+It can generage conly for Input(string) and textArea(string).
+
+Please update those "InputField" """const InputField: React.FC<{
+    id: string
+    name: string
+    label: string
+    type?: string
+    value: string | number
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+}> = ({ id, name, label, type = 'text', value, onChange }) => (
+    <div className="grid grid-cols-4 items-center gap-4 pr-1">
+        <Label htmlFor={id} className="text-right">
+            {label}
+        </Label>
+        {type === 'textarea' ? (
+            <Textarea
+                id={id}
+                name={name}
+                value={value as string}
+                onChange={onChange}
+                className="col-span-3"
+            />
+        ) : (
+            <Input
+                id={id}
+                name={name}
+                type={type}
+                value={value}
+                onChange={onChange}
+                className="col-span-3"
+            />
+        )}
+    </div>
+)
+""" 
+
+
+Please implement those field like : STRING, EMAIL, PASSWORD, PASSCODE, SELECT, DYNAMICSELECT, IMAGES, IMAGE, DESCRIPTION, INTNUMBER, FLOATNUMBER, BOOLEAN, DATE, TIME, DATERANGE, TIMERANGE, COLORPICKER, PHONE, URL, RICHTEXT, AUTOCOMPLETE, RADIOBUTTON, CHECKBOX, MULTICHECKBOX, MULTIOPTIONS
+
+
+here is example of allData Type that I have to use in my Project 
+```
+const allDataType: DataTypeItem[] = [
+    {
+        name: 'STRING',
+        mongooseSchema: `STRING: {
+            type: String,
+        }`,
+        ui: '<InputFieldForString />',
+        coreCode: InputFieldForStringCoreCode,
+    },
+    {
+        name: 'EMAIL',
+        mongooseSchema: `EMAIL: {
+            type: String,
+            ,
+            lowercase: true,
+            match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        }`,
+        ui: '<InputFieldForEmail />',
+        coreCode: InputFieldForEmailCoreCode,
+    },
+    {
+        name: 'PASSWORD',
+        mongooseSchema: `PASSWORD: {
+            type: String,
+            select: false
+        }`,
+        ui: '<InputFieldForPassword />',
+        coreCode: InputFieldForPasswordCoreCode,
+    },
+    {
+        name: 'PASSCODE',
+        mongooseSchema: `PASSCODE: {
+            type: String,
+            select: false
+        }`,
+        ui: '<InputFieldForPasscode />',
+        coreCode: InputFieldForPasscodeCoreCode,
+    },
+    {
+        name: 'SELECT',
+        mongooseSchema: `SELECT: {
+            type: String,
+            enum: ['Option 1', 'Option 2', 'Option 3']
+        }`,
+        ui: '<SelectField />',
+        coreCode: SelectFieldCoreCode,
+    },
+    {
+        name: 'DYNAMICSELECT',
+        mongooseSchema: `DYNAMICSELECT: {
+            type: Schema.Types.ObjectId,
+            ref: 'AnotherModel'
+        }`,
+        ui: '<DynamicSelectField />',
+        coreCode: DynamicSelectFieldCoreCode,
+    },
+    {
+        name: 'IMAGES',
+        mongooseSchema: `IMAGES: [{
+            type: String
+        }]`,
+        ui: '<ImageUploadManager />',
+        coreCode: ImageUploadManagerCoreCode,
+    },
+    {
+        name: 'IMAGE ',
+        mongooseSchema: `IMAGE: {
+            type: String
+        }`,
+        ui: '<ImageUploadFieldSingle />',
+        coreCode: ImageUploadFieldSingleCoreCode,
+    },
+    {
+        name: 'DESCRIPTION',
+        mongooseSchema: `DESCRIPTION: {
+            type: String,
+            
+        }`,
+        ui: '<TextareaFieldForDescription />',
+        coreCode: TextareaFieldForDescriptionCoreCode,
+    },
+    {
+        name: 'INTNUMBER',
+        mongooseSchema: `INTNUMBER: {
+            type: Number,
+            validate: {
+                validator: Number.isInteger,
+                message: '{VALUE} is not an integer value'
+            }
+        }`,
+        ui: '<NumberInputFieldInteger />',
+        coreCode: NumberInputFieldIntegerCoreCode,
+    },
+    {
+        name: 'FLOATNUMBER',
+        mongooseSchema: `FLOATNUMBER: {
+            type: Number
+        }`,
+        ui: '<NumberInputFieldFloat />',
+        coreCode: NumberInputFieldFloatCoreCode,
+    },
+    {
+        name: 'BOOLEAN',
+        mongooseSchema: `BOOLEAN: {
+            type: Boolean,
+            default: false
+        }`,
+        ui: '<BooleanInputField />',
+        coreCode: BooleanInputFieldCoreCode,
+    },
+    {
+        name: 'DATE ',
+        mongooseSchema: `DATE: {
+            type: Date,
+            default: Date.now
+        }`,
+        ui: '<DateField />',
+        coreCode: DateFieldCoreCode,
+    },
+    {
+        name: 'TIME',
+        mongooseSchema: `TIME: {
+            type: String
+        }`,
+        ui: '<TimeField />',
+        coreCode: TimeFieldCoreCode,
+    },
+    {
+        name: 'DATERANGE',
+        mongooseSchema: `DATERANGE: {
+            start: { type: Date },
+            end: { type: Date }
+        }`,
+        ui: '<DateRangePickerField />',
+        coreCode: DateRangePickerFieldCoreCode,
+    },
+    {
+        name: 'TIMERANGE',
+        mongooseSchema: `TIMERANGE: {
+            start: { type: String },
+            end: { type: String }
+        }`,
+        ui: '<TimeRangePickerField />',
+        coreCode: TimeRangePickerFieldCoreCode,
+    },
+    {
+        name: 'COLORPICKER',
+        mongooseSchema: `COLORPICKER: {
+            type: String,
+            match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code']
+        }`,
+        ui: '<ColorPickerField />',
+        coreCode: ColorPickerFieldCoreCode,
+    },
+    {
+        name: 'PHONE',
+        mongooseSchema: `PHONE: {
+            type: String,
+            validate: {
+                validator: function(v) {
+                return /\\d{3}-\\d{3}-\\d{4}/.test(v);
+                },
+                message: props => \`\${props.value} is not a valid phone number!\`
+            }
+        }`,
+        ui: '<PhoneInputField />',
+        coreCode: PhoneInputFieldCoreCode,
+    },
+    {
+        name: 'URL',
+        mongooseSchema: `URL: {
+            type: String,
+            
+        }`,
+        ui: '<UrlInputField />',
+        coreCode: UrlInputFieldCoreCode,
+    },
+    {
+        name: 'RICHTEXT',
+        mongooseSchema: `RICHTEXT: {
+            type: String
+        }`,
+        ui: '<RichTextEditorField />',
+        coreCode: RichTextEditorFieldCoreCode,
+    },
+    {
+        name: 'AUTOCOMPLETE',
+        mongooseSchema: `AUTOCOMPLETE: {
+            type: String
+        }`,
+        ui: '<AutocompleteField />',
+        coreCode: AutocompleteFieldCoreCode,
+    },
+    {
+        name: 'RADIOBUTTON',
+        mongooseSchema: `RADIOBUTTON: {
+            type: String,
+            enum: ['Choice A', 'Choice B', 'Choice C']
+        }`,
+        ui: '<RadioButtonGroupField />',
+        coreCode: RadioButtonGroupFieldCoreCode,
+    },
+    {
+        name: 'CHECKBOX',
+        mongooseSchema: `CHECKBOX: {
+            type: Boolean,
+            default: false
+        }`,
+        ui: '<CheckboxField />',
+        coreCode: CheckboxFieldCoreCode,
+    },
+    {
+        name: 'MULTICHECKBOX',
+        mongooseSchema: `MULTICHECKBOX: [{
+            type: String
+        }]`,
+        ui: '<MultiCheckboxGroupField />',
+        coreCode: MultiCheckboxGroupFieldCoreCode,
+    },
+    {
+        name: 'MULTIOPTIONS',
+        mongooseSchema: `MULTIOPTIONS: [{
+            type: String
+        }]`,
+        ui: '<MULTIOPTIONSField />',
+        coreCode: MULTIOPTIONSFieldCoreCode,
+    },
+]```
+
+Here is ui import link. 
+```
+
+// Import all UI components
+import InputFieldForString from './ui-components/InputFieldForString'
+import InputFieldForEmail from './ui-components/InputFieldForEmail'
+import InputFieldForPassword from './ui-components/InputFieldForPassword'
+import InputFieldForPasscode from './ui-components/InputFieldForPasscode'
+import { SelectField } from './ui-components/SelectField'
+import DynamicSelectField from './ui-components/DynamicSelectField'
+import NumberInputFieldInteger from './ui-components/NumberInputFieldInteger'
+import NumberInputFieldFloat from './ui-components/NumberInputFieldFloat'
+import { CheckboxField } from './ui-components/CheckboxField'
+import { BooleanInputField } from './ui-components/BooleanInputField'
+import { DateField } from './ui-components/DateField'
+import TimeField from './ui-components/TimeField'
+import DateRangePickerField from './ui-components/DateRangePickerField'
+import TimeRangePickerField from './ui-components/TimeRangePickerField'
+import ColorPickerField from './ui-components/ColorPickerField'
+import PhoneInputField from './ui-components/PhoneInputField'
+import UrlInputField from './ui-components/UrlInputField'
+import TextareaFieldForDescription from './ui-components/TextareaFieldForDescription'
+import AutocompleteField from './ui-components/AutocompleteField'
+import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
+import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
+import RichTextEditorField from './ui-components/RichTextEditorField'
+import ImageUploadManager from './ui-components/ImageUploadManager'
+import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
+import MULTIOPTIONSField from './ui-components/MULTIOPTIONSField'
+
+import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
+import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
+import { toast } from 'react-toastify'
+import { MultiCheckboxGroupFieldCoreCode } from './core-code/MultiCheckboxGroupFieldCoreCode'
+import { CheckboxFieldCoreCode } from './core-code/CheckboxFieldCoreCode'
+import { RadioButtonGroupFieldCoreCode } from './core-code/RadioButtonGroupFieldCoreCode'
+import { UrlInputFieldCoreCode } from './core-code/UrlInputFieldCoreCode'
+import { PhoneInputFieldCoreCode } from './core-code/PhoneInputFieldCoreCode'
+import { ColorPickerFieldCoreCode } from './core-code/ColorPickerFieldCoreCode'
+import { TimeRangePickerFieldCoreCode } from './core-code/TimeRangePickerFieldCoreCode'
+import { DateRangePickerFieldCoreCode } from './core-code/DateRangePickerFieldCoreCode'
+import { DateFieldCoreCode } from './core-code/DateFieldCoreCode'
+import { BooleanInputFieldCoreCode } from './core-code/BooleanInputFieldCoreCode'
+import { NumberInputFieldFloatCoreCode } from './core-code/NumberInputFieldFloatCoreCode'
+import { NumberInputFieldIntegerCoreCode } from './core-code/NumberInputFieldIntegerCoreCode'
+import { TextareaFieldForDescriptionCoreCode } from './core-code/TextareaFieldForDescriptionCoreCode'
+import { DynamicSelectFieldCoreCode } from './core-code/DynamicSelectFieldCoreCode'
+import { SelectFieldCoreCode } from './core-code/SelectFieldCoreCode'
+import { InputFieldForPasscodeCoreCode } from './core-code/InputFieldForPasscodeCoreCode'
+import { InputFieldForPasswordCoreCode } from './core-code/InputFieldForPasswordCoreCode'
+import { InputFieldForEmailCoreCode } from './core-code/InputFieldForEmailCoreCode'
+import { TimeFieldCoreCode } from './core-code/TimeFieldCoreCode'
+import { RichTextEditorFieldCoreCode } from './core-code/RichTextEditorFieldCoreCode'
+import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSingleCoreCode'
+import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCode'
+import { MULTIOPTIONSFieldCoreCode } from './core-code/MULTIOPTIONSFieldCoreCode'
+
+```
+
+Here is all example of all code. 
+
+AutocompleteField.tsx
+BooleanInputField.tsx
+CheckboxField.tsx
+ColorPickerField.tsx
+DateField.tsx
+DateRangePickerField.tsx
+DynamicSelectField.tsx
+ImageUploadFieldSingle.tsx
+ImageUploadManager.tsx
+InputFieldForEmail.tsx
+InputFieldForPasscode.tsx
+InputFieldForPassword.tsx
+InputFieldForString.tsx
+MultiCheckboxGroupField.tsx
+MULTIOPTIONSField.tsx
+NumberInputFieldFloat.tsx
+NumberInputFieldInteger.tsx
+PhoneInputField.tsx
+RadioButtonGroupField.tsx
+RichTextEditorField.tsx
+SelectField.tsx
+TextareaFieldForDescription.tsx
+TimeField.tsx
+TimeRangePickerField.tsx
+UrlInputField.tsx
+

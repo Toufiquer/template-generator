@@ -1,32 +1,4 @@
 /**
- * Defines the structure for the schema object.
- */
-interface Schema {
-    [key: string]: string | Schema
-}
-
-/**
- * Defines the structure for the naming convention object.
- */
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    [key: string]: string // Allows for additional keys
-}
-
-/**
- * Defines the structure for the main input JSON file.
- */
-interface InputJsonFile {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: NamingConvention
-}
-
-/**
  * Generates the content for a Delete.tsx component file.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
@@ -39,7 +11,6 @@ export const generateDeleteComponentFile = (inputJsonFile: string): string => {
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
-    const baseInterfaceName = `baseI${pluralPascalCase}` // e.g., "baseIPosts"
 
     // 2. Intelligently find the most suitable display key from the schema.
     const schemaKeys = Object.keys(schema)
@@ -61,7 +32,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-import { ${interfaceName}, default${pluralPascalCase} } from '../api/v1/model'
+import { ${interfaceName}, default${pluralPascalCase} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useDelete${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { handleSuccess, handleError } from './utils'
