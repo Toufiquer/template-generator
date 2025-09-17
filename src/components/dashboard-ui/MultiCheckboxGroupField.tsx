@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 // Define the shape of a single checkbox option for clarity and type safety
 export interface CheckboxOption {
     value: string
-    label: React.ReactNode
+    label: string
 }
 
 // Define a clear and robust props interface for the entire component
@@ -47,11 +47,15 @@ export default function MultiCheckboxGroupField({
         }
     }
 
-     let updateCheckboxOptions:CheckboxOption[] = []
-        if (options?.length>0) {
-         updateCheckboxOptions = options
+    let updateCheckboxOptions: CheckboxOption[] = [
+        { label: 'Book 1', value: 'book1' },
+        { label: 'Book 2', value: 'book2' },
+        { label: 'Book 3', value: 'book3' },
+    ]
+    if (options?.length > 0) {
+        updateCheckboxOptions = options
     }
-    
+
     return (
         // Use a <fieldset> for semantic grouping and better accessibility
         <fieldset className={cn('grid w-full gap-2.5', className)}>

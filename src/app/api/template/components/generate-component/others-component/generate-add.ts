@@ -107,7 +107,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             case 'MULTICHECKBOX':
                 componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
-            case 'MULTIOPTIONS': // Assuming this is the correct type name
             case 'MULTIDYNAMICSELECT':
                 componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
