@@ -93,7 +93,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<SelectField value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
-                componentJsx = `<RadioButtonGroupField value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
+                componentJsx = `<RadioButtonGroupField options={options} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DYNAMICSELECT':
                 componentJsx = `<DynamicSelectField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
@@ -219,6 +219,10 @@ const AddNextComponents: React.FC = () => {
         }
     }
 
+    const  options=[
+            { label: 'OP 1', value: 'op1' },
+            { label: 'OP 2', value: 'op2' },
+        ]
     return (
         <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
             <DialogContent className="sm:max-w-[625px]">

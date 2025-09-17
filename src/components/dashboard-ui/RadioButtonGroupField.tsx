@@ -33,8 +33,11 @@ export function RadioButtonGroupField({
     className,
 }: RadioButtonGroupFieldProps) {
     // The component is now fully controlled and stateless.
-    let updateOptions:RadioOption[] = []
-    if (options?.length>0) {
+    let updateOptions: RadioOption[] = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+    ]
+    if (options?.length > 0) {
         updateOptions = options
     }
     return (
@@ -46,14 +49,11 @@ export function RadioButtonGroupField({
                     {label}
                 </legend>
             )}
-
-            {/* The RadioGroup is now controlled by the `value` and `onValueChange` props */}
             <RadioGroup
                 value={value}
-                onValueChange={onChange} // Correctly wires up the change handler
+                onValueChange={onChange}
                 className="flex flex-col gap-2"
             >
-                {/* Map over the dynamic options array to render each radio button */}
                 {updateOptions.map((option) => (
                     <div
                         key={option.value}
@@ -61,9 +61,8 @@ export function RadioButtonGroupField({
                     >
                         <RadioGroupItem
                             value={option.value}
-                            id={`radio-option-${option.value}`} // Generate a unique and stable ID
+                            id={`radio-option-${option.value}`}
                         />
-                        {/* The Label is now correctly associated with its specific radio item */}
                         <Label htmlFor={`radio-option-${option.value}`}>
                             {option.label}
                         </Label>

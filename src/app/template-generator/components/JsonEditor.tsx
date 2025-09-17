@@ -96,7 +96,7 @@ const JsonEditor: React.FC = () => {
 
             // Find the first schema entry with an invalid data type.
             const invalidEntry = Object.entries(schema).find(
-                ([key, value]) => !validDataTypes.has(value as string)
+                ([, value]) => !validDataTypes.has(value as string)
             )
 
             if (invalidEntry) {

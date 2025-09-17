@@ -1,5 +1,4 @@
 // BooleanInputField.tsx
-import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 
 export function BooleanInputField({
