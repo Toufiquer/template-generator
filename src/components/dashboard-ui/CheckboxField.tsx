@@ -27,25 +27,38 @@ export function CheckboxField({
     label,
     className,
 }: CheckboxFieldProps) {
-    // This component is now fully controlled and stateless.
-    // All props are passed directly to the underlying components.
-
-    return (
-        <div className={cn('flex items-center space-x-2', className)}>
-            <Checkbox
-                id={id} // The id is now dynamic
-                checked={checked} // The checked state is controlled by the parent
-                onCheckedChange={onCheckedChange} // Notifies the parent of changes
-            />
-            {/* The Label is now correctly linked to the Checkbox via `htmlFor` */}
-            <Label
-                htmlFor={id}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    if (label) {
+        return (
+            <div className={cn('flex items-center space-x-2', className)}>
+                <Checkbox
+                    id={id}
+                    checked={checked}
+                    onCheckedChange={onCheckedChange}
+                />
+                <Label
+                    htmlFor={id}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                    {label}
+                </Label>
+            </div>
+        )
+    } else {
+        return (
+            <div
+                className={cn(
+                    'flex justify-end items-center space-x-2',
+                    className
+                )}
             >
-                {label} {/* The label text is now dynamic */}
-            </Label>
-        </div>
-    )
+                <Checkbox
+                    id={id}
+                    checked={checked}
+                    onCheckedChange={onCheckedChange}
+                />
+            </div>
+        )
+    }
 }
 
 CheckboxField.displayName = 'CheckboxField'
