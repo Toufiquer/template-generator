@@ -11,10 +11,9 @@ const InputFieldForPasscode = ({
 }: {
     id: string
     value: string
-    onChange: (e: any) => void
+    onChange: (e: string) => void
 }) => {
     const [showPasscode, setShowPasscode] = useState(false)
-    const [passcode, setPasscode] = useState('')
     const [error, setError] = useState('')
 
     const togglePasscodeVisibility = () => {

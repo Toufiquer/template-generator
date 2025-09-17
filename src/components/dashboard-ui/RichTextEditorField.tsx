@@ -49,23 +49,27 @@ function EditorMenuBar({ editor }: { editor: Editor | null }) {
             onClick: () =>
                 editor.chain().focus().toggleHeading({ level: 2 }).run(),
             isActive: editor.isActive('heading', { level: 2 }),
-        },   {
-            icon: <Heading2 className="size-4" />,
+        },
+        {
+            icon: <Heading3 className="size-4" />,
             onClick: () =>
                 editor.chain().focus().toggleHeading({ level: 3 }).run(),
             isActive: editor.isActive('heading', { level: 3 }),
-        },   {
-            icon: <Heading2 className="size-4" />,
+        },
+        {
+            icon: <Heading4 className="size-4" />,
             onClick: () =>
                 editor.chain().focus().toggleHeading({ level: 4 }).run(),
             isActive: editor.isActive('heading', { level: 4 }),
-        },   {
-            icon: <Heading2 className="size-4" />,
+        },
+        {
+            icon: <Heading5 className="size-4" />,
             onClick: () =>
                 editor.chain().focus().toggleHeading({ level: 5 }).run(),
             isActive: editor.isActive('heading', { level: 5 }),
-        },   {
-            icon: <Heading2 className="size-4" />,
+        },
+        {
+            icon: <Heading6 className="size-4" />,
             onClick: () =>
                 editor.chain().focus().toggleHeading({ level: 6 }).run(),
             isActive: editor.isActive('heading', { level: 6 }),

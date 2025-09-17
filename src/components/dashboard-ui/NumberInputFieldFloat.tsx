@@ -1,7 +1,7 @@
 // NumberInputFieldFloat.tsx
 
 import { Input } from '@/components/ui/input'
-import React, { useState } from 'react'
+import React from 'react'
 
 const NumberInputFieldFloat = ({
     id,

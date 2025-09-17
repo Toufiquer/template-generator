@@ -25,7 +25,7 @@ export interface DynamicSelectFieldProps {
     apiUrl: string
     placeholder?: string
     readOnly?: boolean
-    dataMapper?: (item: any) => string
+    dataMapper?: (item: IResponseData) => string
 }
 
 // Assumed API response structure

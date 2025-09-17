@@ -13,7 +13,7 @@ const InputFieldForPassword = ({
 }: {
     id: string
     value: string
-    onChange: (e: any) => void
+    onChange: (e: string) => void
 }) => {
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')

@@ -13,8 +13,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
-    DialogTitle,
     DialogTrigger,
     DialogClose, // Import DialogClose for better UX
 } from '@/components/ui/dialog'
@@ -257,7 +255,9 @@ export default function ImageUploadManager({
                 ) : (
                     <div className="text-center text-gray-500">
                         <p>No images selected.</p>
-                        <p className="text-sm">Click "Add Image" to begin.</p>
+                        <p className="text-sm">
+                            Click &quot;Add Image&quot; to begin.
+                        </p>
                     </div>
                 )}
             </div>

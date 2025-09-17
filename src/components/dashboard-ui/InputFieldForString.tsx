@@ -8,7 +8,7 @@ const InputFieldForString = ({
 }: {
     id: string
     value: string
-    onChange: (e: any) => void
+    onChange: (e: unknown) => void
 }) => {
     return <Input id={id} value={value} onChange={onChange} />
 }
