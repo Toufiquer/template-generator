@@ -1,68 +1,4 @@
-import * as XLSX from 'xlsx'
-
-/**
- * Generates the content for a dynamic ViewTable.tsx component file with column visibility and export features.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete, updated ViewTable.tsx file content as a string.
- */
-export const generateViewTableComponentFile = (
-    inputJsonFile: string
-): string => {
-    const { schema, namingConvention } = JSON.parse(inputJsonFile)
-
-    const pluralPascalCase = namingConvention.Users_1_000___
-    const pluralLowerCase = namingConvention.users_2_000___
-    const interfaceName = `I${pluralPascalCase}`
-    const displayableKeysTypeName = `Displayable${pluralPascalCase}Keys`
-
-    // Dynamically determine which fields are suitable for table columns.
-    const suitableTypes = [
-        'STRING',
-        'EMAIL',
-        ,
-        'SELECT',
-        'RADIOBUTTON',
-        'INTNUMBER',
-        'FLOATNUMBER',
-        'BOOLEAN',
-        'CHECKBOX',
-        'DATE',
-        'TIME',
-    ]
-    const excludedKeys = [
-        'password',
-        'passcode',
-        'description',
-        'richtext',
-        'image',
-        'images',
-    ]
-    const tableHeaders = Object.entries(schema)
-        .filter(
-            ([key, type]) =>
-                typeof type === 'string' &&
-                !key.includes('-') &&
-                suitableTypes.includes(type.toUpperCase()) &&
-                !excludedKeys.includes(key.toLowerCase())
-        )
-        .slice(0, 7)
-        .map(([key]) => ({
-            key: key,
-            label: key
-                .replace(/([A-Z])/g, ' $1')
-                .replace(/^./, (str) => str.toUpperCase()),
-        }))
-    tableHeaders.push({ key: 'createdAt', label: 'Created At' })
-
-    const displayableKeysType = `type ${displayableKeysTypeName} = \n    | '${tableHeaders
-        .map((h) => h.key)
-        .join("'\n    | '")}'`
-
-    const columnVisibilityStateType = `type ColumnVisibilityState = Record<${displayableKeysTypeName}, boolean>`
-
-    // --- FINAL TEMPLATE STRING ---
-    return `'use client'
+'use client'
 
 import { format } from 'date-fns'
 import React, { useState, useMemo } from 'react'
@@ -104,15 +40,23 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { ${interfaceName} } from '../store/data/data'
+import { IPosts } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
-import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
+import { usePostsStore } from '../store/store'
+import { useGetPostsQuery } from '../redux/rtk-api'
 import Pagination from './Pagination'
 
 // Dynamically generated types for type safety
-${displayableKeysType}
-${columnVisibilityStateType}
+type DisplayablePostsKeys = 
+    | 'title'
+    | 'email'
+    | 'area'
+    | 'age'
+    | 'amount'
+    | 'isActive'
+    | 'shift'
+    | 'createdAt'
+type ColumnVisibilityState = Record<DisplayablePostsKeys, boolean>
 
 // New: Utility function to handle XLSX file download
 const downloadFile = (data: any[], fileName: string) => {
@@ -125,12 +69,12 @@ const downloadFile = (data: any[], fileName: string) => {
 
 const ViewTableNextComponents: React.FC = () => {
     const [sortConfig, setSortConfig] = useState<{
-        key: ${displayableKeysTypeName}
+        key: DisplayablePostsKeys
         direction: 'asc' | 'desc'
     } | null>(null)
     
     const {
-        setSelected${pluralPascalCase},
+        setSelectedPosts,
         toggleBulkEditModal,
         toggleBulkUpdateModal,
         toggleViewModal,
@@ -144,26 +88,33 @@ const ViewTableNextComponents: React.FC = () => {
         setQueryPramsLimit,
         setQueryPramsPage,
         toggleBulkDeleteModal,
-    } = use${pluralPascalCase}Store()
+    } = usePostsStore()
 
     const {
         data: getResponseData,
         isLoading,
         isError,
         error,
-    } = useGet${pluralPascalCase}Query({
+    } = useGetPostsQuery({
         q: queryPramsQ,
         limit: queryPramsLimit,
         page: queryPramsPage,
     })
 
     const allData = useMemo(
-        () => getResponseData?.data?.${pluralLowerCase} || [],
+        () => getResponseData?.data?.posts || [],
         [getResponseData]
     )
 
-    const tableHeaders: { key: ${displayableKeysTypeName}; label: string }[] = [
-        ${tableHeaders.map((h) => `{ key: '${h.key}', label: '${h.label}' }`).join(',\n        ')}
+    const tableHeaders: { key: DisplayablePostsKeys; label: string }[] = [
+        { key: 'title', label: 'Title' },
+        { key: 'email', label: 'Email' },
+        { key: 'area', label: 'Area' },
+        { key: 'age', label: 'Age' },
+        { key: 'amount', label: 'Amount' },
+        { key: 'isActive', label: 'Is Active' },
+        { key: 'shift', label: 'Shift' },
+        { key: 'createdAt', label: 'Created At' }
     ];
 
     const [columnVisibility, setColumnVisibility] =
@@ -195,7 +146,7 @@ const ViewTableNextComponents: React.FC = () => {
         }
     }
 
-    const handleSort = (key: ${displayableKeysTypeName}) => {
+    const handleSort = (key: DisplayablePostsKeys) => {
         setSortConfig((prev) =>
             prev?.key === key
                 ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
@@ -219,29 +170,29 @@ const ViewTableNextComponents: React.FC = () => {
     const handleSelectAll = (isChecked: boolean) =>
         setBulkData(isChecked ? allData : [])
 
-    const handleSelectRow = (isChecked: boolean, item: ${interfaceName}) =>
+    const handleSelectRow = (isChecked: boolean, item: IPosts) =>
         setBulkData(
             isChecked
                 ? [...bulkData, item]
                 : bulkData.filter((i) => i._id !== item._id)
         )
 
-    const renderActions = (item: ${interfaceName}) => (
+    const renderActions = (item: IPosts) => (
         <div className="flex gap-2 justify-end">
-            <Button variant="outline" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleViewModal(true); }}>
+            <Button variant="outline" size="sm" onClick={() => { setSelectedPosts(item); toggleViewModal(true); }}>
                 <EyeIcon className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleEditModal(true); }}>
+            <Button variant="outline" size="sm" onClick={() => { setSelectedPosts(item); toggleEditModal(true); }}>
                 <PencilIcon className="w-4 h-4" />
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => { setSelected${pluralPascalCase}(item); toggleDeleteModal(true); }}>
+            <Button variant="destructive" size="sm" onClick={() => { setSelectedPosts(item); toggleDeleteModal(true); }}>
                 <TrashIcon className="w-4 h-4" />
             </Button>
         </div>
     )
 
     const renderTableRows = () =>
-        sortedData.map((item: ${interfaceName}) => (
+        sortedData.map((item: IPosts) => (
             <TableRow key={item._id}>
                 <TableCell>
                     <Checkbox
@@ -266,8 +217,8 @@ const ViewTableNextComponents: React.FC = () => {
     if (isError) return <ErrorMessageComponent message={error?.toString() || 'An error occurred'} />
     
     // New: Handler for the export button
-    const handleExport = (data: ${interfaceName}[]) => {
-        const filename = \`Exported_${pluralPascalCase}_\${new Date().toISOString()}.xlsx\`;
+    const handleExport = (data: IPosts[]) => {
+        const filename = `Exported_Posts_${new Date().toISOString()}.xlsx`;
         downloadFile(data, filename);
     };
 
@@ -367,7 +318,7 @@ const ViewTableNextComponents: React.FC = () => {
 
              <div className="max-w-xs flex items-center self-center justify-between pl-2 gap-4 border rounded-lg w-full mx-auto mt-8">
                 <Label htmlFor="set-limit" className="text-right text-slate-500 font-normal pl-3">
-                    ${pluralPascalCase} per page
+                    Posts per page
                 </Label>
                 <Select
                     onValueChange={(value) => { setQueryPramsLimit(Number(value)); setQueryPramsPage(1); }}
@@ -389,5 +340,3 @@ const ViewTableNextComponents: React.FC = () => {
     )
 }
     export default ViewTableNextComponents
-`
-}
