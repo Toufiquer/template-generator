@@ -18,6 +18,7 @@ import { generateTypeUtils } from './generate-type-utils'
 import { generateUtils } from './generate-utils'
 import { generateViewComponentFile } from './generate-view'
 import { generateViewTableComponentFile } from './generate-table-view'
+import { generateFilterDialogFile } from './generate-filter-dialog'
 
 const generateAllOtherComponentsMain = async (data: string) => {
     //  !  create api
@@ -66,6 +67,8 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const viewComponentContent = generateViewComponentFile(data)
 
     const viewTableComponentContent = generateViewTableComponentFile(data)
+    const generateFilterDialogContent = generateFilterDialogFile(data)
+
     writeInFile(
         addComponentTemplate,
         `src/app/generate/${folderName}/all/components/Add.tsx`
@@ -141,6 +144,10 @@ const generateAllOtherComponentsMain = async (data: string) => {
     writeInFile(
         viewTableComponentContent,
         `src/app/generate/${folderName}/all/components/TableView.tsx`
+    )
+    writeInFile(
+        generateFilterDialogContent,
+        `src/app/generate/${folderName}/all/components/FilterDialog.tsx`
     )
 }
 export default generateAllOtherComponentsMain

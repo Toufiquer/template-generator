@@ -27,8 +27,8 @@ interface InputConfig {
  *
  * This function parses the JSON to extract naming conventions and a data schema. It then
  * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a schema-aware search filter for string and number fields.
+ * names for models, variables, and functions. It also builds a schema-aware search filter
+ * that handles both date-range filters and generic keyword searches.
  *
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Controller.ts file as a string.
@@ -178,25 +178,46 @@ export async function get${replacements.Users_1_000___}(req: Request): Promise<I
         let searchFilter: FilterQuery<any> = {}
 
         if (searchQuery) {
-            const orConditions: FilterQuery<any>[] = []
+            // Check for date range filter format first
+            if (searchQuery.startsWith('createdAt:range:')) {
+                const datePart = searchQuery.split(':')[2];
+                const [startDateString, endDateString] = datePart.split('_');
 
-            // Add regex search conditions for all string-like fields
-            const stringFields = ${JSON.stringify(stringFields)};
-            stringFields.forEach(field => {
-                orConditions.push({ [field]: { $regex: searchQuery, $options: 'i' } });
-            });
+                if (startDateString && endDateString) {
+                    const startDate = new Date(startDateString);
+                    const endDate = new Date(endDateString);
+                    // To ensure the range is inclusive, set the time to the end of the day
+                    endDate.setUTCHours(23, 59, 59, 999);
 
-            // If the query is a valid number, add equality checks for all number fields
-            const numericQuery = parseFloat(searchQuery);
-            if (!isNaN(numericQuery)) {
-                const numberFields = ${JSON.stringify(numberFields)};
-                numberFields.forEach(field => {
-                    orConditions.push({ [field]: numericQuery });
+                    searchFilter = {
+                        createdAt: {
+                            \$gte: startDate, // Greater than or equal to the start date
+                            \$lte: endDate,   // Less than or equal to the end date
+                        },
+                    };
+                }
+            } else {
+                // Fallback to original generic search logic
+                const orConditions: FilterQuery<any>[] = []
+
+                // Add regex search conditions for all string-like fields
+                const stringFields = ${JSON.stringify(stringFields)};
+                stringFields.forEach(field => {
+                    orConditions.push({ [field]: { \$regex: searchQuery, \$options: 'i' } });
                 });
-            }
 
-            if (orConditions.length > 0) {
-                searchFilter = { $or: orConditions };
+                // If the query is a valid number, add equality checks for all number fields
+                const numericQuery = parseFloat(searchQuery);
+                if (!isNaN(numericQuery)) {
+                    const numberFields = ${JSON.stringify(numberFields)};
+                    numberFields.forEach(field => {
+                        orConditions.push({ [field]: numericQuery });
+                    });
+                }
+
+                if (orConditions.length > 0) {
+                    searchFilter = { \$or: orConditions };
+                }
             }
         }
 
