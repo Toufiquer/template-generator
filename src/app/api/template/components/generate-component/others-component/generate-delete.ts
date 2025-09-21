@@ -67,7 +67,7 @@ const DeleteNextComponents: React.FC = () => {
         setSelected${pluralPascalCase}({ ...default${pluralPascalCase} } as ${interfaceName})
     }
 
-    const displayName = (selected${pluralPascalCase} as any)?.['${displayKey}'] || ''
+    const displayName = (selected${pluralPascalCase})?.['${displayKey}'] || ''
 
     return (
         <Dialog open={isDeleteModalOpen} onOpenChange={toggleDeleteModal}>

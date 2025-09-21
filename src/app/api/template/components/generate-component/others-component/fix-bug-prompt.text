@@ -1,6 +1,8 @@
-/**
- * Generates the content for a dynamic Add.tsx component file based on a JSON schema,
- * with conditional imports for required components.
+Act as a seniour webApplication developwer in NextJs with Typescript. 
+
+look at the code it will generate a new component for NextJs 
+```/**
+ * Generates the content for a dynamic Add.tsx component file based on a JSON schema.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
  * @returns {string} The complete Add.tsx file content as a string.
@@ -14,12 +16,8 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
 
-    // A Set to store the import statements for components that are actually used.
-    const requiredImports = new Set<string>()
-
     /**
-     * Generates the JSX for a specific form field based on its schema type
-     * and adds the required component import to the set.
+     * Generates the JSX for a specific form field based on its schema type.
      */
     const generateFormFieldJsx = (key: string, type: string): string => {
         const label = key
@@ -44,157 +42,81 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
 
         switch (type.toUpperCase()) {
             case 'STRING':
-                requiredImports.add(
-                    "import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'"
-                )
                 componentJsx = `<InputFieldForString id="${key}" placeholder="${label}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'EMAIL':
-                requiredImports.add(
-                    "import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'"
-                )
                 componentJsx = `<InputFieldForEmail id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PASSWORD':
-                requiredImports.add(
-                    "import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'"
-                )
                 componentJsx = `<InputFieldForPassword id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PASSCODE':
-                requiredImports.add(
-                    "import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'"
-                )
                 componentJsx = `<InputFieldForPasscode id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'URL':
-                requiredImports.add(
-                    "import UrlInputField from '@/components/dashboard-ui/UrlInputField'"
-                )
                 componentJsx = `<UrlInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PHONE':
-                requiredImports.add(
-                    "import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'"
-                )
                 componentJsx = `<PhoneInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DESCRIPTION':
-                requiredImports.add(
-                    "import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'"
-                )
                 componentJsx = `<TextareaFieldForDescription id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
                 break
             case 'RICHTEXT':
-                requiredImports.add(
-                    "import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'"
-                )
                 componentJsx = `<RichTextEditorField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'INTNUMBER':
-                requiredImports.add(
-                    "import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'"
-                )
                 componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
                 break
             case 'FLOATNUMBER':
-                requiredImports.add(
-                    "import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'"
-                )
                 componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
                 break
             case 'BOOLEAN':
-                requiredImports.add(
-                    "import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'"
-                )
                 componentJsx = `<BooleanInputField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
                 break
             case 'CHECKBOX':
-                requiredImports.add(
-                    "import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'"
-                )
                 componentJsx = `<CheckboxField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
                 break
             case 'DATE':
-                requiredImports.add(
-                    "import { DateField } from '@/components/dashboard-ui/DateField'"
-                )
                 componentJsx = `<DateField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(date) => handleFieldChange('${key}', date)} />`
                 break
             case 'TIME':
-                requiredImports.add(
-                    "import TimeField from '@/components/dashboard-ui/TimeField'"
-                )
                 componentJsx = `<TimeField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
                 break
             case 'DATERANGE':
-                requiredImports.add(
-                    "import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'"
-                )
                 componentJsx = `<DateRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
                 break
             case 'TIMERANGE':
-                requiredImports.add(
-                    "import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'"
-                )
                 componentJsx = `<TimeRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
                 break
             case 'COLORPICKER':
-                requiredImports.add(
-                    "import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'"
-                )
                 componentJsx = `<ColorPickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'SELECT':
-                requiredImports.add(
-                    "import { SelectField } from '@/components/dashboard-ui/SelectField'"
-                )
                 componentJsx = `<SelectField value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
-                requiredImports.add(
-                    "import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'"
-                )
                 componentJsx = `<RadioButtonGroupField options={options} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DYNAMICSELECT':
-                requiredImports.add(
-                    "import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'"
-                )
                 componentJsx = `<DynamicSelectField value={[new${singularPascalCase}['${key}']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'IMAGE':
-                requiredImports.add(
-                    "import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'"
-                )
                 componentJsx = `<ImageUploadFieldSingle value={new${singularPascalCase}['${key}']} onChange={(url) => handleFieldChange('${key}', url)} />`
                 break
             case 'IMAGES':
-                requiredImports.add(
-                    "import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'"
-                )
                 componentJsx = `<ImageUploadManager value={new${singularPascalCase}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
                 break
             case 'MULTICHECKBOX':
-                requiredImports.add(
-                    "import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'"
-                )
                 componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'MULTIDYNAMICSELECT':
-                requiredImports.add(
-                    "import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'"
-                ) // Assuming this component exists
                 componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
-                requiredImports.add(
-                    "import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'"
-                )
                 componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
                 break
             default:
-                // Input and Label are always imported, so no need to add to the dynamic set.
                 componentJsx = `
                         <Input
                             id="${key}"
@@ -222,9 +144,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
-    // Convert the Set of imports to a sorted, newline-separated string for clean code.
-    const dynamicImports = [...requiredImports].sort().join('\n')
-
     // --- FINAL TEMPLATE STRING ---
     return `import { useState } from 'react'
 
@@ -240,8 +159,31 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-// Dynamically import only the components needed for the form
-${dynamicImports}
+// Import all UI components
+import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
+import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
+import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
+import { SelectField } from '@/components/dashboard-ui/SelectField'
+import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
+import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
+import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
+import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
+import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
+import { DateField } from '@/components/dashboard-ui/DateField'
+import TimeField from '@/components/dashboard-ui/TimeField'
+import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
+import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
+import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
+import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
+import UrlInputField from '@/components/dashboard-ui/UrlInputField'
+import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
+import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'
+import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle' 
 
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
@@ -317,3 +259,8 @@ const AddNextComponents: React.FC = () => {
 export default AddNextComponents
 `
 }
+```
+
+
+
+at the top of the code it always import the component. I want that ''it will only import if the file is needed. ''

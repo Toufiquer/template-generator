@@ -90,7 +90,7 @@ const BulkDeleteNextComponents: React.FC = () => {
                                 key={(${pluralPascalCase.toLowerCase()}._id as string) + idx}
                                 className="text-xs"
                             >
-                                {idx + 1}. {(${pluralPascalCase.toLowerCase()} as any)['${displayKey}'] as string || ''}
+                                {idx + 1}. {(${pluralPascalCase.toLowerCase()})['${displayKey}'] as string || ''}
                             </span>
                         ))}
                     </div>

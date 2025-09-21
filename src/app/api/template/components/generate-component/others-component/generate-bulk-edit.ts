@@ -147,7 +147,7 @@ const BulkEditNextComponents: React.FC = () => {
                                 className="flex items-center justify-between"
                             >
                                 <span>
-                                    {idx + 1}. {(${singularPascalCase.toLowerCase()} as any)['${displayKey}'] as string || ''}
+                                    {idx + 1}. {(${singularPascalCase.toLowerCase()})['${displayKey}'] as string || ''}
                                 </span>
                                 ${editableFieldJsx}
                             </div>
