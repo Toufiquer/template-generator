@@ -253,7 +253,7 @@ const AddNextComponents: React.FC = () => {
     const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
-    const handleFieldChange = (name: string, value: any) => {
+    const handleFieldChange = (name: string, value: string | number | boolean) => {
         setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
     };
 
