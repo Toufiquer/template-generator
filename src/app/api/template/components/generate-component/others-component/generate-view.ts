@@ -85,10 +85,10 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                     return `
                         <div className="mt-4">
                             <h3 className="font-semibold text-md mb-2">${label}</h3>
-                            {selected${singularPascalCase}['${key}'] ? (
+                            {selected${pluralPascalCase}['${key}'] ? (
                                 <div className="relative w-full h-48 border rounded-lg overflow-hidden">
                                     <Image
-                                        src={selected${singularPascalCase}['${key}']}
+                                        src={selected${pluralPascalCase}['${key}']}
                                         layout="fill"
                                         objectFit="cover"
                                         alt="${label}"
@@ -103,9 +103,9 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                     return `
                         <div className="mt-4">
                             <h3 className="font-semibold text-md mb-2">${label}</h3>
-                            {Array.isArray(selected${singularPascalCase}['${key}']) && selected${singularPascalCase}['${key}'].length > 0 ? (
+                            {Array.isArray(selected${pluralPascalCase}['${key}']) && selected${pluralPascalCase}['${key}'].length > 0 ? (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                    {selected${singularPascalCase}['${key}'].map((image: string, index: number) => (
+                                    {selected${pluralPascalCase}['${key}'].map((image: string, index: number) => (
                                         <div
                                             key={\`\${index}-\${image}\`}
                                             className="relative w-full h-32 border rounded-lg overflow-hidden"

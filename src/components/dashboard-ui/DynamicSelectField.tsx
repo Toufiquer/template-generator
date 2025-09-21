@@ -234,6 +234,7 @@ export default function DynamicSelectField({
                                 <ul>
                                     {getFilteredOptions.map((item, index) => (
                                         <li
+                                            id={item + index}
                                             key={item}
                                             onClick={() => handleSelect(item)}
                                             onMouseEnter={() =>
@@ -260,9 +261,9 @@ export default function DynamicSelectField({
 
             {safeValue.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-2">
-                    {safeValue.map((item) => (
+                    {safeValue.map((item, index) => (
                         <div
-                            key={item}
+                            key={item + index}
                             className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground"
                         >
                             <span>{item}</span>

@@ -1,5 +1,6 @@
 /**
- * Generates the content for a dynamic Edit.tsx component file based on a JSON schema.
+ * Generates the content for a dynamic Edit.tsx component file based on a JSON schema,
+ * with conditional imports for required components.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
  * @returns {string} The complete Edit.tsx file content as a string.
@@ -9,227 +10,227 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
     const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"
 
+    // A Set to store the import statements for components that are actually used.
+    const requiredImports = new Set<string>()
+
     /**
-     * Generates the JSX for a specific form field based on its schema type.
+     * Generates the JSX for a specific form field based on its schema type
+     * and adds the required component import to the set.
      */
     const generateFormFieldJsx = (key: string, type: string): string => {
         const label = key
             .replace(/-/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase())
 
+        // Generic wrapper for consistent layout
+        const formFieldWrapper = (
+            label: string,
+            componentJsx: string
+        ): string => `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            <div className="col-span-3">
+                                ${componentJsx}
+                            </div>
+                        </div>`
+
+        let componentJsx: string
+
         switch (type.toUpperCase()) {
             case 'STRING':
-            case 'URL':
-            case 'AUTOCOMPLETE':
-            case 'DYNAMICSELECT':
-            case 'MULTISELECT':
-            case 'MULTIDYNAMICSELECT':
-            case 'IMAGE':
-            case 'PHONE':
-            case 'RICHTEXT':
-            case 'TEST':
-            case 'INFO':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            value={${editedStateName}['${key}'] || ''}
-                            onChange={handleInputChange}
-                        />`
+                requiredImports.add(
+                    "import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'"
+                )
+                componentJsx = `<InputFieldForString id="${key}" placeholder="${label}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'EMAIL':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="email"
-                            value={${editedStateName}['${key}'] || ''}
-                            onChange={handleInputChange}
-                        />`
-
+                requiredImports.add(
+                    "import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'"
+                )
+                componentJsx = `<InputFieldForEmail id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'PASSWORD':
+                requiredImports.add(
+                    "import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'"
+                )
+                componentJsx = `<InputFieldForPassword id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'PASSCODE':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="password"
-                            value={${editedStateName}['${key}'] || ''}
-                            onChange={handleInputChange}
-                        />`
-
+                requiredImports.add(
+                    "import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'"
+                )
+                componentJsx = `<InputFieldForPasscode id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
+            case 'URL':
+                requiredImports.add(
+                    "import UrlInputField from '@/components/dashboard-ui/UrlInputField'"
+                )
+                componentJsx = `<UrlInputField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
+            case 'PHONE':
+                requiredImports.add(
+                    "import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'"
+                )
+                componentJsx = `<PhoneInputField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             case 'DESCRIPTION':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="textarea"
-                            value={${editedStateName}['${key}'] || ''}
-                            onChange={handleInputChange}
-                        />`
-
+                requiredImports.add(
+                    "import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'"
+                )
+                componentJsx = `<TextareaFieldForDescription id="${key}" value={${editedStateName}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
+            case 'RICHTEXT':
+                requiredImports.add(
+                    "import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'"
+                )
+                componentJsx = `<RichTextEditorField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             case 'INTNUMBER':
+                requiredImports.add(
+                    "import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'"
+                )
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
+                break
             case 'FLOATNUMBER':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="number"
-                            value={${editedStateName}['${key}'] || 0}
-                            onChange={handleInputChange}
-                        />`
-
+                requiredImports.add(
+                    "import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'"
+                )
+                componentJsx = `<NumberInputFieldFloat id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
+                break
             case 'BOOLEAN':
+                requiredImports.add(
+                    "import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'"
+                )
+                componentJsx = `<BooleanInputField id="${key}" checked={${editedStateName}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
             case 'CHECKBOX':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right">
-                                ${label}
-                            </Label>
-                            <Checkbox
-                                id="${key}"
-                                name="${key}"
-                                checked={${editedStateName}['${key}'] || false}
-                                onCheckedChange={(checked) => handleCheckboxChange('${key}', !!checked)}
-                            />
-                        </div>`
-
-            case 'SELECT':
-            case 'RADIOBUTTON':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right">
-                                ${label}
-                            </Label>
-                            <Select
-                                onValueChange={(value) => handleSelectChange('${key}', value)}
-                                value={${editedStateName}['${key}'] || ''}
-                            >
-                                <SelectTrigger className="col-span-3">
-                                    <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Option 1">Option 1</SelectItem>
-                                    <SelectItem value="Option 2">Option 2</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>`
-
-            case 'IMAGES':
-            case 'MULTICHECKBOX':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label} (comma separated)"
-                            value={(${editedStateName}['${key}'] as string[])?.join(',') || ''}
-                            onChange={(e) => handleArrayChange('${key}', e.target.value)}
-                        />`
-
+                requiredImports.add(
+                    "import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'"
+                )
+                componentJsx = `<CheckboxField id="${key}" checked={${editedStateName}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
             case 'DATE':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="date"
-                            value={formatDate(${editedStateName}['${key}'])}
-                            onChange={(e) => handleDateChange(e, '${key}')}
-                        />`
+                requiredImports.add(
+                    "import { DateField } from '@/components/dashboard-ui/DateField'"
+                )
+                componentJsx = `<DateField id="${key}" value={${editedStateName}['${key}']} onChange={(date) => handleFieldChange('${key}', date)} />`
+                break
             case 'TIME':
-                return `
-                        <InputField
-                            id="${key}"
-                            name="${key}"
-                            label="${label}"
-                            type="time"
-                            value={${editedStateName}['${key}'] || ''}
-                            onChange={(e) => handleTimeChange(e, '${key}')}
-                        />`
-
+                requiredImports.add(
+                    "import TimeField from '@/components/dashboard-ui/TimeField'"
+                )
+                componentJsx = `<TimeField id="${key}" value={${editedStateName}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
+                break
             case 'DATERANGE':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
-                            <Input
-                                id="${key}-start"
-                                name="${key}-start"
-                                type="date"
-                                value={formatDate(${editedStateName}['${key}']?.start)}
-                                onChange={(e) => handleDateChange(e, '${key}', 'start')}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
-                            <Input
-                                id="${key}-end"
-                                name="${key}-end"
-                                type="date"
-                                value={formatDate(${editedStateName}['${key}']?.end)}
-                                onChange={(e) => handleDateChange(e, '${key}', 'end')}
-                                className="col-span-3"
-                            />
-                        </div>`
+                requiredImports.add(
+                    "import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'"
+                )
+                componentJsx = `<DateRangePickerField id="${key}" value={${editedStateName}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
             case 'TIMERANGE':
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-start" className="text-right">${label} Start</Label>
-                            <Input
-                                id="${key}-start"
-                                name="${key}-start"
-                                type="time"
-                                value={${editedStateName}['${key}']?.start || ''}
-                                onChange={(e) => handleTimeChange(e, '${key}', 'start')}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}-end" className="text-right">${label} End</Label>
-                            <Input
-                                id="${key}-end"
-                                name="${key}-end"
-                                type="time"
-                                value={${editedStateName}['${key}']?.end || ''}
-                                onChange={(e) => handleTimeChange(e, '${key}', 'end')}
-                                className="col-span-3"
-                            />
-                        </div>`
-
+                requiredImports.add(
+                    "import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'"
+                )
+                componentJsx = `<TimeRangePickerField id="${key}" value={${editedStateName}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
             case 'COLORPICKER':
-                return `
-                        <InputField
+                requiredImports.add(
+                    "import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'"
+                )
+                componentJsx = `<ColorPickerField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
+            case 'SELECT':
+                requiredImports.add(
+                    "import { SelectField } from '@/components/dashboard-ui/SelectField'"
+                )
+                componentJsx = `<SelectField value={${editedStateName}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'RADIOBUTTON':
+                requiredImports.add(
+                    "import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'"
+                )
+                componentJsx = `<RadioButtonGroupField options={options} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'DYNAMICSELECT':
+                requiredImports.add(
+                    "import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'"
+                )
+                componentJsx = `<DynamicSelectField value={[${editedStateName}['${key}']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'IMAGE':
+                requiredImports.add(
+                    "import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'"
+                )
+                componentJsx = `<ImageUploadFieldSingle value={${editedStateName}['${key}']} onChange={(url) => handleFieldChange('${key}', url)} />`
+                break
+            case 'IMAGES':
+                requiredImports.add(
+                    "import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'"
+                )
+                componentJsx = `<ImageUploadManager value={${editedStateName}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
+                break
+            case 'MULTICHECKBOX':
+                requiredImports.add(
+                    "import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'"
+                )
+                componentJsx = `<MultiCheckboxGroupField value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'MULTIDYNAMICSELECT':
+                requiredImports.add(
+                    "import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'"
+                ) // Assuming this component exists
+                componentJsx = `<MULTIOPTIONSField value={[${editedStateName}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'AUTOCOMPLETE':
+                requiredImports.add(
+                    "import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'"
+                )
+                componentJsx = `<AutocompleteField id="${key}" value={${editedStateName}['${key}']} />`
+                break
+            default:
+                componentJsx = `
+                        <Input
                             id="${key}"
                             name="${key}"
-                            label="${label}"
-                            type="color"
-                            value={${editedStateName}['${key}'] || '#000000'}
-                            onChange={handleInputChange}
+                            value={${editedStateName}['${key}']}
+                            onChange={(e) => handleFieldChange('${key}', e.target.value)}
+                            placeholder="Unsupported field type: ${type}"
+                            className="col-span-3"
+                            disabled
                         />`
-            default:
-                return ``
+                // Return a simplified version for the default case
+                return `
+                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right">
+                                ${label}
+                            </Label>
+                            ${componentJsx}
+                        </div>`
         }
+
+        return formFieldWrapper(label, componentJsx)
     }
 
     const formFieldsJsx = Object.entries(schema)
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
+    // Convert the Set of imports to a sorted, newline-separated string for clean code.
+    const dynamicImports = [...requiredImports].sort().join('\n')
+
+    // --- FINAL TEMPLATE STRING ---
     return `import React, { useEffect, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
     Dialog,
@@ -238,51 +239,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+
+// Dynamically import only the components needed for the form
+${dynamicImports}
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
-
-const InputField: React.FC<{
-    id: string
-    name: string
-    label: string
-    type?: string
-    value: string | number
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-}> = ({ id, name, label, type = 'text', value, onChange }) => (
-    <div className="grid grid-cols-4 items-center gap-4 pr-1">
-        <Label htmlFor={id} className="text-right">
-            {label}
-        </Label>
-        {type === 'textarea' ? (
-            <Textarea
-                id={id}
-                name={name}
-                value={value as string}
-                onChange={onChange}
-                className="col-span-3"
-            />
-        ) : (
-            <Input
-                id={id}
-                name={name}
-                type={type}
-                value={value}
-                onChange={onChange}
-                className="col-span-3"
-            />
-        )}
-    </div>
-)
 
 const EditNextComponents: React.FC = () => {
     const {
@@ -301,52 +265,9 @@ const EditNextComponents: React.FC = () => {
         }
     }, [selected${pluralPascalCase}])
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        set${singularPascalCase}({ ...${editedStateName}, [name]: value })
-    }
-
-    const handleCheckboxChange = (name: string, checked: boolean) => {
-        set${singularPascalCase}({ ...${editedStateName}, [name]: checked })
-    }
-
-    const handleSelectChange = (name: string, value: string) => {
-        set${singularPascalCase}({ ...${editedStateName}, [name]: value })
-    }
-
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
-        const { value } = e.target
-        if (nestedField) {
-            set${singularPascalCase}({
-                ...${editedStateName},
-                [field]: {
-                    ...(${editedStateName}[field as keyof ${interfaceName}] as object),
-                    [nestedField]: new Date(value),
-                },
-            })
-        } else {
-            set${singularPascalCase}({ ...${editedStateName}, [field]: new Date(value) })
-        }
-    }
-
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, field: string, nestedField?: 'start' | 'end') => {
-        const { value } = e.target
-        if (nestedField) {
-            set${singularPascalCase}({
-                ...${editedStateName},
-                [field]: {
-                    ...(${editedStateName}[field as keyof ${interfaceName}] as object),
-                    [nestedField]: value,
-                },
-            })
-        } else {
-            set${singularPascalCase}({ ...${editedStateName}, [field]: value })
-        }
-    }
-
-    const handleArrayChange = (name: string, value: string) => {
-        set${singularPascalCase}({ ...${editedStateName}, [name]: value.split(',').map(s => s.trim()) })
-    }
+    const handleFieldChange = (name: string, value: any) => {
+        set${singularPascalCase}(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleEdit${singularPascalCase} = async () => {
         if (!selected${pluralPascalCase}) return
@@ -359,24 +280,21 @@ const EditNextComponents: React.FC = () => {
             toggleEditModal(false)
             handleSuccess('Edit Successful')
         } catch (error: unknown) {
-            let errMessage: string = ''
+            console.error('Failed to update record:', error)
+            let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage = formatDuplicateKeyError(error.data.message)
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
             handleError(errMessage)
         }
     }
-    
-    const formatDate = (date: Date | string | undefined): string => {
-        if (!date) return ''
-        try {
-            return new Date(date).toISOString().split('T')[0]
-        } catch (error) {
-            return ''
-        }
-    }
+
+    const options = [
+        { label: 'OP 1', value: 'op1' },
+        { label: 'OP 2', value: 'op2' },
+    ]
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
