@@ -137,7 +137,6 @@ const JsonEditor: React.FC = () => {
         if (error) setError('')
     }
 
-    const handleGenerate = () => {}
     const handleFormat = () => {
         try {
             const parsedJson = JSON.parse(jsonInput)
