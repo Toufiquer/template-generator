@@ -1,5 +1,6 @@
 /**
- * Generates the content for a dynamic ViewTable.tsx component file with column visibility and export features.
+ * Generates the content for a dynamic ViewTable.tsx component file that integrates
+ * with a separate ExportDialog for handling XLSX exports.
  *
  * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
  * @returns {string} The complete, updated ViewTable.tsx file content as a string.
@@ -18,7 +19,6 @@ export const generateViewTableComponentFile = (
     const suitableTypes = [
         'STRING',
         'EMAIL',
-        ,
         'SELECT',
         'RADIOBUTTON',
         'INTNUMBER',
@@ -64,13 +64,12 @@ export const generateViewTableComponentFile = (
 
 import { format } from 'date-fns'
 import React, { useState, useMemo } from 'react'
-import * as XLSX from 'xlsx' // New: Added XLSX import for export functionality
 import { 
     MoreHorizontalIcon, 
     EyeIcon, 
     PencilIcon, 
     TrashIcon, 
-    DownloadIcon // New: Added DownloadIcon for the export button
+    DownloadIcon 
 } from 'lucide-react'
 
 import { Label } from '@/components/ui/label'
@@ -107,18 +106,11 @@ import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
 import Pagination from './Pagination'
+import ExportDialog from './ExportDialog' // Import the new dialog component
 
 // Dynamically generated types for type safety
 ${displayableKeysType}
 ${columnVisibilityStateType}
-
-// New: Utility function to handle XLSX file download
-const downloadFile = (data: any[], fileName: string) => {
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-    XLSX.writeFile(workbook, fileName);
-};
 
 
 const ViewTableNextComponents: React.FC = () => {
@@ -126,6 +118,9 @@ const ViewTableNextComponents: React.FC = () => {
         key: ${displayableKeysTypeName}
         direction: 'asc' | 'desc'
     } | null>(null)
+    
+    // State to control the export dialog visibility
+    const [isExportDialogOpen, setExportDialogOpen] = useState(false);
     
     const {
         setSelected${pluralPascalCase},
@@ -263,12 +258,6 @@ const ViewTableNextComponents: React.FC = () => {
     if (isLoading) return <LoadingComponent />
     if (isError) return <ErrorMessageComponent message={error?.toString() || 'An error occurred'} />
     
-    // New: Handler for the export button
-    const handleExport = (data: ${interfaceName}[]) => {
-        const filename = \`Exported_${pluralPascalCase}_\${new Date().toISOString()}.xlsx\`;
-        downloadFile(data, filename);
-    };
-
     return (
         <div className="w-full flex flex-col">
             <div className="w-full my-4">
@@ -307,11 +296,11 @@ const ViewTableNextComponents: React.FC = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        {/* New Export Button */}
+                        {/* Updated Export Button to open the dialog */}
                         <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleExport(bulkData)}
+                            onClick={() => setExportDialogOpen(true)}
                             disabled={bulkData.length === 0}
                         >
                             <DownloadIcon className="w-4 h-4 mr-1" /> Export
@@ -383,6 +372,15 @@ const ViewTableNextComponents: React.FC = () => {
                     </SelectContent>
                 </Select>
             </div>
+
+            {/* Render the ExportDialog and pass it the required props */}
+            <ExportDialog
+                isOpen={isExportDialogOpen}
+                onOpenChange={setExportDialogOpen}
+                headers={tableHeaders}
+                data={bulkData}
+                fileName={\`Exported_${pluralPascalCase}_\${new Date().toISOString()}.xlsx\`}
+            />
         </div>
     )
 }
