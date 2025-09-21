@@ -10,13 +10,13 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 const UrlInputField = ({
-    id,
+    id = Math.random().toString(36).substring(2),
     value,
     onChange,
     className,
 }: {
     className?: string
-    id: string
+    id?: string
     value: string
     onChange: (value: string) => void
 }) => {

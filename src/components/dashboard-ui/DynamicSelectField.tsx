@@ -11,35 +11,32 @@ import {
     Loader2,
     AlertCircle,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button' // Import Button for the retry mechanism
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
-// --- PROPS INTERFACE ---
 export interface DynamicSelectFieldProps {
     id?: string
-    label: string
-    // value can be undefined or null in form state, so we handle it gracefully
+    label?: string
     value: string[] | undefined | null
     onChange: (newValues: string[]) => void
-    apiUrl: string
+    apiUrl?: string
     placeholder?: string
     readOnly?: boolean
     dataMapper?: (item: IResponseData) => string
 }
 
-// Assumed API response structure
 interface IResponseData {
     id: number
     name: string
 }
 
 const MAX_RETRIES = 5
-const RETRY_DELAY = 1000 // 1 second
+const RETRY_DELAY = 1000
 
 export default function DynamicSelectField({
     id,
-    label,
+    label = 'Select One',
     value,
     onChange,
     apiUrl = 'https://jsonplaceholder.typicode.com/users',
@@ -47,7 +44,6 @@ export default function DynamicSelectField({
     readOnly = false,
     dataMapper = (item: IResponseData) => item.name,
 }: DynamicSelectFieldProps) {
-    // --- STATE MANAGEMENT ---
     const [availableData, setAvailableData] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -56,7 +52,6 @@ export default function DynamicSelectField({
     const [activeIndex, setActiveIndex] = useState(-1)
     const wrapperRef = useRef<HTMLDivElement>(null)
 
-    // --- DATA FETCHING WITH RETRY LOGIC ---
     const fetchData = useCallback(async () => {
         setIsLoading(true)
         setError(null)
@@ -73,7 +68,7 @@ export default function DynamicSelectField({
                 const names = json.map(dataMapper)
                 setAvailableData(names)
                 setIsLoading(false)
-                return // Success, exit the loop
+                return
             } catch (err) {
                 console.error(`Attempt ${attempt} failed:`, err)
                 if (attempt === MAX_RETRIES) {
@@ -84,21 +79,18 @@ export default function DynamicSelectField({
                     setError(`Failed to fetch data. ${errorMessage}`)
                     setIsLoading(false)
                 } else {
-                    // Wait before the next retry
                     await new Promise((res) => setTimeout(res, RETRY_DELAY))
                 }
             }
         }
     }, [apiUrl, dataMapper])
 
-    // This useEffect hook now has a stable dependency and will only run once.
     useEffect(() => {
         fetchData()
-    }, []) // Remove fetchData from dependencies to run only once
+    }, [])
 
-    // --- MEMOIZED COMPUTATIONS ---
     const getFilteredOptions = useMemo(() => {
-        const safeValue = value ?? [] // Handle null/undefined value
+        const safeValue = value ?? []
         return availableData
             .filter((item) => !safeValue.includes(item))
             .filter((item) =>
@@ -106,7 +98,6 @@ export default function DynamicSelectField({
             )
     }, [availableData, value, searchTerm])
 
-    // --- EVENT HANDLERS ---
     const handleSelect = (itemToSelect: string) => {
         if (!readOnly) {
             const safeValue = value ?? []
@@ -152,7 +143,6 @@ export default function DynamicSelectField({
         }
     }
 
-    // --- UI & RENDER ---
     const safeValue = value ?? []
 
     return (

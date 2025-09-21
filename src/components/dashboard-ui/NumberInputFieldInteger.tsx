@@ -4,11 +4,11 @@ import { Input } from '@/components/ui/input'
 import React from 'react'
 
 const NumberInputFieldInteger = ({
-    id,
+    id = Math.random().toString(36).substring(2),
     value,
     onChange,
 }: {
-    id: string
+    id?: string
     value: number
     onChange: (value: number) => void
 }) => {
@@ -38,7 +38,7 @@ const NumberInputFieldInteger = ({
         value !== undefined && value !== null ? String(Math.floor(value)) : ''
     return (
         <Input
-             id={id} 
+            id={id}
             placeholder="Quantity"
             type="number"
             inputMode="numeric"

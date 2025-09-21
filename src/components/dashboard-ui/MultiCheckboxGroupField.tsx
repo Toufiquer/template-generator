@@ -20,7 +20,7 @@ export interface MultiCheckboxGroupFieldProps {
     // The callback to notify the parent of the new array of selected values
     onChange: (newValue: string[]) => void
     // An array of all possible options to render
-    options: CheckboxOption[]
+    options?: CheckboxOption[]
     // A main label for the entire group, crucial for accessibility
     label?: string
     // Optional className for custom styling
@@ -30,7 +30,7 @@ export interface MultiCheckboxGroupFieldProps {
 export default function MultiCheckboxGroupField({
     value,
     onChange,
-    options,
+    options = [],
     label,
     className,
 }: MultiCheckboxGroupFieldProps) {

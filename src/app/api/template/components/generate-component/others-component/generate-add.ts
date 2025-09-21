@@ -51,7 +51,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<InputFieldForPasscode id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'URL':
-                componentJsx = `<UrlInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                componentJsx = `<UrlInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PHONE':
                 componentJsx = `<PhoneInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
@@ -63,10 +63,10 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<RichTextEditorField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'INTNUMBER':
-                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
                 break
             case 'FLOATNUMBER':
-                componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
                 break
             case 'BOOLEAN':
                 componentJsx = `<BooleanInputField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
@@ -75,7 +75,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<CheckboxField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
                 break
             case 'DATE':
-                componentJsx = `<DateField id="${key}" selected={new${singularPascalCase}['${key}']} onSelect={(date) => handleFieldChange('${key}', date)} />`
+                componentJsx = `<DateField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(date) => handleFieldChange('${key}', date)} />`
                 break
             case 'TIME':
                 componentJsx = `<TimeField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
@@ -87,7 +87,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<TimeRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
                 break
             case 'COLORPICKER':
-                componentJsx = `<ColorPickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                componentJsx = `<ColorPickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'SELECT':
                 componentJsx = `<SelectField value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
@@ -96,10 +96,10 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<RadioButtonGroupField options={options} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DYNAMICSELECT':
-                componentJsx = `<DynamicSelectField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                componentJsx = `<DynamicSelectField value={[new${singularPascalCase}['${key}']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'IMAGE':
-                componentJsx = `<ImageUploadFieldSingle value={new${singularPascalCase}['${key}']} onImageUploadSuccess={(url) => handleFieldChange('${key}', url)} />`
+                componentJsx = `<ImageUploadFieldSingle value={new${singularPascalCase}['${key}']} onChange={(url) => handleFieldChange('${key}', url)} />`
                 break
             case 'IMAGES':
                 componentJsx = `<ImageUploadManager value={new${singularPascalCase}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
@@ -111,7 +111,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
-                componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
                 break
             default:
                 componentJsx = `

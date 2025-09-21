@@ -9,19 +9,19 @@ import { cn } from '@/lib/utils'
 
 // Define a clear props interface for type safety and component API clarity
 export interface CheckboxFieldProps {
-    id: string
+    id?: string
     // The checked state, controlled by the parent form
     checked: boolean
     // The callback to notify the parent when the state changes
     onCheckedChange: (checked: boolean) => void
     // The label content, can be a string or other React nodes
-    label: React.ReactNode
+    label?: React.ReactNode
     // Optional className for custom styling of the wrapper
     className?: string
 }
 
 export function CheckboxField({
-    id,
+    id = Math.random().toString(),
     checked,
     onCheckedChange,
     label,

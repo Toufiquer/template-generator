@@ -22,14 +22,14 @@ export interface DateFieldProps {
     value: Date | null | undefined
     // Use `onChange` for consistency. It can receive `undefined` when a date is cleared.
     onChange: (date: Date | undefined) => void
-    id: string
+    id?: string
     label?: string
     placeholder?: string
     className?: string
 }
 
 export function DateField({
-    id,
+    id = Math.random().toString(36).substring(2),
     label,
     value,
     onChange,
