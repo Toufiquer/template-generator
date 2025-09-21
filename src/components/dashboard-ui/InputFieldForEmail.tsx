@@ -10,14 +10,18 @@ const InputFieldForEmail = ({
 }: {
     id: string
     value: string
-    onChange: (e: unknown) => void
+    onChange: (value: string) => void
     placeholder?: string
 }) => {
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        onChange(value)
+    }
     return (
         <Input
             id={id}
             value={value}
-            onChange={onChange}
+            onChange={handlePasswordChange}
             placeholder={placeholder}
         />
     )

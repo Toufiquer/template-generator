@@ -93,7 +93,7 @@ const AddNextComponents: React.FC = () => {
                                 Title
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForString id="title"       placeholder="Title" value={newPost['title']} onChange={(e) => handleFieldChange('title', e.target.value)} />
+                                <InputFieldForString id="title" placeholder="Title" value={newPost['title']} onChange={(value) => handleFieldChange('title', value as string)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -101,7 +101,7 @@ const AddNextComponents: React.FC = () => {
                                 Email
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForEmail id="email" value={newPost['email']} onChange={(e) => handleFieldChange('email', e.target.value)} />
+                                <InputFieldForEmail id="email" value={newPost['email']} onChange={(value) => handleFieldChange('email', value as string)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -117,7 +117,7 @@ const AddNextComponents: React.FC = () => {
                                 Passcode
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForPasscode id="passcode" value={newPost['passcode']} onChange={(e) => handleFieldChange('passcode', e.target.value)} />
+                                <InputFieldForPasscode id="passcode" value={newPost['passcode']} onChange={(value) => handleFieldChange('passcode', value as string)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
