@@ -28,7 +28,7 @@ interface InputConfig {
  * This function parses the JSON to extract naming conventions and a data schema. It then
  * uses a template to build the controller's TypeScript code, dynamically inserting the correct
  * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
+ * build a schema-aware search filter for string and number fields.
  *
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Controller.ts file as a string.
@@ -38,30 +38,36 @@ function generateController(inputJsonString: string): string {
     const { namingConvention, schema } = config
 
     /**
-     * Recursively finds all searchable field keys from the schema, using dot notation for nested objects.
+     * Recursively finds all field keys from the schema that match a given list of types.
+     * Uses dot notation for nested objects.
      * @param {Schema} obj - The schema object or a nested part of it.
+     * @param {string[]} types - An array of uppercase schema types to match (e.g., ['STRING', 'EMAIL']).
      * @param {string} [prefix=''] - The prefix for dot notation, used in recursive calls.
-     * @returns {string[]} An array of searchable field keys (e.g., ['title', 'author.name']).
+     * @returns {string[]} An array of matching field keys (e.g., ['title', 'author.name']).
      */
-    const findSearchableKeys = (obj: Schema, prefix = ''): string[] => {
+    const findAllKeysByTypes = (
+        obj: Schema,
+        types: string[],
+        prefix = ''
+    ): string[] => {
         let keys: string[] = []
         for (const key in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 const newPrefix = prefix ? `${prefix}.${key}` : key
                 const value = obj[key]
 
-                // Recurse if the value is a non-null, non-array object.
                 if (
                     typeof value === 'object' &&
                     value !== null &&
                     !Array.isArray(value)
                 ) {
                     keys = keys.concat(
-                        findSearchableKeys(value as Schema, newPrefix)
+                        findAllKeysByTypes(value as Schema, types, newPrefix)
                     )
-                }
-                // Add the key if it's a leaf node (i.e., its value is a string like "STRING").
-                else if (typeof value === 'string') {
+                } else if (
+                    typeof value === 'string' &&
+                    types.includes(value.toUpperCase()) // Check if the schema type is in the allowed list
+                ) {
                     keys.push(newPrefix)
                 }
             }
@@ -69,15 +75,22 @@ function generateController(inputJsonString: string): string {
         return keys
     }
 
-    const searchableFields = findSearchableKeys(schema)
+    // Define which schema types should be treated as strings or numbers for searching.
+    const stringLikeTypes = [
+        'STRING',
+        'EMAIL',
+        'URL',
+        'PHONE',
+        'DESCRIPTION',
+        'RICHTEXT',
+        'SELECT',
+        'RADIOBUTTON',
+    ]
+    const numberLikeTypes = ['INTNUMBER', 'FLOATNUMBER']
 
-    // Generate the individual { key: { $regex: ... } } objects for the $or array.
-    const searchOrConditions = searchableFields
-        .map(
-            (field) =>
-                `                        { '${field}': { $regex: searchQuery, $options: 'i' } }`
-        )
-        .join(',\n')
+    // Get the actual field names from the schema that match these types.
+    const stringFields = findAllKeysByTypes(schema, stringLikeTypes)
+    const numberFields = findAllKeysByTypes(schema, numberLikeTypes)
 
     // Prepare all naming replacements.
     const replacements = {
@@ -90,6 +103,7 @@ function generateController(inputJsonString: string): string {
 
     // Use a template literal to construct the final file content.
     const controllerTemplate = `import { withDB } from '@/app/api/utils/db'
+import { FilterQuery } from 'mongoose'
 
 import ${replacements.User_3_000___} from './model'
 
@@ -152,24 +166,37 @@ export async function get${replacements.User_3_000___}ById(req: Request): Promis
     })
 }
 
-// GET all ${replacements.Users_1_000___} with pagination
+// GET all ${replacements.Users_1_000___} with pagination and intelligent search
 export async function get${replacements.Users_1_000___}(req: Request): Promise<IResponse> {
     return withDB(async () => {
         const url = new URL(req.url)
         const page = parseInt(url.searchParams.get('page') || '1', 10)
         const limit = parseInt(url.searchParams.get('limit') || '10', 10)
         const skip = (page - 1) * limit
-
         const searchQuery = url.searchParams.get('q')
 
-        let searchFilter = {}
+        let searchFilter: FilterQuery<any> = {}
 
-        // Apply search filter only if a search query is provided
         if (searchQuery) {
-            searchFilter = {
-                $or: [
-${searchOrConditions}
-                ],
+            const orConditions: FilterQuery<any>[] = []
+
+            // Add regex search conditions for all string-like fields
+            const stringFields = ${JSON.stringify(stringFields)};
+            stringFields.forEach(field => {
+                orConditions.push({ [field]: { $regex: searchQuery, $options: 'i' } });
+            });
+
+            // If the query is a valid number, add equality checks for all number fields
+            const numericQuery = parseFloat(searchQuery);
+            if (!isNaN(numericQuery)) {
+                const numberFields = ${JSON.stringify(numberFields)};
+                numberFields.forEach(field => {
+                    orConditions.push({ [field]: numericQuery });
+                });
+            }
+
+            if (orConditions.length > 0) {
+                searchFilter = { $or: orConditions };
             }
         }
 

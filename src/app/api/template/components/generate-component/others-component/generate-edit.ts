@@ -10,7 +10,6 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
     const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"

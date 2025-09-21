@@ -15,7 +15,6 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
     const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"

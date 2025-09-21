@@ -1,5 +1,3 @@
-import * as XLSX from 'xlsx'
-
 /**
  * Generates the content for a dynamic ViewTable.tsx component file with column visibility and export features.
  *
