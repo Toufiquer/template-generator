@@ -48,7 +48,7 @@ export const generateModel = (inputJsonFile: string): string => {
     const mapToMongooseSchema = (type: string): string => {
         const [typeName, options] = type.split('#')
 
-        // Helper function to generate enum schema from options string
+        // Helper function to generate enum schema for a single string
         const createEnumSchema = (
             optionsStr: string | undefined,
             defaultOptions: string[]
@@ -60,6 +60,20 @@ export const generateModel = (inputJsonFile: string): string => {
                       .join(', ')
                 : defaultOptions.map((opt) => `'${opt}'`).join(', ')
             return `{ type: String, enum: [${enumValues}] }`
+        }
+
+        // Helper function to generate enum schema for an array of strings
+        const createMultiEnumSchema = (
+            optionsStr: string | undefined,
+            defaultOptions: string[]
+        ): string => {
+            const enumValues = optionsStr
+                ? optionsStr
+                      .split(',')
+                      .map((option) => `'${option.trim()}'`)
+                      .join(', ')
+                : defaultOptions.map((opt) => `'${opt}'`).join(', ')
+            return `{ type: [String], enum: [${enumValues}] }`
         }
 
         switch (typeName.toUpperCase()) {
@@ -121,6 +135,11 @@ export const generateModel = (inputJsonFile: string): string => {
                 return `{ type: Boolean, default: false }`
             case 'MULTICHECKBOX':
                 return `[{ type: String }]`
+            case 'MULTIOPTIONS':
+                return createMultiEnumSchema(options, [
+                    'Default Option A',
+                    'Default Option B',
+                ])
             default:
                 return `{ type: String }`
         }
