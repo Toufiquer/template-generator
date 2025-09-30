@@ -111,10 +111,9 @@ export const allDataType: DataTypeItem[] = [
     },
     {
         name: 'DYNAMICSELECT',
-        mongooseSchema: `DYNAMICSELECT: {
-            type: Schema.Types.ObjectId,
-            ref: 'AnotherModel'
-        }`,
+        mongooseSchema: `DYNAMICSELECT: [{
+            type: String
+    }]`,
         ui: '<DynamicSelectField />',
         coreCode: DynamicSelectFieldCoreCode,
     },
