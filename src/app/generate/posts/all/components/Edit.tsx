@@ -24,6 +24,7 @@ import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPassco
 import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
 import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
 import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'
 import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
@@ -35,8 +36,10 @@ import UrlInputField from '@/components/dashboard-ui/UrlInputField'
 import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
 import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
 import { DateField } from '@/components/dashboard-ui/DateField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import { SelectField } from '@/components/dashboard-ui/SelectField'
 
-import { IPosts, defaultPosts } from '../store/data/data'
+import { IPosts, defaultPosts } from '@/app/generate/posts/all/store/data/data'
 import { usePostsStore } from '../store/store'
 import { useUpdatePostsMutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
@@ -58,7 +61,7 @@ const EditNextComponents: React.FC = () => {
         }
     }, [selectedPosts])
 
-    const handleFieldChange = (name: string, value: any) => {
+    const handleFieldChange = (name: string, value: unknown) => {
         setPost(prev => ({ ...prev, [name]: value }));
     };
 
@@ -66,9 +69,10 @@ const EditNextComponents: React.FC = () => {
         if (!selectedPosts) return
 
         try {
+            const { _id, createdAt, updatedAt, ...updateData } = editedPost;
             await updatePosts({
                 id: selectedPosts._id,
-                ...editedPost,
+                ...updateData,
             }).unwrap()
             toggleEditModal(false)
             handleSuccess('Edit Successful')
@@ -84,10 +88,26 @@ const EditNextComponents: React.FC = () => {
         }
     }
 
-    const options = [
-        { label: 'OP 1', value: 'op1' },
-        { label: 'OP 2', value: 'op2' },
-    ]
+    const areaOptions = [
+        { label: 'Bangladesh', value: 'Bangladesh' },
+        { label: 'India', value: 'India' },
+        { label: 'Pakistan', value: 'Pakistan' },
+        { label: 'Canada', value: 'Canada' }
+    ];
+
+    const ideasOptions = [
+        { label: 'O 1', value: 'O 1' },
+        { label: 'O 2', value: 'O 2' },
+        { label: 'O 3', value: 'O 3' },
+        { label: 'O 4', value: 'O 4' }
+    ];
+
+    const shiftOptions = [
+        { label: 'OP 1', value: 'OP 1' },
+        { label: 'OP 2', value: 'OP 2' },
+        { label: 'OP 3', value: 'OP 3' },
+        { label: 'OP 4', value: 'OP 4' }
+    ];
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
@@ -135,23 +155,16 @@ const EditNextComponents: React.FC = () => {
                             <Label htmlFor="area" className="text-right">
                                 Area
                             </Label>
-                            
-                        <Input
-                            id="area"
-                            name="area"
-                            value={editedPost['area']}
-                            onChange={(e) => handleFieldChange('area', e.target.value)}
-                            placeholder="Unsupported field type: SELECT#Bangladesh, India, Pakistan, Canada"
-                            className="col-span-3"
-                            disabled
-                        />
+                            <div className="col-span-3">
+                                <SelectField options={areaOptions} value={editedPost['area']} onValueChange={(value) => handleFieldChange('area', value)} />
+                            </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="sub-area" className="text-right">
                                 Sub Area
                             </Label>
                             <div className="col-span-3">
-                                <DynamicSelectField value={[editedPost['sub-area']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
+                                <DynamicSelectField value={editedPost['sub-area']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -278,16 +291,9 @@ const EditNextComponents: React.FC = () => {
                             <Label htmlFor="shift" className="text-right">
                                 Shift
                             </Label>
-                            
-                        <Input
-                            id="shift"
-                            name="shift"
-                            value={editedPost['shift']}
-                            onChange={(e) => handleFieldChange('shift', e.target.value)}
-                            placeholder="Unsupported field type: RADIOBUTTON#OP 1, OP 2, OP 3, OP 4"
-                            className="col-span-3"
-                            disabled
-                        />
+                            <div className="col-span-3">
+                                <RadioButtonGroupField options={shiftOptions} value={editedPost['shift']} onChange={(value) => handleFieldChange('shift', value)} />
+                            </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="policy" className="text-right">
@@ -309,16 +315,9 @@ const EditNextComponents: React.FC = () => {
                             <Label htmlFor="ideas" className="text-right">
                                 Ideas
                             </Label>
-                            
-                        <Input
-                            id="ideas"
-                            name="ideas"
-                            value={editedPost['ideas']}
-                            onChange={(e) => handleFieldChange('ideas', e.target.value)}
-                            placeholder="Unsupported field type: MULTIOPTIONS#O 1, O 2, O 3, O 4"
-                            className="col-span-3"
-                            disabled
-                        />
+                            <div className="col-span-3">
+                                <MultiOptionsField options={ideasOptions} value={editedPost['ideas']} onChange={(values) => handleFieldChange('ideas', values)} />
+                            </div>
                         </div>
                     </div>
                 </ScrollArea>
