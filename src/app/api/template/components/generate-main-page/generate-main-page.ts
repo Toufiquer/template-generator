@@ -35,6 +35,7 @@ import View${pluralPascalCase}Table from './components/TableView'
 import BulkUpdate${pluralPascalCase} from './components/BulkUpdate'
 import BulkDynamicUpdate${pluralPascalCase} from './components/BulkDynamicUpdate'
 import FilterDialog, { FilterPayload } from './components/FilterDialog'
+import Summary from './components/Summary'
 
 import { use${pluralPascalCase}Store } from './store/store'
 import { useGet${pluralPascalCase}Query } from './redux/rtk-api'
@@ -145,6 +146,7 @@ const MainNextPage: React.FC = () => {
                     )}
                 </h1>
                 <div className="w-full flex flex-col md:flex-row gap-2 item-center justify-end">
+                 <Summary />
                     <Button
                         size="sm"
                         variant="outline"

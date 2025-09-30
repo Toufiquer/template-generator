@@ -23,25 +23,20 @@ interface InputConfig {
 }
 
 /**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
+ * Generates the entire RTK Query API file content as a string based on a JSON configuration.
  *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
+ * This function parses the JSON to extract naming conventions and dynamically populates a
+ * template for creating RTK Query endpoints for standard CRUD operations as well as a
+ * summary data endpoint.
  *
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
+ * @returns {string} The complete, formatted RTK Query API file as a string.
  */
 function generateRtkApiFile(inputJson: string): string {
     const config: InputConfig = JSON.parse(inputJson)
     const { namingConvention } = config
-    console.log('')
-    console.log('')
-    console.log('')
-    console.log('inputJson', inputJson)
 
-    // The template for the rtk-api.ts file with placeholders.
+    // The template for the rtk-api.ts file, now including placeholders for the summary endpoint.
     const template = `// This file is use for rest api
 import { apiSlice } from '@/redux/api/apiSlice'
 
@@ -55,6 +50,12 @@ export const users_2_000___Api = apiSlice.injectEndpoints({
                     url += \`&q=\${encodeURIComponent(q)}\`
                 }
                 return url
+            },
+            providesTags: [{ type: 'tagTypeUsers_1_000___', id: 'LIST' }],
+        }),
+        getUsers_1_000___Summary: builder.query({
+            query: ({ page, limit }) => {
+                return \`/generate/users_2_000___/all/api/v1/summary?page=\${page || 1}&limit=\${limit || 10}\`
             },
             providesTags: [{ type: 'tagTypeUsers_1_000___', id: 'LIST' }],
         }),
@@ -106,6 +107,7 @@ export const users_2_000___Api = apiSlice.injectEndpoints({
 
 export const {
     useGetUsers_1_000___Query,
+    useGetUsers_1_000___SummaryQuery,
     useAddUsers_1_000___Mutation,
     useUpdateUsers_1_000___Mutation,
     useDeleteUsers_1_000___Mutation,
@@ -116,7 +118,7 @@ export const {
 `
 
     // Perform the replacements using the naming convention.
-    // It's important to replace the most specific keys first to avoid conflicts.
+    // The existing replacement logic will handle the new placeholders correctly.
     let result = template.replaceAll(
         'tagTypeUsers_1_000___',
         `tagType${namingConvention.Users_1_000___}`
@@ -128,10 +130,6 @@ export const {
     result = result.replaceAll(
         'Users_1_000___',
         namingConvention.Users_1_000___
-    )
-    result = result.replaceAll(
-        'users_2_000___',
-        namingConvention.users_2_000___
     )
     result = result.replaceAll(
         'users_2_000___',
