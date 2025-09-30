@@ -162,12 +162,10 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 requiredImports.add(
                     "import { SelectField } from '@/components/dashboard-ui/SelectField'"
                 )
-                // Create a unique variable name for the options (e.g., areaOptions)
                 const selectVarName = `${toCamelCase(key)}Options`
                 let selectOptionsJsArrayString
 
                 if (optionsString) {
-                    // Case 2: "SELECT#Bangladesh,India,Pakistan,Canada"
                     const optionsArray = optionsString
                         .split(',')
                         .map((opt) => opt.trim())
@@ -175,29 +173,36 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         ${optionsArray.map((opt) => `        { label: '${opt}', value: '${opt}' }`).join(',\n')}
     ]`
                 } else {
-                    // Case 1: "SELECT" (Default options)
                     selectOptionsJsArrayString = `[
         { label: 'Option 1', value: 'Option 1' },
         { label: 'Option 2', value: 'Option 2' }
     ]`
                 }
-                // Add the variable definition to be placed in the component body
                 componentBodyStatements.add(
                     `const ${selectVarName} = ${selectOptionsJsArrayString};`
                 )
-                // Pass the unique options variable to the component
                 componentJsx = `<SelectField options={${selectVarName}} value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
                 requiredImports.add(
                     "import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'"
                 )
-                // Provide default options for RadioButton, giving it a unique name
                 const radioVarName = `${toCamelCase(key)}Options`
-                const radioOptionsJsArrayString = `[
+                let radioOptionsJsArrayString
+
+                if (optionsString) {
+                    const optionsArray = optionsString
+                        .split(',')
+                        .map((opt) => opt.trim())
+                    radioOptionsJsArrayString = `[
+        ${optionsArray.map((opt) => `        { label: '${opt}', value: '${opt}' }`).join(',\n')}
+    ]`
+                } else {
+                    radioOptionsJsArrayString = `[
         { label: 'Choice A', value: 'Choice A' },
         { label: 'Choice B', value: 'Choice B' }
     ]`
+                }
                 componentBodyStatements.add(
                     `const ${radioVarName} = ${radioOptionsJsArrayString};`
                 )
@@ -240,7 +245,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
                 break
             default:
-                // Input and Label are always imported, so no need to add to the dynamic set.
                 componentJsx = `
                         <Input
                             id="${key}"
@@ -251,7 +255,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                             className="col-span-3"
                             disabled
                         />`
-                // Return a simplified version for the default case
                 return `
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right">
@@ -268,14 +271,11 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
-    // Convert the Set of imports to a sorted, newline-separated string for clean code.
     const dynamicImports = [...requiredImports].sort().join('\n')
-    // Convert the Set of component body statements (variable definitions) to a string.
     const dynamicVariables = [...componentBodyStatements]
         .sort()
         .join('\n\n    ')
 
-    // --- FINAL TEMPLATE STRING ---
     return `import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
@@ -303,7 +303,7 @@ const AddNextComponents: React.FC = () => {
     const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
-    const handleFieldChange = (name: string, value: string | number | boolean |string[] | Date | { from: Date; to: Date } | { start: string; end: string }) => {
+    const handleFieldChange = (name: string, value: any) => {
         setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
     };
 

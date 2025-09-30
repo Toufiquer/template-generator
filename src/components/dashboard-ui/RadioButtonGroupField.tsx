@@ -18,7 +18,7 @@ export interface RadioButtonGroupFieldProps {
     // The callback to notify the parent when the value changes
     onChange: (value: string) => void
     // An array of options to be rendered dynamically
-    options: RadioOption[]
+    options?: RadioOption[]
     // A main label for the entire group, important for accessibility
     label?: string
     // Optional className for custom styling
@@ -28,7 +28,10 @@ export interface RadioButtonGroupFieldProps {
 export function RadioButtonGroupField({
     value,
     onChange,
-    options,
+    options = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+    ],
     label,
     className,
 }: RadioButtonGroupFieldProps) {
