@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { X, Plus, Search } from 'lucide-react'
 
-const AutocompleteField = () => {
+const MultiOptionsField = () => {
     // State to manage all available data options
     const [allData, setAllData] = useState<string[]>([
         'Apple',
@@ -184,4 +184,4 @@ const AutocompleteField = () => {
     )
 }
 
-export default AutocompleteField
+export default MultiOptionsField

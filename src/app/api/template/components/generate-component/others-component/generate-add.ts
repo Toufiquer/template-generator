@@ -232,11 +232,11 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 )
                 componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
-            case 'MULTIDYNAMICSELECT':
+            case 'MULTIOPTIONS':
                 requiredImports.add(
-                    "import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'"
+                    "import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'"
                 ) // Assuming this component exists
-                componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                componentJsx = `<MultiOptionsField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
                 requiredImports.add(
