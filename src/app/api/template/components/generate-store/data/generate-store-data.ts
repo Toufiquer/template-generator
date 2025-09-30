@@ -51,6 +51,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
                 return 'boolean'
             case 'IMAGES':
             case 'MULTICHECKBOX':
+            case 'DYNAMICSELECT':
                 return 'string[]'
             case 'DATE':
                 return 'Date'
@@ -74,6 +75,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
                 return 'false'
             case 'IMAGES':
             case 'MULTICHECKBOX':
+            case 'DYNAMICSELECT':
                 return '[]'
             case 'DATE':
                 return 'new Date()'

@@ -69,7 +69,7 @@ export const generateModel = (inputJsonFile: string): string => {
                 }
                 return `{ type: String, enum: ['Option 1', 'Option 2'] }`
             case 'DYNAMICSELECT':
-                return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
+                return `[{ type: String }]`
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':

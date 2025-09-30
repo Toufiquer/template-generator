@@ -207,7 +207,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 requiredImports.add(
                     "import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'"
                 )
-                componentJsx = `<DynamicSelectField value={[new${singularPascalCase}['${key}']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
+                componentJsx = `<DynamicSelectField value={new${singularPascalCase}['${key}']}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'IMAGE':
                 requiredImports.add(
@@ -303,7 +303,7 @@ const AddNextComponents: React.FC = () => {
     const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
-    const handleFieldChange = (name: string, value: string | number | boolean) => {
+    const handleFieldChange = (name: string, value: string | number | boolean |string[] | Date | { from: Date; to: Date } | { start: string; end: string }) => {
         setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
     };
 
