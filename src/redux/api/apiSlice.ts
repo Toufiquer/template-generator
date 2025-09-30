@@ -19,6 +19,7 @@ export const apiSlice = createApi({
         'tagTypeEmails',
         'tagTypePasswords',
         'tagTypeTest2s',
+        'tagTypePosts_n',
     ],
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({

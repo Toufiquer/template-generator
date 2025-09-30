@@ -91,7 +91,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'SELECT':
                 return createEnumSchema(options, ['Option 1', 'Option 2'])
             case 'DYNAMICSELECT':
-                return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
+                return `[{  type: String }]`
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':
