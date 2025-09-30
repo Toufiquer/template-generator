@@ -28,7 +28,8 @@ interface InputConfig {
  * This function parses the JSON to extract naming conventions and a data schema. It then
  * uses a template to build the model's TypeScript code, dynamically inserting the correct
  * names for models, variables, and also recursively traverses the schema to
- * build a comprehensive Mongoose schema.
+ * build a comprehensive Mongoose schema. It handles complex types by parsing options
+ * directly from the schema string (e.g., "SELECT#Option1,Option2").
  *
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Model.ts file as a string.
@@ -47,6 +48,20 @@ export const generateModel = (inputJsonFile: string): string => {
     const mapToMongooseSchema = (type: string): string => {
         const [typeName, options] = type.split('#')
 
+        // Helper function to generate enum schema from options string
+        const createEnumSchema = (
+            optionsStr: string | undefined,
+            defaultOptions: string[]
+        ): string => {
+            const enumValues = optionsStr
+                ? optionsStr
+                      .split(',')
+                      .map((option) => `'${option.trim()}'`)
+                      .join(', ')
+                : defaultOptions.map((opt) => `'${opt}'`).join(', ')
+            return `{ type: String, enum: [${enumValues}] }`
+        }
+
         switch (typeName.toUpperCase()) {
             case 'STRING':
                 return `{ type: String, }`
@@ -60,16 +75,9 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'PASSCODE':
                 return `{ type: String, select: false }`
             case 'SELECT':
-                if (options) {
-                    const enumValues = options
-                        .split(',')
-                        .map((option) => `'${option.trim()}'`)
-                        .join(', ')
-                    return `{ type: String, enum: [${enumValues}] }`
-                }
-                return `{ type: String, enum: ['Option 1', 'Option 2'] }`
+                return createEnumSchema(options, ['Option 1', 'Option 2'])
             case 'DYNAMICSELECT':
-                return `[{ type: String }]`
+                return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':
@@ -108,7 +116,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'AUTOCOMPLETE':
                 return `{ type: String }`
             case 'RADIOBUTTON':
-                return `{ type: String, enum: ['Choice A', 'Choice B'] }`
+                return createEnumSchema(options, ['Choice A', 'Choice B'])
             case 'CHECKBOX':
                 return `{ type: Boolean, default: false }`
             case 'MULTICHECKBOX':
