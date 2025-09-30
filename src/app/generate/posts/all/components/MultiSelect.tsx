@@ -1,19 +1,4 @@
-/**
- * Generates the content for the MultiSelect.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete MultiSelect.tsx file content as a string.
- */
-export const generateMultiSelectComponentFile = (
-    inputJsonFile: string
-): string => {
-    // The content of this component is static and reusable.
-    // It fetches data from a provided API URL and manages its own state.
-    // It does not need to be changed based on the schema or naming conventions.
-    console.log('inputJsonFile', inputJsonFile)
-
-    return `'use client'
+'use client'
 
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
@@ -69,7 +54,7 @@ const MultiSelect = ({
             try {
                 const response = await fetch(apiUrl)
                 if (!response.ok) {
-                    throw new Error(\`Failed to fetch data: \${response.statusText}\`)
+                    throw new Error(`Failed to fetch data: ${response.statusText}`)
                 }
                 const json = await response.json()
                 // Extract names from the API response, handling potential nested data
@@ -155,7 +140,7 @@ const MultiSelect = ({
                                 ) : (
                                     availableOptions.map((item, index) => (
                                         <SelectItem
-                                            key={\`\${item}-\${index}\`}
+                                            key={`${item}-${index}`}
                                             className="cursor-pointer"
                                             value={item}
                                         >
@@ -175,7 +160,7 @@ const MultiSelect = ({
                     <div className="col-start-2 col-span-3 flex flex-wrap gap-2">
                         {selectedItems.map((item, index) => (
                             <Badge
-                                key={\`selected-\${item}-\${index}\`}
+                                key={`selected-${item}-${index}`}
                                 variant="secondary"
                                 className="flex items-center gap-1"
                             >
@@ -185,7 +170,7 @@ const MultiSelect = ({
                                         type="button"
                                         className="p-0.5 rounded-full hover:bg-gray-300"
                                         onClick={() => handleRemove(item)}
-                                        aria-label={\`Remove \${item}\`}
+                                        aria-label={`Remove ${item}`}
                                     >
                                         <X className="h-3 w-3" />
                                     </button>
@@ -200,5 +185,3 @@ const MultiSelect = ({
 }
 
 export default MultiSelect
-`
-}

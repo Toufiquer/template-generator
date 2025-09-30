@@ -10,23 +10,62 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
+    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
     const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"
 
-    // A Set to store the import statements for components that are actually used.
     const requiredImports = new Set<string>()
+    const componentBodyStatements = new Set<string>()
+
+    const toCamelCase = (str: string) => {
+        return str.replace(/-(\w)/g, (_, c) => c.toUpperCase())
+    }
 
     /**
-     * Generates the JSX for a specific form field based on its schema type
-     * and adds the required component import to the set.
+     * Generates a variable definition for an options array, adds it to the component body,
+     * and returns the variable name. This function is only called when needed.
+     */
+    const generateOptionsVariable = (
+        key: string,
+        optionsString: string | undefined,
+        defaultOptions: { label: string; value: string }[]
+    ): string => {
+        const varName = `${toCamelCase(key)}Options`
+        let optionsJsArrayString: string
+
+        if (optionsString) {
+            const optionsArray = optionsString
+                .split(',')
+                .map((opt) => opt.trim())
+            optionsJsArrayString = `[\n${optionsArray
+                .map((opt) => `        { label: '${opt}', value: '${opt}' }`)
+                .join(',\n')}\n    ]`
+        } else {
+            optionsJsArrayString = `[\n${defaultOptions
+                .map(
+                    (opt) =>
+                        `        { label: '${opt.label}', value: '${opt.value}' }`
+                )
+                .join(',\n')}\n    ]`
+        }
+
+        componentBodyStatements.add(
+            `const ${varName} = ${optionsJsArrayString};`
+        )
+        return varName
+    }
+
+    /**
+     * Generates the JSX for a specific form field based on its schema type.
      */
     const generateFormFieldJsx = (key: string, type: string): string => {
         const label = key
             .replace(/-/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase())
 
-        // Generic wrapper for consistent layout
+        const [typeName, optionsString] = type.split('#')
+
         const formFieldWrapper = (
             label: string,
             componentJsx: string
@@ -42,7 +81,7 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
         let componentJsx: string
 
-        switch (type.toUpperCase()) {
+        switch (typeName.toUpperCase()) {
             case 'STRING':
                 requiredImports.add(
                     "import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'"
@@ -149,19 +188,35 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 requiredImports.add(
                     "import { SelectField } from '@/components/dashboard-ui/SelectField'"
                 )
-                componentJsx = `<SelectField value={${editedStateName}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
+                const selectVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [
+                        { label: 'Option 1', value: 'Option 1' },
+                        { label: 'Option 2', value: 'Option 2' },
+                    ]
+                )
+                componentJsx = `<SelectField options={${selectVarName}} value={${editedStateName}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
                 requiredImports.add(
                     "import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'"
                 )
-                componentJsx = `<RadioButtonGroupField options={options} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                const radioVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [
+                        { label: 'Choice A', value: 'Choice A' },
+                        { label: 'Choice B', value: 'Choice B' },
+                    ]
+                )
+                componentJsx = `<RadioButtonGroupField options={${radioVarName}} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DYNAMICSELECT':
                 requiredImports.add(
                     "import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'"
                 )
-                componentJsx = `<DynamicSelectField value={[${editedStateName}['${key}']]}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
+                componentJsx = `<DynamicSelectField value={${editedStateName}['${key}']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'IMAGE':
                 requiredImports.add(
@@ -181,11 +236,25 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 )
                 componentJsx = `<MultiCheckboxGroupField value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
-            case 'MULTIDYNAMICSELECT':
+            case 'MULTIOPTIONS':
                 requiredImports.add(
-                    "import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'"
-                ) // Assuming this component exists
-                componentJsx = `<MULTIOPTIONSField value={[${editedStateName}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                    "import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'"
+                )
+                const multiOptionsVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [
+                        {
+                            label: 'Default Option A',
+                            value: 'Default Option A',
+                        },
+                        {
+                            label: 'Default Option B',
+                            value: 'Default Option B',
+                        },
+                    ]
+                )
+                componentJsx = `<MultiOptionsField options={${multiOptionsVarName}} value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
                 requiredImports.add(
@@ -194,24 +263,8 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<AutocompleteField id="${key}" value={${editedStateName}['${key}']} />`
                 break
             default:
-                componentJsx = `
-                        <Input
-                            id="${key}"
-                            name="${key}"
-                            value={${editedStateName}['${key}']}
-                            onChange={(e) => handleFieldChange('${key}', e.target.value)}
-                            placeholder="Unsupported field type: ${type}"
-                            className="col-span-3"
-                            disabled
-                        />`
-                // Return a simplified version for the default case
-                return `
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right">
-                                ${label}
-                            </Label>
-                            ${componentJsx}
-                        </div>`
+                componentJsx = `<Input id="${key}" name="${key}" value={${editedStateName}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} placeholder="Unsupported field type: ${type}" className="col-span-3" disabled />`
+                return `<div className="grid grid-cols-4 items-center gap-4 pr-1"> <Label htmlFor="${key}" className="text-right"> ${label} </Label> ${componentJsx} </div>`
         }
 
         return formFieldWrapper(label, componentJsx)
@@ -221,10 +274,13 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
-    // Convert the Set of imports to a sorted, newline-separated string for clean code.
     const dynamicImports = [...requiredImports].sort().join('\n')
 
-    // --- FINAL TEMPLATE STRING ---
+    const dynamicVariablesContent =
+        componentBodyStatements.size > 0
+            ? `    ${[...componentBodyStatements].sort().join('\n\n    ')}`
+            : ''
+
     return `import React, { useEffect, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
@@ -242,7 +298,7 @@ import {
 // Dynamically import only the components needed for the form
 ${dynamicImports}
 
-import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
+import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
@@ -264,7 +320,7 @@ const EditNextComponents: React.FC = () => {
         }
     }, [selected${pluralPascalCase}])
 
-    const handleFieldChange = (name: string, value: any) => {
+    const handleFieldChange = (name: string, value: unknown) => {
         set${singularPascalCase}(prev => ({ ...prev, [name]: value }));
     };
 
@@ -272,9 +328,10 @@ const EditNextComponents: React.FC = () => {
         if (!selected${pluralPascalCase}) return
 
         try {
+            const { _id, createdAt, updatedAt, ...updateData } = ${editedStateName};
             await update${pluralPascalCase}({
                 id: selected${pluralPascalCase}._id,
-                ...${editedStateName},
+                ...updateData,
             }).unwrap()
             toggleEditModal(false)
             handleSuccess('Edit Successful')
@@ -290,10 +347,7 @@ const EditNextComponents: React.FC = () => {
         }
     }
 
-    const options = [
-        { label: 'OP 1', value: 'op1' },
-        { label: 'OP 2', value: 'op2' },
-    ]
+${dynamicVariablesContent}
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>

@@ -31,7 +31,7 @@ import CustomLInk from './CustomButton'
 type DataItem = {
     ${displayKey}: string;
     _id: string;
-    [key: string]: any; // Allow other properties
+    [key: string]: unknown; // Allow other properties
 };
 
 const Page = () => {

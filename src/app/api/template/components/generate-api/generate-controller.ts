@@ -175,7 +175,7 @@ export async function get${replacements.Users_1_000___}(req: Request): Promise<I
         const skip = (page - 1) * limit
         const searchQuery = url.searchParams.get('q')
 
-        let searchFilter: FilterQuery<any> = {}
+        let searchFilter: FilterQuery<unknown> = {}
 
         if (searchQuery) {
             // Check for date range filter format first
@@ -198,7 +198,7 @@ export async function get${replacements.Users_1_000___}(req: Request): Promise<I
                 }
             } else {
                 // Fallback to original generic search logic
-                const orConditions: FilterQuery<any>[] = []
+                const orConditions: FilterQuery<unknown>[] = []
 
                 // Add regex search conditions for all string-like fields
                 const stringFields = ${JSON.stringify(stringFields)};

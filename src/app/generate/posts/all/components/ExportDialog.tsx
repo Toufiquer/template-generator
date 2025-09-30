@@ -1,19 +1,4 @@
-/**
- * Generates the content for a reusable ExportDialog.tsx component.
- *
- * This function produces a standardized component for selecting columns and
- * exporting data to an XLSX file. The component is self-contained and does not
- * require dynamic name generation from the input JSON configuration.
- *
- * @param {string} inputJsonFile - A JSON string containing the schema and naming conventions (not used in this generator, but included for API consistency).
- * @returns {string} The complete, formatted ExportDialog.tsx file as a string.
- */
-export const generateExportDialogField = (inputJsonFile: string): string => {
-    // The inputJsonFile is not needed for this component as it's generic,
-    // but the parameter is kept for consistency with other generators.
-    console.log('Generating static ExportDialog component...', inputJsonFile)
-
-    return `'use client'
+'use client'
 
 import React, { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
@@ -130,14 +115,14 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                             className="flex items-center space-x-2"
                         >
                             <Checkbox
-                                id={\`col-\${header.key}\`}
+                                id={`col-${header.key}`}
                                 checked={!!selectedColumns[header.key]}
                                 onCheckedChange={(checked) =>
                                     handleCheckedChange(header.key, !!checked)
                                 }
                             />
                             <Label
-                                htmlFor={\`col-\${header.key}\`}
+                                htmlFor={`col-${header.key}`}
                                 className="font-normal"
                             >
                                 {header.label}
@@ -161,5 +146,3 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
 }
 
 export default ExportDialog
-`
-}
