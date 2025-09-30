@@ -104,7 +104,7 @@ export const allDataType: DataTypeItem[] = [
         name: 'SELECT',
         mongooseSchema: `SELECT: {
             type: String,
-            enum: ['Option 1', 'Option 2', 'Option 3']
+            enum: ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5']
         }`,
         ui: '<SelectField />',
         coreCode: SelectFieldCoreCode,
