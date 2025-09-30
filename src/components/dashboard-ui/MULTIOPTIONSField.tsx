@@ -5,26 +5,36 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { X, Plus, Search } from 'lucide-react'
 
-const MultiOptionsField = () => {
-    // State to manage all available data options
-    const [allData, setAllData] = useState<string[]>([
-        'Apple',
-        'Banana',
-        'Cherry',
-        'Date',
-        'Elderberry',
-        'Fig',
-        'Grape',
-        'Honeydew',
-    ])
+// Define the shape of the options passed as props
+interface Option {
+    label: string
+    value: string
+}
 
-    // State to manage the currently selected data
-    const [selectedData, setSelectedData] = useState<string[]>([])
+// Define the props for the controlled component
+interface MultiOptionsFieldProps {
+    options?: Option[] // The predefined list of available options
+    value: string[] // The array of currently selected values (controlled by parent)
+    onChange: (newValues: string[]) => void // Function to call when the selection changes
+}
 
-    // State for the search input value
+/**
+ * A controlled component for selecting multiple options from a list,
+ * with support for searching and adding new, custom options.
+ *
+ * @param {Option[]} [options=[]] - An array of objects with `label` and `value` properties.
+ * @param {string[]} value - The current array of selected option values.
+ * @param {(newValues: string[]) => void} onChange - The callback function that is fired when the selection changes.
+ */
+const MultiOptionsField: React.FC<MultiOptionsFieldProps> = ({
+    options = [],
+    value,
+    onChange,
+}) => {
+    // State for the search input value - this remains internal to the component
     const [searchValue, setSearchValue] = useState('')
 
-    // State to control the visibility of the options dropdown
+    // State to control the visibility of the options dropdown - also internal
     const [isOpen, setIsOpen] = useState(false)
 
     // Ref to the main component wrapper for detecting outside clicks
@@ -46,30 +56,38 @@ const MultiOptionsField = () => {
         }
     }, [wrapperRef])
 
+    // --- MODIFICATION: The source of truth for options is now a combination of props and existing values ---
+    // Create a comprehensive list of all possible options by combining prop options and any custom values already selected.
+    // A Set is used to prevent duplicates.
+    const allAvailableOptions = [
+        ...new Set([...options.map((opt) => opt.value), ...value]),
+    ]
+
     // Filter data based on search input and exclude already selected items
-    const filteredData = allData.filter(
+    const filteredData = allAvailableOptions.filter(
         (item) =>
             item.toLowerCase().includes(searchValue.toLowerCase()) &&
-            !selectedData.includes(item)
+            !value.includes(item) // Use the 'value' prop here
     )
+
+    // --- MODIFICATION: Event handlers now call the `onChange` prop ---
 
     // Handle selection of an item from the dropdown
     const handleSelect = (item: string) => {
-        setSelectedData([...selectedData, item])
+        onChange([...value, item]) // Update parent state
         setSearchValue('')
         setIsOpen(false)
     }
 
     // Handle removal of a selected item
     const handleRemove = (itemToRemove: string) => {
-        setSelectedData(selectedData.filter((item) => item !== itemToRemove))
+        onChange(value.filter((item) => item !== itemToRemove)) // Update parent state
     }
 
-    // Handle adding a new item that doesn't exist in allData
+    // Handle adding a new item that doesn't exist
     const handleAddNew = () => {
-        if (searchValue && !allData.includes(searchValue)) {
-            setAllData([...allData, searchValue])
-            setSelectedData([...selectedData, searchValue])
+        if (searchValue && !allAvailableOptions.includes(searchValue)) {
+            onChange([...value, searchValue]) // Update parent state with the new value
             setSearchValue('')
             setIsOpen(false)
         }
@@ -82,10 +100,10 @@ const MultiOptionsField = () => {
                 {/* Glassy overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-2xl pointer-events-none"></div>
 
-                {/* Selected items display */}
-                {selectedData.length > 0 && (
+                {/* --- MODIFICATION: Render selected items based on the `value` prop --- */}
+                {value.length > 0 && (
                     <div className="relative flex flex-wrap gap-2 mb-3 min-h-[40px] items-center">
-                        {selectedData.map((item, index) => (
+                        {value.map((item, index) => (
                             <div
                                 key={item}
                                 className="group animate-in fade-in slide-in-from-left-2 duration-300"
@@ -115,7 +133,7 @@ const MultiOptionsField = () => {
                     />
                     <Input
                         placeholder={
-                            selectedData.length === 0
+                            value.length === 0 // Use 'value' prop here
                                 ? 'Search or add items...'
                                 : 'Add more...'
                         }

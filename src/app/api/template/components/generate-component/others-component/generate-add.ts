@@ -235,8 +235,27 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             case 'MULTIOPTIONS':
                 requiredImports.add(
                     "import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'"
-                ) // Assuming this component exists
-                componentJsx = `<MultiOptionsField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                )
+                const multiOptionsVarName = `${toCamelCase(key)}Options`
+                let multiOptionsJsArrayString
+
+                if (optionsString) {
+                    const optionsArray = optionsString
+                        .split(',')
+                        .map((opt) => opt.trim())
+                    multiOptionsJsArrayString = `[
+        ${optionsArray.map((opt) => `        { label: '${opt}', value: '${opt}' }`).join(',\n')}
+    ]`
+                } else {
+                    multiOptionsJsArrayString = `[
+        { label: 'Default Option A', value: 'Default Option A' },
+        { label: 'Default Option B', value: 'Default Option B' }
+    ]`
+                }
+                componentBodyStatements.add(
+                    `const ${multiOptionsVarName} = ${multiOptionsJsArrayString};`
+                )
+                componentJsx = `<MultiOptionsField options={${multiOptionsVarName}} value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
                 requiredImports.add(

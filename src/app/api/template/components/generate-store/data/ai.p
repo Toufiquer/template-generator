@@ -1,3 +1,7 @@
+here is an example of 
+
+generate-store-data.ts 
+```
 interface Schema {
     [key: string]: string | Schema
 }
@@ -42,11 +46,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
 
     // Maps schema types to TypeScript interface types
     const mapToInterfaceType = (type: string): string => {
-        // --- FIX: Isolate the base type name from options (e.g., "MULTIOPTIONS" from "MULTIOPTIONS#O 1...") ---
-        const [typeName] = type.split('#')
-
-        // --- FIX: Switch on the base type name ---
-        switch (typeName.toUpperCase()) {
+        switch (type.toUpperCase()) {
             case 'INTNUMBER':
             case 'FLOATNUMBER':
                 return 'number'
@@ -56,7 +56,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS': // Now this case will be matched correctly
+            case 'MULTIOPTIONS':
                 return 'string[]'
             case 'DATE':
                 return 'Date'
@@ -71,11 +71,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
 
     // Maps schema types to default values for the default object
     const mapToDefaultValue = (type: string): string => {
-        // --- FIX: Isolate the base type name from options ---
-        const [typeName] = type.split('#')
-
-        // --- FIX: Switch on the base type name ---
-        switch (typeName.toUpperCase()) {
+        switch (type.toUpperCase()) {
             case 'INTNUMBER':
             case 'FLOATNUMBER':
                 return '0'
@@ -85,7 +81,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS': // Now this case will be matched correctly
+            case 'MULTIOPTIONS':
                 return '[]'
             case 'DATE':
                 return 'new Date()'
@@ -162,3 +158,120 @@ ${defaultObjectContent},
 }
 `
 }
+```
+
+
+it can generate 
+store-data.ts
+```
+
+    import { DateRange } from 'react-day-picker'
+
+export interface IPosts {
+    "title": string;
+    "email": string;
+    "password": string;
+    "passcode": string;
+    "area": string;
+    "sub-area": string[];
+    "products-images": string[];
+    "personal-image": string;
+    "description": string;
+    "age": number;
+    "amount": number;
+    "isActive": boolean;
+    "start-date": Date;
+    "start-time": string;
+    "schedule-date": { from: Date; to: Date };
+    "schedule-time": { start: string; end: string };
+    "favorite-color": string;
+    "number": string;
+    "profile": string;
+    "test": string;
+    "info": string;
+    "shift": string;
+    "policy": boolean;
+    "hobbies": string[];
+    "ideas": string;
+    createdAt: Date;
+    updatedAt: Date;
+    _id: string;
+}
+
+export const defaultPosts = {
+    "title": '',
+    "email": '',
+    "password": '',
+    "passcode": '',
+    "area": '',
+    "sub-area": [],
+    "products-images": [],
+    "personal-image": '',
+    "description": '',
+    "age": 0,
+    "amount": 0,
+    "isActive": false,
+    "start-date": new Date(),
+    "start-time": '',
+    "schedule-date": { from: new Date(), to: new Date() },
+    "schedule-time": { start: "", end: "" },
+    "favorite-color": '',
+    "number": '',
+    "profile": '',
+    "test": '',
+    "info": '',
+    "shift": '',
+    "policy": false,
+    "hobbies": [],
+    "ideas": '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    _id: '',
+}
+``` 
+
+and here is inputJsonFile
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL",
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT#Bangladesh, India, Pakistan, Canada",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",
+    "policy": "CHECKBOX",
+    "hobbies": "MULTICHECKBOX",
+    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}``` 
+
+Now please have a look in ideas. its MULTIOPTIONS, so the interface will look like string[] and default value look like [].
+
+Now please tell me where is the porblem and why it is not working. 

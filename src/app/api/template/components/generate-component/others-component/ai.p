@@ -168,12 +168,10 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 requiredImports.add(
                     "import { SelectField } from '@/components/dashboard-ui/SelectField'"
                 )
-                // Create a unique variable name for the options (e.g., areaOptions)
                 const selectVarName = `${toCamelCase(key)}Options`
                 let selectOptionsJsArrayString
 
                 if (optionsString) {
-                    // Case 2: "SELECT#Bangladesh,India,Pakistan,Canada"
                     const optionsArray = optionsString
                         .split(',')
                         .map((opt) => opt.trim())
@@ -181,29 +179,36 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         ${optionsArray.map((opt) => `        { label: '${opt}', value: '${opt}' }`).join(',\n')}
     ]`
                 } else {
-                    // Case 1: "SELECT" (Default options)
                     selectOptionsJsArrayString = `[
         { label: 'Option 1', value: 'Option 1' },
         { label: 'Option 2', value: 'Option 2' }
     ]`
                 }
-                // Add the variable definition to be placed in the component body
                 componentBodyStatements.add(
                     `const ${selectVarName} = ${selectOptionsJsArrayString};`
                 )
-                // Pass the unique options variable to the component
                 componentJsx = `<SelectField options={${selectVarName}} value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
                 requiredImports.add(
                     "import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'"
                 )
-                // Provide default options for RadioButton, giving it a unique name
                 const radioVarName = `${toCamelCase(key)}Options`
-                const radioOptionsJsArrayString = `[
+                let radioOptionsJsArrayString
+
+                if (optionsString) {
+                    const optionsArray = optionsString
+                        .split(',')
+                        .map((opt) => opt.trim())
+                    radioOptionsJsArrayString = `[
+        ${optionsArray.map((opt) => `        { label: '${opt}', value: '${opt}' }`).join(',\n')}
+    ]`
+                } else {
+                    radioOptionsJsArrayString = `[
         { label: 'Choice A', value: 'Choice A' },
         { label: 'Choice B', value: 'Choice B' }
     ]`
+                }
                 componentBodyStatements.add(
                     `const ${radioVarName} = ${radioOptionsJsArrayString};`
                 )
@@ -233,11 +238,11 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 )
                 componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
-            case 'MULTIDYNAMICSELECT':
+            case 'MULTIOPTIONS':
                 requiredImports.add(
-                    "import MULTIOPTIONSField from '@/components/dashboard-ui/MULTIOPTIONSField'"
+                    "import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'"
                 ) // Assuming this component exists
-                componentJsx = `<MULTIOPTIONSField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
+                componentJsx = `<MultiOptionsField value={[new${singularPascalCase}['${key}']]} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'AUTOCOMPLETE':
                 requiredImports.add(
@@ -246,7 +251,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
                 break
             default:
-                // Input and Label are always imported, so no need to add to the dynamic set.
                 componentJsx = `
                         <Input
                             id="${key}"
@@ -257,7 +261,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                             className="col-span-3"
                             disabled
                         />`
-                // Return a simplified version for the default case
                 return `
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right">
@@ -274,14 +277,11 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         .map(([key, value]) => generateFormFieldJsx(key, value as string))
         .join('')
 
-    // Convert the Set of imports to a sorted, newline-separated string for clean code.
     const dynamicImports = [...requiredImports].sort().join('\n')
-    // Convert the Set of component body statements (variable definitions) to a string.
     const dynamicVariables = [...componentBodyStatements]
         .sort()
         .join('\n\n    ')
 
-    // --- FINAL TEMPLATE STRING ---
     return `import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
@@ -309,7 +309,7 @@ const AddNextComponents: React.FC = () => {
     const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
-    const handleFieldChange = (name: string, value: string | number | boolean |string[] | Date | { from: Date; to: Date } | { start: string; end: string }) => {
+    const handleFieldChange = (name: string, value: any) => {
         setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
     };
 
@@ -417,9 +417,11 @@ I want input the updated json file which look like
 }
 ```
 
-look at the the "SELECT" and "RADIOBUTTON" case,
+look at the the "SELECT" and "RADIOBUTTON" and "MULTIOPTIONS" case,
 SELECT#Bangladesh,India,Pakistan,Canada
 RADIOBUTTON#OP 1, OP 2, OP 3, OP 4
+MULTIOPTIONS#O 1, O 2, O 3, O 4
+
 -- for SELECT
  - there is two case I define in json 
     1. "SELECT" 
@@ -435,6 +437,14 @@ RADIOBUTTON#OP 1, OP 2, OP 3, OP 4
     2. "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4"
 
     - first is without value, it generate with default option. 
-    - second is with value, it generate with value like " OP 1, OP 2, OP 3, OP 4"
+
+
+-- for MULTIOPTIONS
+ - there is two case I define in json 
+    1. "MULTIOPTIONS" 
+    2. "MULTIOPTIONS#O 1, O 2, O 3, O 4"
+
+    - first is without value, it generate with default option. 
+    - second is with value, it generate with value like " O 1, O 2, O 3, O 4"
 
 Now update the generate-add.ts file so that it can generate the latest code from the json file.
