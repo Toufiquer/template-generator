@@ -1,3 +1,9 @@
+act as a seniour webapp developer in NextJs with Typescript.
+
+here is an example of I want to modify this code.
+
+generate-model.ts
+```
 interface Schema {
     [key: string]: string | Schema
 }
@@ -23,15 +29,15 @@ interface InputConfig {
 }
 
 /**
- * Generates the entire Model.ts file content as a string based on a JSON configuration.
+ * Generates the entire Controller.ts file content as a string based on a JSON configuration.
  *
  * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the model's TypeScript code, dynamically inserting the correct
- * names for models, variables, and also recursively traverses the schema to
- * build a comprehensive Mongoose schema.
+ * uses a template to build the controller's TypeScript code, dynamically inserting the correct
+ * names for models, variables, and functions. It also recursively traverses the schema to
+ * build a comprehensive search filter that includes all specified fields, including nested ones.
  *
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Model.ts file as a string.
+ * @returns {string} The complete, formatted Controller.ts file as a string.
  */
 export const generateModel = (inputJsonFile: string): string => {
     const config: InputConfig = JSON.parse(inputJsonFile)
@@ -45,9 +51,7 @@ export const generateModel = (inputJsonFile: string): string => {
 
     // Maps schema types to Mongoose schema definitions
     const mapToMongooseSchema = (type: string): string => {
-        const [typeName, options] = type.split('#')
-
-        switch (typeName.toUpperCase()) {
+        switch (type.toUpperCase()) {
             case 'STRING':
                 return `{ type: String, }`
             case 'EMAIL':
@@ -60,13 +64,6 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'PASSCODE':
                 return `{ type: String, select: false }`
             case 'SELECT':
-                if (options) {
-                    const enumValues = options
-                        .split(',')
-                        .map((option) => `'${option.trim()}'`)
-                        .join(', ')
-                    return `{ type: String, enum: [${enumValues}] }`
-                }
                 return `{ type: String, enum: ['Option 1', 'Option 2'] }`
             case 'DYNAMICSELECT':
                 return `{ type: Schema.Types.ObjectId, ref: 'AnotherModel' }`
@@ -152,3 +149,102 @@ export default mongoose.models.${modelName} || mongoose.model('${modelName}', ${
  
 `
 }
+
+```
+
+here is example of inputJsonFile in json formet.
+```{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX",
+    "ideas": "MULTIOPTIONS"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+
+I want input the updated json file which look like 
+```{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL", 
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT#Bangladesh,India,Pakistan,Canada",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON",
+    "policy": "CHECKBOX",
+    "hobbys": "MULTICHECKBOX",
+    "ideas": "MULTIOPTIONS"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+look at the the "SELECT" case,
+SELECT#Bangladesh,India,Pakistan,Canada
+ - there is two case I define in json 
+    1. "SELECT" 
+    2. "SELECT#Bangladesh,India,Pakistan,Canada"
+
+    - first is without value, it generate with default option. 
+    - second is with value, it generate with value like " Bangladesh, India, Pakistan, Canada"
+
+
+Now update the generate-model.ts file so that it can generate the latest code from the json file.
