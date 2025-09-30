@@ -79,7 +79,7 @@ const JsonEditor: React.FC = () => {
             // Validate JSON
             const parsedJson = JSON.parse(jsonInput)
 
-            // --- START: NEW VALIDATION LOGIC ---
+            // --- START: MODIFIED VALIDATION LOGIC ---
             const schema = parsedJson.schema
             if (!schema || typeof schema !== 'object') {
                 setError(
@@ -95,19 +95,21 @@ const JsonEditor: React.FC = () => {
             )
 
             // Find the first schema entry with an invalid data type.
-            const invalidEntry = Object.entries(schema).find(
-                ([, value]) => !validDataTypes.has(value as string)
-            )
+            const invalidEntry = Object.entries(schema).find(([, value]) => {
+                // Get the base type by splitting at '#' and taking the first part.
+                const baseType = (value as string).split('#')[0]
+                return !validDataTypes.has(baseType)
+            })
 
             if (invalidEntry) {
                 const [fieldName, invalidType] = invalidEntry
                 setError(
-                    `Validation Error: The type "${invalidType}" for field "${fieldName}" is invalid. Please ensure it's a valid, case-sensitive name from the DataType Library.`
+                    `Validation Error: The type "${invalidType}" for field "${fieldName}" is invalid. Please ensure the base type is a valid, case-sensitive name from the DataType Library.`
                 )
                 setIsLoading(false)
                 return
             }
-            // --- END: NEW VALIDATION LOGIC ---
+            // --- END: MODIFIED VALIDATION LOGIC ---
 
             const isAlreadyExist = items.find(
                 (i) =>

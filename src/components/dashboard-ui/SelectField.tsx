@@ -16,12 +16,17 @@ interface SelectFieldProps {
     value: string
     onValueChange: (value: string) => void
     placeholder?: string
+    options?: { label: string; value: string }[]
 }
 
 export function SelectField({
     value,
     onValueChange,
     placeholder = 'Select an option',
+    options = [
+        { label: 'Option 1', value: 'Option 1' },
+        { label: 'Option 2', value: 'Option 2' },
+    ],
 }: SelectFieldProps) {
     return (
         <Select value={value} onValueChange={onValueChange}>
@@ -30,12 +35,12 @@ export function SelectField({
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                    <SelectItem value="grapes">Grapes</SelectItem>
-                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                    <SelectLabel>Options</SelectLabel>
+                    {options.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                        </SelectItem>
+                    ))}
                 </SelectGroup>
             </SelectContent>
         </Select>
