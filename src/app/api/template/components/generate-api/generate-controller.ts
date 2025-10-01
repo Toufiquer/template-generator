@@ -209,7 +209,7 @@ export async function get${replacements.Users_1_000___}(req: Request): Promise<I
                 // If the query is a valid number, add equality checks for all number fields
                 const numericQuery = parseFloat(searchQuery);
                 if (!isNaN(numericQuery)) {
-                    const numberFields = ${JSON.stringify(numberFields)};
+                    const numberFields : string[]= ${JSON.stringify(numberFields)};
                     numberFields.forEach(field => {
                         orConditions.push({ [field]: numericQuery });
                     });

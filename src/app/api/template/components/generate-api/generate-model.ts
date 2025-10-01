@@ -116,13 +116,7 @@ export const generateModel = (inputJsonFile: string): string => {
                 return `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`
             case 'PHONE':
                 return `{
-                    type: String,
-                    validate: {
-                      validator: function(v: string) {
-                        return /\d{3}-\d{3}-\d{4}/.test(v);
-                      },
-                      message: (props: { value: string }) => \`\${props.value} is not a valid phone number!\`
-                    }
+                    type: String
                 }`
             case 'URL':
                 return `{ type: String, trim: true }`
@@ -130,7 +124,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'AUTOCOMPLETE':
                 return `{ type: String }`
             case 'RADIOBUTTON':
-                return createEnumSchema(options, ['Choice A', 'Choice B'])
+                return `[{ type: String }]`
             case 'CHECKBOX':
                 return `{ type: Boolean, default: false }`
             case 'MULTICHECKBOX':
