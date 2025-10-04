@@ -57,6 +57,8 @@ import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCo
 import { MULTIOPTIONSFieldCoreCode } from './core-code/MULTIOPTIONSFieldCoreCode'
 import { StringArrayFieldcoreCode } from './core-code/StringArrayFieldCoreCode'
 import StringArrayField from './ui-components/StringArrayField'
+import { PUREJSONFieldCoreCode } from './core-code/PUREJSONFieldCoreCode'
+import PUREJSONField from './ui-components/PUREJSONField'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -305,11 +307,11 @@ export const allDataType: DataTypeItem[] = [
     },
     {
         name: 'PUREJSON',
-        mongooseSchema: `MULTIOPTIONS: [{
+        mongooseSchema: `MULTIOPTIONS: [
             type: String
-        }]`,
-        ui: '<MULTIOPTIONSField />',
-        coreCode: MULTIOPTIONSFieldCoreCode,
+        ]`,
+        ui: '<PUREJSONField />',
+        coreCode: PUREJSONFieldCoreCode,
     },
 ]
 const ViewDataType = () => {
@@ -398,6 +400,8 @@ const ViewDataType = () => {
                 return <MULTIOPTIONSField />
             case '<StringArrayField />':
                 return <StringArrayField />
+            case '<PUREJSONField />':
+                return <PUREJSONField />
             default:
                 return (
                     <p className="text-muted-foreground">

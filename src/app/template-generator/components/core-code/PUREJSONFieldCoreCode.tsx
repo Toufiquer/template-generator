@@ -1,9 +1,12 @@
+export const PUREJSONFieldCoreCode = `
 // components/JsonEditor.tsx
 'use client'
 
 import React, { useState } from 'react'
+import { useJsonStore } from '@/lib/store/jsonStore'
 
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 // Success Popup Component
 const SuccessPopup = ({
@@ -71,7 +74,7 @@ const JsonEditor: React.FC = () => {
             }
             showSuccess('JSON saved successfully!')
         } catch (err: unknown) {
-            setError(`Invalid JSON format. Please check your syntax. ${err}`)
+            setError(\`Invalid JSON format. Please check your syntax. \${err}\`)
         } finally {
             setIsLoading(false)
         }
@@ -93,6 +96,9 @@ const JsonEditor: React.FC = () => {
             setError('Invalid JSON input')
         }
     }
+
+    const customBtn =
+        'px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
     return (
         <>
             <SuccessPopup
@@ -216,3 +222,5 @@ const JsonEditor: React.FC = () => {
 }
 
 export default JsonEditor
+
+`
