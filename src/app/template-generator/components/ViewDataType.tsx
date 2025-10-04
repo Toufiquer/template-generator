@@ -26,6 +26,7 @@ import { RadioButtonGroupField } from './ui-components/RadioButtonGroupField'
 import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 import RichTextEditorField from './ui-components/RichTextEditorField'
 import ImageUploadManager from './ui-components/ImageUploadManager'
+import MULTIOPTIONSField from './ui-components/MULTIOPTIONSField'
 
 import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
 import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
@@ -54,7 +55,8 @@ import { ImageUploadFieldSingleCoreCode } from './core-code/ImageUploadFieldSing
 import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
 import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCode'
 import { MULTIOPTIONSFieldCoreCode } from './core-code/MULTIOPTIONSFieldCoreCode'
-import MULTIOPTIONSField from './ui-components/MULTIOPTIONSField'
+import { StringArrayFieldcoreCode } from './core-code/StringArrayFieldCoreCode'
+import StringArrayField from './ui-components/StringArrayField'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -288,6 +290,27 @@ export const allDataType: DataTypeItem[] = [
         ui: '<MULTIOPTIONSField />',
         coreCode: MULTIOPTIONSFieldCoreCode,
     },
+    {
+        name: 'STRINGARRAY',
+        mongooseSchema: `MULTIOPTIONS: [{
+            title:{
+                type: String
+            },
+            quantity:{
+                type: String
+            },
+        }]`,
+        ui: '<StringArrayField />',
+        coreCode: StringArrayFieldcoreCode,
+    },
+    {
+        name: 'PUREJSON',
+        mongooseSchema: `MULTIOPTIONS: [{
+            type: String
+        }]`,
+        ui: '<MULTIOPTIONSField />',
+        coreCode: MULTIOPTIONSFieldCoreCode,
+    },
 ]
 const ViewDataType = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -373,6 +396,8 @@ const ViewDataType = () => {
                 return <MultiCheckboxGroupField />
             case '<MULTIOPTIONSField />':
                 return <MULTIOPTIONSField />
+            case '<StringArrayField />':
+                return <StringArrayField />
             default:
                 return (
                     <p className="text-muted-foreground">
