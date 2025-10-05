@@ -15,7 +15,6 @@ export const generateViewTableComponentFile = (
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // Dynamically determine which fields are suitable for table columns.
     const suitableTypes = [
         'STRING',
         'EMAIL',
@@ -59,7 +58,6 @@ export const generateViewTableComponentFile = (
 
     const columnVisibilityStateType = `type ColumnVisibilityState = Record<${displayableKeysTypeName}, boolean>`
 
-    // --- FINAL TEMPLATE STRING ---
     return `'use client'
 
 import { format } from 'date-fns'

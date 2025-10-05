@@ -1,17 +1,10 @@
-/**
- * Generates the content for the main client-side management page (page.tsx)
- * with integrated filtering functionality.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete page.tsx file content as a string.
- */
+
 export const generateMainPageFile = (inputJsonFile: string): string => {
     const { namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    // Extract names and format them for different uses
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const pluralLowerCase = pluralPascalCase.toLowerCase() 
+    const singularPascalCase = namingConvention.User_3_000___
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -21,7 +14,6 @@ export const generateMainPageFile = (inputJsonFile: string): string => {
     } else {
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
-    // Construct the file content using a template literal
     return `'use client'
 
 import React, { useState, useMemo } from 'react'

@@ -1,13 +1,7 @@
-/**
- * Defines the structure for the schema object, allowing for recursive nesting.
- */
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -21,12 +15,6 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a client-side list page (page.tsx).
- *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
- * @returns {string} The complete page.tsx file content as a string.
- */
 export const generateClientListPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
@@ -34,16 +22,12 @@ export const generateClientListPageFile = (inputJsonFile: string): string => {
     const pluralLowerCase = namingConvention.users_2_000___
     const pluralUpperCase = namingConvention.Users_1_000___
 
-    // 2. Intelligently find the display key.
-    // Looks for 'title' or 'name', falls back to the first 'STRING' field, then to a default.
     const schemaKeys = Object.keys(schema)
     const displayKey =
         schemaKeys.find((key) => key.toLowerCase() === 'title') ||
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
         schemaKeys.find((key) => schema[key] === 'STRING') ||
-        'name' // A safe default
-
-    // 3. Construct the enhanced file content using a template literal.
+        'name'
     return `'use client'
 
 import { useEffect, useState } from 'react'

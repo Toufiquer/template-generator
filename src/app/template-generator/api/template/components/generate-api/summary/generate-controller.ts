@@ -1,6 +1,3 @@
-/**
- * Defines the structure for the naming and schema configuration.
- */
 interface InputConfig {
     schema: Record<string, string>
     namingConvention: {
@@ -8,38 +5,19 @@ interface InputConfig {
     }
 }
 
-/**
- * A helper function to capitalize the first letter of a string.
- * e.g., "amount" -> "Amount"
- */
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
-/**
- * Generates the summary controller.ts file content as a string.
- *
- * This function dynamically constructs a controller that:
- * 1. Identifies fields marked as "INTNUMBER" or "FLOATNUMBER" from the schema.
- * 2. Builds a MongoDB aggregation pipeline to sum these numeric fields, grouped by month.
- * 3. Calculates total records and records in the last 24 hours.
- * 4. Implements pagination for the monthly summary table.
- * 5. Calculates a grand total across all months for the numeric fields.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted summary controller.ts file as a string.
- */
 export function generateSummaryController(inputJsonString: string): string {
     const config: InputConfig = JSON.parse(inputJsonString)
     const { namingConvention, schema } = config
 
-    const singularName = namingConvention.User_3_000___ // e.g., "Post"
-    const getSummaryFunction = `get${singularName}Summary` // e.g., "getPostSummary"
+    const singularName = namingConvention.User_3_000___
+    const getSummaryFunction = `get${singularName}Summary`
 
-    // Find all fields that are numeric to build the aggregation.
     const numericFields = Object.keys(schema).filter(
         (key) => schema[key] === 'INTNUMBER' || schema[key] === 'FLOATNUMBER'
     )
 
-    // If there are no numeric fields, we generate a simpler controller.
     if (numericFields.length === 0) {
         return `
 import { withDB } from '@/app/api/utils/db';
@@ -86,7 +64,6 @@ export async function ${getSummaryFunction}(req: Request): Promise<IResponse> {
         `.trim()
     }
 
-    // Dynamically generate parts of the controller code
     const aggregationResultInterface = numericFields
         .map((field) => `    total${capitalize(field)}: number;`)
         .join('\n')
@@ -116,7 +93,6 @@ export async function ${getSummaryFunction}(req: Request): Promise<IResponse> {
         )
         .join('\n')
 
-    // Assemble the final controller string using a template
     const controllerTemplate = `
 import { withDB } from '@/app/api/utils/db';
 import ${singularName} from '../model';

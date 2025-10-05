@@ -4,22 +4,16 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
     User_3_000___: string
     user_4_000___: string
-    // You might want to make these optional or add a more generic way to handle them
     ISelect_6_000___?: string
     select_5_000___?: string
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -27,33 +21,16 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the entire Model.ts file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the model's TypeScript code, dynamically inserting the correct
- * names for models, variables, and also recursively traverses the schema to
- * build a comprehensive Mongoose schema. It handles complex types by parsing options
- * directly from the schema string (e.g., "SELECT#Option1,Option2").
- *
- * @param {string} inputJsonFile - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Model.ts file as a string.
- */
 export const generateModel = (inputJsonFile: string): string => {
     const config: InputConfig = JSON.parse(inputJsonFile)
     const { namingConvention, schema } = config
 
-    // --- 1. Extract Naming Conventions ---
     const modelName = namingConvention.User_3_000___ || 'Item'
     const schemaVarName = `${namingConvention.user_4_000___ || 'item'}Schema`
 
-    // --- 2. Type Mapping Helpers ---
-
-    // Maps schema types to Mongoose schema definitions
     const mapToMongooseSchema = (type: string): string => {
         const [typeName, options] = type.split('#')
 
-        // Helper function to generate enum schema for a single string
         const createEnumSchema = (
             optionsStr: string | undefined,
             defaultOptions: string[]
@@ -67,7 +44,6 @@ export const generateModel = (inputJsonFile: string): string => {
             return `{ type: String, enum: [${enumValues}] }`
         }
 
-        // Helper function to generate enum schema for an array of strings
         const createMultiEnumSchema = (
             optionsStr: string | undefined,
             defaultOptions: string[]
@@ -96,7 +72,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'SELECT':
                 return createEnumSchema(options, ['Option 1', 'Option 2'])
             case 'DYNAMICSELECT':
-                return `[{ type: String }]` // Assuming an array of strings for dynamic select
+                return `[{ type: String }]` 
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':
@@ -127,7 +103,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'AUTOCOMPLETE':
                 return `{ type: String }`
             case 'RADIOBUTTON':
-                return `[{ type: String }]` // Assuming array for radio buttons if multiple can be selected, otherwise just String
+                return `[{ type: String }]`
             case 'CHECKBOX':
                 return `{ type: Boolean, default: false }`
             case 'MULTICHECKBOX':
@@ -138,12 +114,11 @@ export const generateModel = (inputJsonFile: string): string => {
                     'Default Option B',
                 ])
             case 'STRINGARRAY':
-                // Handles "STRINGARRAY#NAME,CLASS,ROLL"
                 if (options) {
                     const fields = options
                         .split(',')
                         .map((field) => field.trim())
-                        .filter(Boolean) // Remove any empty strings
+                        .filter(Boolean) 
                     if (fields.length > 0) {
                         const subSchemaFields = fields
                             .map(
@@ -154,15 +129,11 @@ export const generateModel = (inputJsonFile: string): string => {
                         return `[\n            {\n${subSchemaFields}\n            }\n        ]`
                     }
                 }
-                return `[{ type: String }]` // Default to array of strings if no valid fields provided
-            // --- START: NEWLY ADDED CASE FOR PUREJSON ---
+                return `[{ type: String }]` 
             case 'PUREJSON':
-                // Handles "PUREJSON#{"key": "value"}" by embedding the raw JSON string.
                 if (options) {
                     try {
-                        // Validate the JSON by attempting to parse it.
                         JSON.parse(options)
-                        // Return the raw JSON string to be embedded directly.
                         return options
                     } catch (e) {
                         console.error(
@@ -170,22 +141,16 @@ export const generateModel = (inputJsonFile: string): string => {
                             options,
                             e
                         )
-                        // Return a default empty object string if parsing fails.
                         return '{}'
                     }
                 }
-                // Return a default empty object if no JSON is provided.
                 return '{}'
-            // --- END: NEWLY ADDED CASE FOR PUREJSON ---
             default:
                 return `{ type: String }`
         }
     }
 
-    /**
-     * Recursively generates the Mongoose schema definition.
-     * All keys are quoted to handle special characters.
-     */
+ 
     const generateSchemaFields = (
         currentSchema: Schema,
         depth: number
@@ -193,23 +158,21 @@ export const generateModel = (inputJsonFile: string): string => {
         const indent = '    '.repeat(depth)
         return Object.entries(currentSchema)
             .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
+                const quotedKey = `"${key}"`
                 if (typeof value === 'object' && !Array.isArray(value)) {
-                    // Nested object
+        
                     return `${indent}${quotedKey}: {\n${generateSchemaFields(
                         value,
                         depth + 1
                     )}\n${indent}}`
                 }
-                // Handle complex types directly in mapToMongooseSchema
+               
                 return `${indent}${quotedKey}: ${mapToMongooseSchema(
                     value as string
                 )}`
             })
             .join(',\n')
     }
-
-    // --- 4. Assemble the Final File Content ---
 
     const schemaContent = generateSchemaFields(schema, 1)
 

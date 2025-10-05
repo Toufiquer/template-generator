@@ -1,27 +1,13 @@
-/**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
- */
+
 export const generateMainPage = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    // 1. Extract the required names for API paths and data keys.
-    const pluralName = namingConvention.users_2_000___ // e.g., "posts"
+    const pluralName = namingConvention.users_2_000___ 
 
-    // 2. Intelligently find the display key.
-    // It looks for the first top-level 'STRING' field in the schema to use as the item's name/title.
-    // If none is found, it defaults to 'name'.
+
     const displayKey =
         Object.keys(schema).find((key) => schema[key] === 'STRING') || 'name'
 
-    // 3. Construct the file content using a template literal.
     return `import CustomLInk from './CustomButton'
 
 const Page = async () => {

@@ -1,13 +1,5 @@
-/**
- * Generates the content for the DataSelect.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete DataSelect.tsx file content as a string.
- */
+
 export const generateDataSelectComponentFile = (): string => {
-    // The content of this component is static and reusable.
-    // It does not need to be changed based on the schema or naming conventions.
 
     return `'use client'
 

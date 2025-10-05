@@ -1,13 +1,8 @@
-/**
- * Defines the structure for the schema object, allowing for recursive nesting.
- */
+
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -21,24 +16,13 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a dynamic details page (page.tsx) based on a JSON schema.
- *
- * @param {string} inputJsonString The JSON string containing the schema and naming conventions.
- * @returns {string} The complete page.tsx file content as a string.
- */
+
 export const generateDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const modelName = namingConvention.User_3_000___ // e.g., "Post"
-    const interfaceName = `I${modelName}` // e.g., "IPost"
-
-    // --- Helper Functions ---
-
-    /**
-     * Maps a schema type string to a TypeScript type string.
-     */
+    const modelName = namingConvention.User_3_000___ 
+    const interfaceName = `I${modelName}` 
     const mapSchemaTypeToTsType = (type: string): string => {
         const [typeName, options] = type.split('#')
 
@@ -60,7 +44,6 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
                 return '{ start: Date | string; end: Date | string }'
             case 'TIMERANGE':
                 return '{ start: string; end: string }'
-            // --- START: NEW CASE FOR STRINGARRAY ---
             case 'STRINGARRAY':
                 if (options) {
                     const fields = options
@@ -69,17 +52,13 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
                         .join('; ')
                     return `Array<{ ${fields} }>`
                 }
-                return 'Array<{ [key: string]: string }>' // Fallback for empty options
-            // --- END: NEW CASE FOR STRINGARRAY ---
+                return 'Array<{ [key: string]: string }>'
             default:
                 return 'string'
         }
     }
 
-    /**
-     * Recursively generates TypeScript interface properties from the schema.
-     * This now correctly handles both string-defined types and nested objects.
-     */
+  
     const generateTsInterfaceProperties = (
         currentSchema: Schema,
         depth: number
@@ -88,14 +67,12 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
         return Object.entries(currentSchema)
             .map(([key, value]) => {
                 const quotedKey = `"${key}"`
-                // If the value is an object, recurse to build a nested interface.
                 if (typeof value === 'object' && !Array.isArray(value)) {
                     return `${indent}${quotedKey}: {\n${generateTsInterfaceProperties(
                         value,
                         depth + 1
                     )}\n${indent}}`
                 }
-                // Otherwise, map the string type to a TS type.
                 return `${indent}${quotedKey}: ${mapSchemaTypeToTsType(
                     value as string
                 )}`
@@ -103,17 +80,13 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
             .join(';\n')
     }
 
-    /**
-     * Generates the JSX for displaying the data fields within the DataDetails component.
-     * This version intelligently formats simple arrays, object arrays, and nested objects.
-     */
+   
     const generateDetailsJsx = (currentSchema: Schema): string => {
         return Object.entries(currentSchema)
             .map(([key, value]) => {
                 const isNestedObject =
                     typeof value === 'object' && !Array.isArray(value)
 
-                // Get the base type (e.g., "IMAGES", "STRINGARRAY") from the string value.
                 const [baseType = ''] =
                     typeof value === 'string'
                         ? (value as string).toUpperCase().split('#')
@@ -130,13 +103,10 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
                 let displayValue
 
                 if (isNestedObject || isObjectArray) {
-                    // For nested objects OR arrays of objects, pretty-print the JSON.
                     displayValue = `<pre className="text-sm">{JSON.stringify(data?.["${key}"], null, 2)}</pre>`
                 } else if (isSimpleArray) {
-                    // For arrays of primitives, join the elements.
                     displayValue = `{data?.["${key}"]?.join(', ')}`
                 } else {
-                    // For all other primitive values, convert to string.
                     displayValue = `{data?.["${key}"]?.toString()}`
                 }
 
@@ -151,7 +121,6 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
             .join('')
     }
 
-    // Find a primary display key (e.g., 'title', 'name') for the metadata
     const displayKey =
         Object.keys(schema).find(
             (k) => k.toLowerCase() === 'title' || k.toLowerCase() === 'name'
@@ -159,9 +128,8 @@ export const generateDetailPageFile = (inputJsonFile: string): string => {
 
     const interfaceProperties = generateTsInterfaceProperties(schema, 1)
     const detailsJsx = generateDetailsJsx(schema)
-    const pluralName = namingConvention.users_2_000___ // e.g., "posts"
+    const pluralName = namingConvention.users_2_000___ 
 
-    // --- Final Template ---
 
     return `import { notFound } from 'next/navigation'
 import HomeButton from './HomeButton'

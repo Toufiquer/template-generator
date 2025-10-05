@@ -6,7 +6,6 @@ import { generateSummaryController } from './summary/generate-controller'
 import { generateSummaryRoute } from './summary/generate-route'
 
 const generateApi = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

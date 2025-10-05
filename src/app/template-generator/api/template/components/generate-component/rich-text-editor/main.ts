@@ -3,7 +3,6 @@ import { generateRichTextEditorIndex } from './generate-rich-text-editor-index'
 import { generateRichTextEditorMenuBar } from './generate-rich-text-editor-menu-bar'
 
 const generateRichTextEditorMain = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

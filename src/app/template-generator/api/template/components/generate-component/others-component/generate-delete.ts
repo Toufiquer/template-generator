@@ -1,17 +1,11 @@
-/**
- * Generates the content for a Delete.tsx component file.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete Delete.tsx file content as a string.
- */
+
 export const generateDeleteComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
-    // 1. Extract and format names.
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralLowerCase = pluralPascalCase.toLowerCase() 
+    const singularPascalCase = namingConvention.User_3_000___ 
+    const interfaceName = `I${pluralPascalCase}`
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -22,15 +16,13 @@ export const generateDeleteComponentFile = (inputJsonFile: string): string => {
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // 2. Intelligently find the most suitable display key from the schema.
     const schemaKeys = Object.keys(schema)
     const displayKey =
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
         schemaKeys.find((key) => key.toLowerCase() === 'title') ||
         schemaKeys.find((key) => schema[key] === 'STRING') ||
-        '_id' // Fallback to _id if no suitable string is found
+        '_id' 
 
-    // 3. Construct the entire file content using a template literal.
     return `import React from 'react'
 
 import { Button } from '@/components/ui/button'

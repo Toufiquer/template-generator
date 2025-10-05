@@ -4,7 +4,6 @@ import { generateViewRichTextEditorClientComponent } from './generate-v-r-t-e-c-
 import { generateViewRichTextEditorServerComponent } from './generate-v-r-t-e-s-component'
 
 const generateViewRichTextEditorMain = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

@@ -5,7 +5,6 @@ import generateStoreConstant from './generate-store-constant'
 import generateStoreTypeFile from './generate-store-type'
 
 const generateStore = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

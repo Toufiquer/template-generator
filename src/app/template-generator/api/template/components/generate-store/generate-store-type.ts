@@ -2,9 +2,7 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
@@ -12,9 +10,7 @@ interface NamingConvention {
     user_4_000___: string
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     uid: string
     templateName: string
@@ -22,17 +18,7 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
- */
+
 function generateStoreTypeFile(inputJson: string): string {
     const config: InputConfig = JSON.parse(inputJson)
     const { namingConvention } = config
@@ -75,7 +61,6 @@ export interface Users_1_000___Store {
 }
 `
 
-    // Perform replacements in a specific order to avoid partial-match errors.
     const result = template
         .replaceAll('IUsers_1_000___', `I${namingConvention.Users_1_000___}`)
         .replaceAll(
@@ -102,11 +87,8 @@ export interface Users_1_000___Store {
             'newUsers_1_000___',
             `new${namingConvention.Users_1_000___}`
         )
-        // This replacement handles the lowercase plural form
         .replaceAll('users_2_000___: ', `${namingConvention.users_2_000___}: `)
-        // This replacement handles the parameter name 'users_1_000___'
         .replaceAll('users_1_000___: ', `${namingConvention.Users_1_000___}: `)
-        // This is the final and most general replacement for the capitalized plural form
         .replaceAll('Users_1_000___', namingConvention.Users_1_000___)
 
     return result

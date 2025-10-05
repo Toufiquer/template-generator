@@ -1,37 +1,20 @@
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
-    // ... other conventions
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     namingConvention: NamingConvention
-    // ... other properties
 }
 
-/**
- * Generates the content for a reusable FilterDialog.tsx component.
- *
- * This function takes the JSON configuration to extract the plural entity name
- * and injects it into the dialog's title for better user context. The rest of the
- * component's logic for date and month filtering is standardized.
- *
- * @param {string} inputJsonString - A JSON string containing the naming conventions.
- * @returns {string} The complete, formatted FilterDialog.tsx file as a string.
- */
+
 export const generateFilterDialogFile = (inputJsonString: string): string => {
     const config: InputConfig = JSON.parse(inputJsonString)
     const { namingConvention } = config
 
-    // Extract the plural name for use in the dialog title (e.g., "Posts")
     const pluralPascalCase = namingConvention.Users_1_000___
 
-    // Use a template literal to construct the final file content.
     return `'use client'
 
 import React, { useState, useMemo } from 'react'

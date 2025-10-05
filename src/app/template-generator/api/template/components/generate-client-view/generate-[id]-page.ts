@@ -1,13 +1,8 @@
-/**
- * Defines the structure for the schema object, allowing for recursive nesting.
- */
+
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -21,24 +16,15 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a dynamic client-side details page (page.tsx).
- *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
- * @returns {string} The complete page.tsx file content as a string.
- */
+
 export const generateClientDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const singularUpperCase = namingConvention.User_3_000___ // e.g., "Post"
+    const pluralLowerCase = namingConvention.users_2_000___ 
+    const singularUpperCase = namingConvention.User_3_000___
 
-    // --- Helper Functions ---
 
-    /**
-     * Maps a schema type string to a TypeScript type string.
-     */
     const mapSchemaTypeToTsType = (type: string): string => {
         const [typeName, options] = type.split('#')
 
@@ -60,7 +46,6 @@ export const generateClientDetailPageFile = (inputJsonFile: string): string => {
                 return '{ start: Date | string; end: Date | string }'
             case 'TIMERANGE':
                 return '{ start: string; end: string }'
-            // --- START: NEW CASE FOR STRINGARRAY ---
             case 'STRINGARRAY':
                 if (options) {
                     const fields = options
@@ -69,16 +54,13 @@ export const generateClientDetailPageFile = (inputJsonFile: string): string => {
                         .join('; ')
                     return `Array<{ ${fields} }>`
                 }
-                return 'Array<{ [key: string]: string }>' // Fallback
-            // --- END: NEW CASE FOR STRINGARRAY ---
+                return 'Array<{ [key: string]: string }>'
             default:
                 return 'string'
         }
     }
 
-    /**
-     * Recursively generates TypeScript type properties from the schema.
-     */
+  
     const generateTsTypeProperties = (
         currentSchema: Schema,
         depth: number
@@ -100,9 +82,7 @@ export const generateClientDetailPageFile = (inputJsonFile: string): string => {
             .join(';\n')
     }
 
-    /**
-     * Generates the JSX to display all data fields.
-     */
+ 
     const generateDetailsJsx = (currentSchema: Schema): string => {
         return Object.entries(currentSchema)
             .map(([key, value]) => {
@@ -144,7 +124,6 @@ export const generateClientDetailPageFile = (inputJsonFile: string): string => {
     const tsTypeProperties = generateTsTypeProperties(schema, 1)
     const detailsJsx = generateDetailsJsx(schema)
 
-    // --- Final Template ---
     return `'use client'
 
 import Link from 'next/link'

@@ -1,19 +1,14 @@
-/**
- * Generates the content for a BulkEdit.tsx component file.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete BulkEdit.tsx file content as a string.
- */
+
 export const generateBulkEditComponentFile = (
     inputJsonFile: string
 ): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
     // 1. Extract and format names.
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralLowerCase = namingConvention.users_2_000___ 
+    const singularPascalCase = namingConvention.User_3_000___ 
+    const interfaceName = `I${pluralPascalCase}` 
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -24,7 +19,6 @@ export const generateBulkEditComponentFile = (
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // 2. Find a primary display key for listing items.
     const schemaKeys = Object.keys(schema)
     const displayKey =
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
@@ -32,7 +26,6 @@ export const generateBulkEditComponentFile = (
         schemaKeys.find((key) => schema[key] === 'STRING') ||
         '_id'
 
-    // 3. Find the first field suitable for bulk editing (SELECT or RADIOBUTTON).
     const editableField = Object.entries(schema).find(
         ([, value]) =>
             typeof value === 'string' &&
@@ -45,7 +38,6 @@ export const generateBulkEditComponentFile = (
               .replace(/\b\w/g, (l) => l.toUpperCase())
         : ''
 
-    // 4. Generate the JSX for the editable field within the loop.
     const editableFieldJsx = editableFieldKey
         ? `
                                 <div className="flex items-center gap-4 min-w-[180px]">
@@ -75,7 +67,6 @@ export const generateBulkEditComponentFile = (
                                 </div>`
         : ''
 
-    // 5. Construct the entire file content.
     return `import React from 'react'
 
 import { Label } from '@/components/ui/label'

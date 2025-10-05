@@ -24,7 +24,7 @@ import { generateSummaryComponentFile } from './generate-summery'
 import { generateTooManyRequestComponent } from './generate-toomany-request'
 
 const generateAllOtherComponentsMain = async (data: string) => {
-    //  !  create api
+
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

@@ -1,13 +1,9 @@
-/**
- * Defines the structure for the schema object, allowing for recursive nesting.
- */
+
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     uid: string
     templateName: string
@@ -21,22 +17,15 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a dynamic Add.tsx component file based on a JSON schema.
- * This version uses a static block of imports for clarity and produces fully-propped components.
- *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
- * @returns {string} The complete Add.tsx file content as a string.
- */
 export const generateAddComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
-    const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const singularPascalCase = namingConvention.User_3_000___ 
+    const pluralLowerCase = namingConvention.users_2_000___ 
+    const interfaceName = `I${pluralPascalCase}` 
+    const defaultInstanceName = `default${pluralPascalCase}` 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     const componentBodyStatements = new Set<string>()
@@ -238,7 +227,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // --- STATIC IMPORT BLOCK ---
     const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
 import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'

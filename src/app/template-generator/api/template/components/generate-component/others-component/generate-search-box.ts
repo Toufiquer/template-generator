@@ -1,7 +1,4 @@
 export const generateSearchBoxComponentFile = (): string => {
-    // This component is a generic UI element for search functionality.
-    // Its logic is self-contained and does not need to be altered
-    // based on the provided schema or naming conventions.
     return `'use client';
 
 import { Search, X } from 'lucide-react';

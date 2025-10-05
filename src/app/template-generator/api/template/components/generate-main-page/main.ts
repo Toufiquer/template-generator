@@ -2,7 +2,6 @@ import writeInFile from '../create-and-write'
 import { generateMainPageFile } from './generate-main-page'
 
 const generateMainPage = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

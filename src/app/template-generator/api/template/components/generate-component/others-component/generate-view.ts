@@ -1,13 +1,9 @@
-/**
- * Defines the structure for the schema object, allowing for nested properties.
- */
+
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     uid: string
     templateName: string
@@ -21,21 +17,15 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a dynamic View.tsx component file based on a JSON schema.
- *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
- * @returns {string} The complete View.tsx file content as a string.
- */
 export const generateViewComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
-    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
-    const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralLowerCase = pluralPascalCase.toLowerCase() 
+    const singularLowerCase = namingConvention.user_4_000___ 
+    const interfaceName = `I${pluralPascalCase}` 
+    const defaultInstanceName = `default${pluralPascalCase}` 
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -46,9 +36,7 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    /**
-     * Generates the JSX for displaying each field from the schema.
-     */
+ 
     const generateDetailRowsJsx = (currentSchema: Schema): string => {
         const imageKeys = Object.keys(currentSchema).filter((key) => {
             const value = currentSchema[key]
@@ -65,7 +53,6 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
 
-                // Handle nested objects directly
                 if (typeof type === 'object' && !Array.isArray(type)) {
                     return `<DetailRowJson label="${label}" value={selected${pluralPascalCase}['${key}']} />`
                 }
@@ -78,15 +65,15 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                         return `<DetailRow label="${label}" value={formatBoolean(selected${pluralPascalCase}['${key}'])} />`
                     case 'DATE':
                         return `<DetailRow label="${label}" value={formatDate(selected${pluralPascalCase}['${key}'])} />`
-                    case 'IMAGES': // Should be handled by image viewer, but kept as fallback
+                    case 'IMAGES': 
                     case 'MULTICHECKBOX':
                     case 'MULTIOPTIONS':
                     case 'DYNAMICSELECT':
                         return `<DetailRowArray label="${label}" values={selected${pluralPascalCase}['${key}']} />`
-                    // --- START: NEW CASE FOR STRINGARRAY ---
+          
                     case 'STRINGARRAY':
                         return `<DetailRowJson label="${label}" value={selected${pluralPascalCase}['${key}']} />`
-                    // --- END: NEW CASE FOR STRINGARRAY ---
+                    
                     case 'DATERANGE':
                         return `<DetailRow label="${label}" value={\`\${formatDate(selected${pluralPascalCase}['${key}']?.start)} to \${formatDate(selected${pluralPascalCase}['${key}']?.end)}\`} />`
                     case 'TIMERANGE':
@@ -111,9 +98,7 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
             .join('\n                            ')
     }
 
-    /**
-     * Generates dedicated JSX for IMAGE and IMAGES fields.
-     */
+
     const generateImageViewerJsx = (currentSchema: Schema): string => {
         return Object.entries(currentSchema)
             .map(([key, type]) => {

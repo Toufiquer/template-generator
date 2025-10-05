@@ -5,7 +5,6 @@ import { generateCustomButton } from './generate-custom-button'
 import { generateClientListPageFile } from './generate-main-page'
 
 const generateClientView = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

@@ -2,9 +2,7 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
@@ -12,9 +10,6 @@ interface NamingConvention {
     user_4_000___: string
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -22,21 +17,10 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the entire RTK Query API file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and dynamically populates a
- * template for creating RTK Query endpoints for standard CRUD operations as well as a
- * summary data endpoint.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted RTK Query API file as a string.
- */
 function generateRtkApiFile(inputJson: string): string {
     const config: InputConfig = JSON.parse(inputJson)
     const { namingConvention } = config
 
-    // The template for the rtk-api.ts file, now including placeholders for the summary endpoint.
     const template = `// This file is use for rest api
 import { apiSlice } from '@/redux/api/apiSlice'
 
@@ -117,8 +101,6 @@ export const {
 } = users_2_000___Api
 `
 
-    // Perform the replacements using the naming convention.
-    // The existing replacement logic will handle the new placeholders correctly.
     let result = template.replaceAll(
         'tagTypeUsers_1_000___',
         `tagType${namingConvention.Users_1_000___}`

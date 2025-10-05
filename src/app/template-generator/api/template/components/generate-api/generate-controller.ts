@@ -2,9 +2,7 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
@@ -12,9 +10,7 @@ interface NamingConvention {
     user_4_000___: string
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     uid: string
     templateName: string
@@ -22,29 +18,12 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also builds a schema-aware search filter
- * that handles both date-range filters and generic keyword searches.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
- */
+
 function generateController(inputJsonString: string): string {
     const config: InputConfig = JSON.parse(inputJsonString)
     const { namingConvention, schema } = config
 
-    /**
-     * Recursively finds all field keys from the schema that match a given list of types.
-     * Uses dot notation for nested objects.
-     * @param {Schema} obj - The schema object or a nested part of it.
-     * @param {string[]} types - An array of uppercase schema types to match (e.g., ['STRING', 'EMAIL']).
-     * @param {string} [prefix=''] - The prefix for dot notation, used in recursive calls.
-     * @returns {string[]} An array of matching field keys (e.g., ['title', 'author.name']).
-     */
+   
     const findAllKeysByTypes = (
         obj: Schema,
         types: string[],
@@ -66,7 +45,7 @@ function generateController(inputJsonString: string): string {
                     )
                 } else if (
                     typeof value === 'string' &&
-                    types.includes(value.toUpperCase()) // Check if the schema type is in the allowed list
+                    types.includes(value.toUpperCase()) 
                 ) {
                     keys.push(newPrefix)
                 }
@@ -75,7 +54,6 @@ function generateController(inputJsonString: string): string {
         return keys
     }
 
-    // Define which schema types should be treated as strings or numbers for searching.
     const stringLikeTypes = [
         'STRING',
         'EMAIL',
@@ -88,11 +66,9 @@ function generateController(inputJsonString: string): string {
     ]
     const numberLikeTypes = ['INTNUMBER', 'FLOATNUMBER']
 
-    // Get the actual field names from the schema that match these types.
     const stringFields = findAllKeysByTypes(schema, stringLikeTypes)
     const numberFields = findAllKeysByTypes(schema, numberLikeTypes)
 
-    // Prepare all naming replacements.
     const replacements = {
         Users_1_000___: namingConvention.Users_1_000___,
         users_2_000___: namingConvention.users_2_000___,
@@ -101,7 +77,6 @@ function generateController(inputJsonString: string): string {
         user_4_000___: namingConvention.user_4_000___,
     }
 
-    // Use a template literal to construct the final file content.
     const controllerTemplate = `import { withDB } from '@/app/api/utils/db'
 import { FilterQuery } from 'mongoose'
 

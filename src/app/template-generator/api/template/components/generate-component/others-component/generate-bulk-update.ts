@@ -1,19 +1,14 @@
-/**
- * Generates the content for a BulkUpdate.tsx component file.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete BulkUpdate.tsx file content as a string.
- */
+
 export const generateBulkUpdateComponentFile = (
     inputJsonFile: string
 ): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
     // 1. Extract and format names.
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralLowerCase = namingConvention.users_2_000___ 
+    const singularPascalCase = namingConvention.User_3_000___ 
+    const interfaceName = `I${pluralPascalCase}`
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     let reduxPath = ''
@@ -23,7 +18,6 @@ export const generateBulkUpdateComponentFile = (
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // 2. Find a primary display key for listing items.
     const schemaKeys = Object.keys(schema)
     const displayKey =
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
@@ -31,18 +25,16 @@ export const generateBulkUpdateComponentFile = (
         schemaKeys.find((key) => schema[key] === 'STRING') ||
         '_id'
 
-    // 3. Find the first field suitable for bulk updating (SELECT or RADIOBUTTON).
     const editableField = Object.entries(schema).find(
         ([, value]) =>
             typeof value === 'string' &&
             ['SELECT', 'RADIOBUTTON'].includes(value.toUpperCase())
     )
-    const editableFieldKey = editableField ? editableField[0] : 'role' // Default to 'role' if none found
+    const editableFieldKey = editableField ? editableField[0] : 'role'
     const editableFieldLabel = editableFieldKey
         .replace(/-/g, ' ')
         .replace(/\b\w/g, (l) => l.toUpperCase())
 
-    // 4. Construct the entire file content.
     return `import React from 'react'
 
 import { Button } from '@/components/ui/button'

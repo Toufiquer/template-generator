@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { toast } from 'react-toastify'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Loader } from 'lucide-react'
@@ -10,20 +10,6 @@ import { Loader } from 'lucide-react'
 const ImageUploadFieldSingle = () => {
     const [loading, setLoading] = useState(false)
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
-
-    useEffect(() => {
-        // Fetch user's current profile image if not provided initially
-        // const fetchProfileImage = async () => {
-        //   const response = await fetch('/api/user/profile');
-        //   const data = await response.json();
-        //   if (data.url) {
-        //     setProfileImageUrl(data.url);
-        //   }
-        // };
-        // if (!initialImageUrl) {
-        //   fetchProfileImage();
-        // }
-    }, [])
     const onImageUploadSuccess = (newImageUrl: string) => {
         setProfileImageUrl(newImageUrl)
     }

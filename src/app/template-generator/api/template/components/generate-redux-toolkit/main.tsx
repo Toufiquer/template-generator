@@ -3,7 +3,6 @@ import generateRtkApiFile from './generate-toolkit'
 import generateRtkApiFileSlice from './generate-toolkitSlice'
 
 const generateRtk = async (data: string) => {
-    //  !  create api
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

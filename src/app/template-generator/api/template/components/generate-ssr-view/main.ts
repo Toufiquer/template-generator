@@ -5,7 +5,7 @@ import { generateCustomButton } from './generate-custom-button'
 import { generateMainPage } from './generate-main-page'
 
 const generateSSRView = async (data: string) => {
-    //  !  create api
+
     let folderName = 'example'
     let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}

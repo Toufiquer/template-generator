@@ -1,13 +1,9 @@
-/**
- * Defines the structure for the schema object, allowing for recursive nesting.
- */
+
 interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
+
 interface InputConfig {
     uid: string
     templateName: string
@@ -25,12 +21,12 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
-    const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
-    const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const singularPascalCase = namingConvention.User_3_000___ 
+    const pluralLowerCase = namingConvention.users_2_000___ 
+    const interfaceName = `I${pluralPascalCase}` 
+    const defaultInstanceName = `default${pluralPascalCase}` 
+    const editedStateName = `edited${singularPascalCase}` 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     const componentBodyStatements = new Set<string>()

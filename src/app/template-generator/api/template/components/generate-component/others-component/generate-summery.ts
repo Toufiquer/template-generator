@@ -1,41 +1,24 @@
-/**
- * Defines the structure for the naming conventions required by the generator.
- */
+
 interface NamingConvention {
-    Users_1_000___: string // e.g., "Posts"
-    users_2_000___: string // e.g., "posts"
+    Users_1_000___: string
+    users_2_000___: string
     use_generate_folder: boolean
 }
 
-/**
- * Defines the structure of the input JSON configuration.
- */
+
 interface InputConfig {
     schema: Record<string, string>
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the content for a dynamic Summary.tsx component file.
- *
- * The function generates a component that ALWAYS displays time-based statistics
- * (total, last 24 hours, last month, etc.).
- *
- * It also checks the schema for 'INTNUMBER' or 'FLOATNUMBER' fields. If found,
- * it includes additional UI sections in the component to display a monthly
- * aggregated data table and a grand total summary for those numeric fields.
- *
- * @param {string} inputJsonString The JSON object with schema and naming conventions.
- * @returns {string} The complete Summary.tsx file content as a string.
- */
 export const generateSummaryComponentFile = (
     inputJsonString: string
 ): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonString)
 
-    const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralLowerCase = namingConvention.users_2_000___
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -46,14 +29,10 @@ export const generateSummaryComponentFile = (
         reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
     }
 
-    // Check if any field in the schema is a number type. This will be used
-    // to conditionally render parts of the JSX template.
     const hasNumericFields = Object.values(schema).some(
         (type) => type === 'INTNUMBER' || type === 'FLOATNUMBER'
     )
 
-    // --- Template for Numeric-Specific UI Sections ---
-    // These blocks of JSX will only be included in the final component if hasNumericFields is true.
     const numericSectionsTemplate = `
                         {/* Grand Total Summary Card */}
                         {summaryData.tableSummary && (
@@ -138,8 +117,6 @@ export const generateSummaryComponentFile = (
                         )}
 `
 
-    // --- Template for the Pagination ---
-    // This will only be included if there are numeric fields that require pagination.
     const paginationTemplate = `
                 {/* Pagination */}
                 <DialogFooter>
@@ -177,7 +154,6 @@ export const generateSummaryComponentFile = (
                 </DialogFooter>
 `
 
-    // --- Main Component Template ---
     const componentTemplate = `
 'use client'
 
