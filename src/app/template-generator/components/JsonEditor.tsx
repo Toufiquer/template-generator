@@ -17,7 +17,7 @@ import {
     AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import ViewDataType, { allDataType } from './ViewDataType' // MODIFICATION: Import allDataType
+import ViewDataType, { allDataType } from './ViewDataType'
 import Link from 'next/link'
 
 // Success Popup Component
@@ -52,10 +52,75 @@ const SuccessPopup = ({
     )
 }
 
+// --- START: PROGRAMMATIC AND READABLE INITIAL STATE ---
+// Define the complex object separately for clarity.
+
+
+// Construct the initial template object.
+const initialJsonTemplate = {
+    uid: '000',
+    templateName: 'Basic Template',
+    schema: {
+        title: 'STRING',
+        email: 'EMAIL',
+        password: 'PASSWORD',
+        passcode: 'PASSCODE',
+        area: 'SELECT#Bangladesh, India, Pakistan, Canada',
+        'sub-area': 'DYNAMICSELECT',
+        'products-images': 'IMAGES',
+        'personal-image': 'IMAGE',
+        description: 'DESCRIPTION',
+        age: 'INTNUMBER',
+        amount: 'FLOATNUMBER',
+        isActive: 'BOOLEAN',
+        'start-date': 'DATE',
+        'start-time': 'TIME',
+        'schedule-date': 'DATERANGE',
+        'schedule-time': 'TIMERANGE',
+        'favorite-color': 'COLORPICKER',
+        number: 'PHONE',
+        profile: 'URL',
+        test: 'RICHTEXT',
+        info: 'AUTOCOMPLETE',
+        shift: 'RADIOBUTTON#OP 1, OP 2, OP 3, OP 4',
+        policy: 'CHECKBOX',
+        hobbies: 'MULTICHECKBOX',
+        ideas: 'MULTIOPTIONS#O 1, O 2, O 3, O 4',
+        students: 'STRINGARRAY#Name, Class, Roll',
+        // The value is a single string, containing the type prefix and the formatted JSON object.
+        complexValue: {
+            id: '1234',
+            title: ' The Name of Country',
+            parent: {
+                id: '111234',
+                title: ' The Name of Parent',
+                child: {
+                    id: '1234',
+                    title: ' The Name of Child',
+                    child: '',
+                    note: 'The Note',
+                },
+                note: 'The Note',
+            },
+            note: 'The Note',
+        },
+    },
+    namingConvention: {
+        Users_1_000___: 'Posts',
+        users_2_000___: 'posts',
+        User_3_000___: 'Post',
+        user_4_000___: 'post',
+        ISelect_6_000___: 'ISelect',
+        select_5_000___: 'select',
+    },
+}
+// --- END: PROGRAMMATIC AND READABLE INITIAL STATE ---
+
 const JsonEditor: React.FC = () => {
     const [pathButton, setPathButton] = useState('')
+    // The entire object is stringified to create the initial, nicely formatted input.
     const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT#Bangladesh, India, Pakistan, Canada",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",\n    "policy": "CHECKBOX",\n    "hobbies": "MULTICHECKBOX",\n    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
+        JSON.stringify(initialJsonTemplate, null, 2)
     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -89,14 +154,11 @@ const JsonEditor: React.FC = () => {
                 return
             }
 
-            // Create a Set of valid data type names for efficient, case-sensitive lookups.
             const validDataTypes = new Set(
                 allDataType.map((item) => item.name.trim())
             )
 
-            // Find the first schema entry with an invalid data type.
             const invalidEntry = Object.entries(schema).find(([, value]) => {
-                // Get the base type by splitting at '#' and taking the first part.
                 const baseType = (value as string).split('#')[0]
                 return !validDataTypes.has(baseType)
             })
@@ -104,7 +166,9 @@ const JsonEditor: React.FC = () => {
             if (invalidEntry) {
                 const [fieldName, invalidType] = invalidEntry
                 setError(
-                    `Validation Error: The type "${invalidType}" for field "${fieldName}" is invalid. Please ensure the base type is a valid, case-sensitive name from the DataType Library.`
+                    `Validation Error: The type "${
+                        (invalidType as string).split('#')[0]
+                    }" for field "${fieldName}" is invalid. Please ensure the base type is a valid, case-sensitive name from the DataType Library.`
                 )
                 setIsLoading(false)
                 return
@@ -122,7 +186,6 @@ const JsonEditor: React.FC = () => {
                 setError('Json already exist with this uid.')
                 return
             } else {
-                // Add to Zustand store
                 addItem(parsedJson)
                 setJsonInput('')
                 showSuccess('JSON saved successfully!')
@@ -139,46 +202,36 @@ const JsonEditor: React.FC = () => {
         if (error) setError('')
     }
 
-    // --- START: MODIFIED handleFormat FUNCTION ---
     const handleFormat = (): string | null => {
         try {
             const parsedJson = JSON.parse(jsonInput)
             const formattedJson = JSON.stringify(parsedJson, null, 2)
             setJsonInput(formattedJson)
             showSuccess('JSON formatted successfully!')
-            return formattedJson // Return formatted string on success
+            return formattedJson
         } catch (error) {
-            console.error('Invalid JSON input:', error)
             setError('Invalid JSON input')
-            return null // Return null on failure
+            return null
         }
     }
-    // --- END: MODIFIED handleFormat FUNCTION ---
 
-    // --- START: MODIFIED handleGenerate FUNCTION ---
     const handleGenerate = async () => {
-        console.log('handle generate is start')
         setError('')
         setIsGenerating(true)
 
-        // Invoke handleFormat and check if it was successful.
         const formattedJson = handleFormat()
 
-        // If formatting fails, handleFormat will set the error and return null.
         if (formattedJson === null) {
-            setIsGenerating(false) // Stop the loading spinner.
-            console.log('handle generate is End due to format error')
-            return // Abort the function.
+            setIsGenerating(false)
+            return
         }
 
-        // If formatting was successful, proceed with the fetch request.
         try {
             const response = await fetch('/api/template', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // Use the validated and formatted JSON string directly.
                 body: JSON.stringify({ data: formattedJson }),
             })
 
@@ -187,15 +240,9 @@ const JsonEditor: React.FC = () => {
             }
 
             const result = await response.json()
-            console.log('Success:', result)
             showSuccess('Template generated successfully!')
 
-            // Parse the guaranteed valid JSON.
             const parsedJson = JSON.parse(formattedJson)
-            console.log(
-                'parseJson ',
-                parsedJson.namingConvention.users_2_000___
-            )
             setPathButton(
                 `/generate/${parsedJson.namingConvention.users_2_000___}`
             )
@@ -204,9 +251,7 @@ const JsonEditor: React.FC = () => {
         } finally {
             setIsGenerating(false)
         }
-        console.log('handle generate is End')
     }
-    // --- END: MODIFIED handleGenerate FUNCTION ---
 
     const customBtn =
         'px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
@@ -253,7 +298,6 @@ const JsonEditor: React.FC = () => {
                         <ViewDataType />
                     </div>
 
-                    {/* JSON Input Form */}
                     <div className="space-y-6">
                         <label
                             htmlFor="json-input"
@@ -283,7 +327,6 @@ const JsonEditor: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Error Message */}
                         {error && (
                             <div className="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800 animate-in slide-in-from-top-2 duration-300">
                                 <div className="flex items-center space-x-2">
@@ -305,7 +348,6 @@ const JsonEditor: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Action Buttons */}
                         <div className="flex gap-4 flex-wrap">
                             <Button
                                 onClick={handleSave}
@@ -392,7 +434,6 @@ const JsonEditor: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Saved Items Display */}
                 <div className="mt-8 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800 transition-all duration-300">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 flex items-center space-x-2">

@@ -14,7 +14,7 @@ const writeInFile = (contentPage: string, filePath: string) => {
 
         fs.writeFileSync(newFilePath, contentPage, 'utf8')
 
-        console.log('File created successfully : ', newFilePath)
+        console.log('File created successfully : ', filePath)
         return { message: 'File created successfully' }
     } catch (error: unknown) {
         const errorMessage =

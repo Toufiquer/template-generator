@@ -81,7 +81,6 @@ const AddNextComponents: React.FC = () => {
 
     const onChange = (content: string) => {
         setDescriptions(content)
-        console.log(content)
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

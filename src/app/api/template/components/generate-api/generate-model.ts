@@ -1,3 +1,5 @@
+// generate-model.ts
+
 interface Schema {
     [key: string]: string | Schema
 }
@@ -10,6 +12,9 @@ interface NamingConvention {
     users_2_000___: string
     User_3_000___: string
     user_4_000___: string
+    // You might want to make these optional or add a more generic way to handle them
+    ISelect_6_000___?: string
+    select_5_000___?: string
 }
 
 /**
@@ -31,7 +36,7 @@ interface InputConfig {
  * build a comprehensive Mongoose schema. It handles complex types by parsing options
  * directly from the schema string (e.g., "SELECT#Option1,Option2").
  *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
+ * @param {string} inputJsonFile - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Model.ts file as a string.
  */
 export const generateModel = (inputJsonFile: string): string => {
@@ -78,7 +83,7 @@ export const generateModel = (inputJsonFile: string): string => {
 
         switch (typeName.toUpperCase()) {
             case 'STRING':
-                return `{ type: String, }`
+                return `{ type: String }`
             case 'EMAIL':
                 return `{
                     type: String,
@@ -91,7 +96,7 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'SELECT':
                 return createEnumSchema(options, ['Option 1', 'Option 2'])
             case 'DYNAMICSELECT':
-                return `[{  type: String }]`
+                return `[{ type: String }]` // Assuming an array of strings for dynamic select
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':
@@ -115,16 +120,14 @@ export const generateModel = (inputJsonFile: string): string => {
             case 'COLORPICKER':
                 return `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`
             case 'PHONE':
-                return `{
-                    type: String
-                }`
+                return `{ type: String }`
             case 'URL':
                 return `{ type: String, trim: true }`
             case 'RICHTEXT':
             case 'AUTOCOMPLETE':
                 return `{ type: String }`
             case 'RADIOBUTTON':
-                return `[{ type: String }]`
+                return `[{ type: String }]` // Assuming array for radio buttons if multiple can be selected, otherwise just String
             case 'CHECKBOX':
                 return `{ type: Boolean, default: false }`
             case 'MULTICHECKBOX':
@@ -134,6 +137,46 @@ export const generateModel = (inputJsonFile: string): string => {
                     'Default Option A',
                     'Default Option B',
                 ])
+            case 'STRINGARRAY':
+                // Handles "STRINGARRAY#NAME,CLASS,ROLL"
+                if (options) {
+                    const fields = options
+                        .split(',')
+                        .map((field) => field.trim())
+                        .filter(Boolean) // Remove any empty strings
+                    if (fields.length > 0) {
+                        const subSchemaFields = fields
+                            .map(
+                                (field) =>
+                                    `                "${field}": { type: String }`
+                            )
+                            .join(',\n')
+                        return `[\n            {\n${subSchemaFields}\n            }\n        ]`
+                    }
+                }
+                return `[{ type: String }]` // Default to array of strings if no valid fields provided
+            // --- START: NEWLY ADDED CASE FOR PUREJSON ---
+            case 'PUREJSON':
+                // Handles "PUREJSON#{"key": "value"}" by embedding the raw JSON string.
+                if (options) {
+                    try {
+                        // Validate the JSON by attempting to parse it.
+                        JSON.parse(options)
+                        // Return the raw JSON string to be embedded directly.
+                        return options
+                    } catch (e) {
+                        console.error(
+                            'Invalid JSON provided for PUREJSON type:',
+                            options,
+                            e
+                        )
+                        // Return a default empty object string if parsing fails.
+                        return '{}'
+                    }
+                }
+                // Return a default empty object if no JSON is provided.
+                return '{}'
+            // --- END: NEWLY ADDED CASE FOR PUREJSON ---
             default:
                 return `{ type: String }`
         }
@@ -152,9 +195,16 @@ export const generateModel = (inputJsonFile: string): string => {
             .map(([key, value]) => {
                 const quotedKey = `"${key}"` // Always quote the key
                 if (typeof value === 'object' && !Array.isArray(value)) {
-                    return `${indent}${quotedKey}: {\n${generateSchemaFields(value, depth + 1)}\n${indent}}`
+                    // Nested object
+                    return `${indent}${quotedKey}: {\n${generateSchemaFields(
+                        value,
+                        depth + 1
+                    )}\n${indent}}`
                 }
-                return `${indent}${quotedKey}: ${mapToMongooseSchema(value as string)}`
+                // Handle complex types directly in mapToMongooseSchema
+                return `${indent}${quotedKey}: ${mapToMongooseSchema(
+                    value as string
+                )}`
             })
             .join(',\n')
     }
@@ -170,6 +220,5 @@ ${schemaContent}
 }, { timestamps: true })
 
 export default mongoose.models.${modelName} || mongoose.model('${modelName}', ${schemaVarName})
- 
 `
 }

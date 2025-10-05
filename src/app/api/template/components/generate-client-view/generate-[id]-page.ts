@@ -121,9 +121,7 @@ const Page = () => {
             const fetchData = async () => {
                 const token = process.env.NEXT_PUBLIC_Token
                 if (!token) {
-                    console.error(
-                        'Authentication token not found. Unable to fetch data.'
-                    )
+                  
                     return
                 }
 
@@ -140,7 +138,6 @@ const Page = () => {
                     const responseData = await response.json()
                     setData(responseData?.data)
                 } catch (error) {
-                    console.error('Failed to fetch data:', error)
                 }
             }
             fetchData()

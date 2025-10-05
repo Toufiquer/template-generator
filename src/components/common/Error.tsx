@@ -79,12 +79,11 @@ const ErrorMessageComponent: React.FC<ErrorMessageProps> = ({
 
   const getDisplayMessage = (error: string | FetchBaseQueryError | SerializedError): string => {
     if (typeof error === 'object' && error !== null && 'message' in error) {
-      console.log('error: 1');
+
       const customErrorMessage = error as CustomErrorType;
       return `Error: ${customErrorMessage.message}`;
     }
     if (typeof error === 'string') {
-      console.log('error: 2');
       return error;
     } // Check if it's a FetchBaseQueryError
 
@@ -95,17 +94,14 @@ const ErrorMessageComponent: React.FC<ErrorMessageProps> = ({
         // HTTP status code error
         return `Error ${fetchError.status}: ${JSON.stringify(fetchError.data)}`;
       } else {
-        console.log('error: 5');
-        // Fetch, parsing, or custom error with an error string
         return `Error: ${fetchError.error}`;
       }
     } // Check if it's a SerializedError
 
     if (typeof error === 'object' && error !== null && 'message' in error) {
-      console.log('error: 6');
       const serializedError = error as SerializedError;
       return `Error: ${serializedError.message}`;
-    } // Fallback for unknown error types
+    } 
 
     return 'An unknown error occurred.';
   };

@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
         generateRtk(data)
         generateStore(data)
         generateSSRView(data)
+
         generateMainPage(data)
         generateClientView(data)
         generateAllOtherComponents(data)
