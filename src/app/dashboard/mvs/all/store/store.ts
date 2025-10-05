@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import { IMvs ,defaultMvs} from '@/app/generate/mvs/all/store/data/data'
-import { MvsStore } from '@/app/generate/mvs/all/store/store-type' 
-import { queryParams } from '@/app/generate/mvs/all/store/store-constant';
+import { IMvs ,defaultMvs} from '../store/data/data'
+import { MvsStore } from '../store/store-type' 
+import { queryParams } from '../store/store-constant';
 
 export const useMvsStore = create<MvsStore>((set) => ({
     queryPramsLimit: queryParams.limit,

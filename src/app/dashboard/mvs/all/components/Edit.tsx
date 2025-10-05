@@ -41,7 +41,7 @@ import { DateField } from '@/components/dashboard-ui/DateField'
 import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
 import { SelectField } from '@/components/dashboard-ui/SelectField'
 
-import { IMvs, defaultMvs } from '@/app/generate/mvs/all/store/data/data'
+import { IMvs, defaultMvs } from '../store/data/data'
 import { useMvsStore } from '../store/store'
 import { useUpdateMvsMutation } from '../redux/rtk-api'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'

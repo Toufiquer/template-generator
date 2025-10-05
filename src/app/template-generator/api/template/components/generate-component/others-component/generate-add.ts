@@ -277,7 +277,7 @@ ${staticImports}
 
 import { use${pluralPascalCase}Store } from '../store/store'
 import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
-import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
+import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const AddNextComponents: React.FC = () => {

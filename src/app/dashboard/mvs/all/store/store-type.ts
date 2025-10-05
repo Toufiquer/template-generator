@@ -1,4 +1,4 @@
-import { IMvs } from '@/app/generate/mvs/all/api/v1/model'
+import { IMvs } from '../data/data'
 
 export interface MvsStore {
     queryPramsLimit: number
