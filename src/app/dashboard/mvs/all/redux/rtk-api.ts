@@ -6,7 +6,7 @@ export const mvsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getMvs: builder.query({
             query: ({ page, limit, q }) => {
-                let url = `/generate/mvs/all/api/v1?page=${page || 1}&limit=${limit || 10}`
+                let url = `/api/mvs/v1?page=${page || 1}&limit=${limit || 10}`
                 if (q) {
                     url += `&q=${encodeURIComponent(q)}`
                 }
@@ -16,16 +16,16 @@ export const mvsApi = apiSlice.injectEndpoints({
         }),
         getMvsSummary: builder.query({
             query: ({ page, limit }) => {
-                return `/generate/mvs/all/api/v1/summary?page=${page || 1}&limit=${limit || 10}`
+                return `/api/mvs/v1/summary?page=${page || 1}&limit=${limit || 10}`
             },
             providesTags: [{ type: 'tagTypeMvs', id: 'LIST' }],
         }),
         getMvsById: builder.query({
-            query: (id) => `/generate/mvs/all/api/v1?id=${id}`,
+            query: (id) => `/api/mvs/v1?id=${id}`,
         }),
         addMvs: builder.mutation({
             query: (newMv) => ({
-                url: '/generate/mvs/all/api/v1',
+                url: '/api/mvs/v1',
                 method: 'POST',
                 body: newMv,
             }),
@@ -33,7 +33,7 @@ export const mvsApi = apiSlice.injectEndpoints({
         }),
         updateMvs: builder.mutation({
             query: ({ id, ...data }) => ({
-                url: `/generate/mvs/all/api/v1`,
+                url: `/api/mvs/v1`,
                 method: 'PUT',
                 body: { id: id, ...data },
             }),
@@ -41,7 +41,7 @@ export const mvsApi = apiSlice.injectEndpoints({
         }),
         deleteMvs: builder.mutation({
             query: ({ id }) => ({
-                url: `/generate/mvs/all/api/v1`,
+                url: `/api/mvs/v1`,
                 method: 'DELETE',
                 body: { id },
             }),
@@ -49,7 +49,7 @@ export const mvsApi = apiSlice.injectEndpoints({
         }),
         bulkUpdateMvs: builder.mutation({
             query: (bulkData) => ({
-                url: `/generate/mvs/all/api/v1?bulk=true`,
+                url: `/api/mvs/v1?bulk=true`,
                 method: 'PUT',
                 body: bulkData,
             }),
@@ -57,7 +57,7 @@ export const mvsApi = apiSlice.injectEndpoints({
         }),
         bulkDeleteMvs: builder.mutation({
             query: (bulkData) => ({
-                url: `/generate/mvs/all/api/v1?bulk=true`,
+                url: `/api/mvs/v1?bulk=true`,
                 method: 'DELETE',
                 body: bulkData,
             }),

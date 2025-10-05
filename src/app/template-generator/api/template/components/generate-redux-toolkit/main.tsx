@@ -1,5 +1,6 @@
 import writeInFile from '../create-and-write'
 import generateRtkApiFile from './generate-toolkit'
+import generateRtkApiFileSlice from './generate-toolkitSlice'
 
 const generateRtk = async (data: string) => {
     //  !  create api
@@ -11,16 +12,16 @@ const generateRtk = async (data: string) => {
         isUseGenerateFolder = namingConvention.use_generate_folder
     }
 
-    const rtkApiTemplate = generateRtkApiFile(data)
-
     if (isUseGenerateFolder) {
+        const rtkApiTemplate = generateRtkApiFile(data)
         writeInFile(
             rtkApiTemplate,
             `src/app/generate/${folderName}/all/redux/rtk-api.ts`
         )
     } else {
+        const rtkApiTemplateSlice = generateRtkApiFileSlice(data)
         writeInFile(
-            rtkApiTemplate,
+            rtkApiTemplateSlice,
             `src/app/dashboard/${folderName}/all/redux/rtk-api.ts`
         )
     }
