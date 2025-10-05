@@ -11,9 +11,6 @@ import writeInFile from './components/create-and-write'
 
 export async function POST(request: NextRequest) {
     try {
-        // //  !  create api
-        // const { data } = await request.json()
-        // console.log('Data : ', data)
         let folderName = 'example'
         const { data } = await request.json()
         const { namingConvention } = JSON.parse(data) || {}
@@ -24,7 +21,6 @@ export async function POST(request: NextRequest) {
             data,
             `src/app/generate/${folderName}/slice-schema/slice-schema.json`
         )
-        console.log('data', data)
         generateApi(data)
         generateRtk(data)
         generateStore(data)

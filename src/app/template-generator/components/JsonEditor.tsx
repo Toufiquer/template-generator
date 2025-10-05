@@ -139,30 +139,47 @@ const JsonEditor: React.FC = () => {
         if (error) setError('')
     }
 
-    const handleFormat = () => {
+    // --- START: MODIFIED handleFormat FUNCTION ---
+    const handleFormat = (): string | null => {
         try {
             const parsedJson = JSON.parse(jsonInput)
             const formattedJson = JSON.stringify(parsedJson, null, 2)
             setJsonInput(formattedJson)
             showSuccess('JSON formatted successfully!')
+            return formattedJson // Return formatted string on success
         } catch (error) {
             console.error('Invalid JSON input:', error)
             setError('Invalid JSON input')
+            return null // Return null on failure
         }
     }
+    // --- END: MODIFIED handleFormat FUNCTION ---
 
+    // --- START: MODIFIED handleGenerate FUNCTION ---
     const handleGenerate = async () => {
         console.log('handle generate is start')
         setError('')
         setIsGenerating(true)
 
+        // Invoke handleFormat and check if it was successful.
+        const formattedJson = handleFormat()
+
+        // If formatting fails, handleFormat will set the error and return null.
+        if (formattedJson === null) {
+            setIsGenerating(false) // Stop the loading spinner.
+            console.log('handle generate is End due to format error')
+            return // Abort the function.
+        }
+
+        // If formatting was successful, proceed with the fetch request.
         try {
             const response = await fetch('/api/template', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ data: jsonInput }),
+                // Use the validated and formatted JSON string directly.
+                body: JSON.stringify({ data: formattedJson }),
             })
 
             if (!response.ok) {
@@ -172,7 +189,9 @@ const JsonEditor: React.FC = () => {
             const result = await response.json()
             console.log('Success:', result)
             showSuccess('Template generated successfully!')
-            const parsedJson = JSON.parse(jsonInput)
+
+            // Parse the guaranteed valid JSON.
+            const parsedJson = JSON.parse(formattedJson)
             console.log(
                 'parseJson ',
                 parsedJson.namingConvention.users_2_000___
@@ -187,6 +206,7 @@ const JsonEditor: React.FC = () => {
         }
         console.log('handle generate is End')
     }
+    // --- END: MODIFIED handleGenerate FUNCTION ---
 
     const customBtn =
         'px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
