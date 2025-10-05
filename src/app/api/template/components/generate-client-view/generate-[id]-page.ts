@@ -17,6 +17,7 @@ interface InputConfig {
         users_2_000___: string
         User_3_000___: string
         user_4_000___: string
+        use_generate_folder: boolean
     }
 }
 
@@ -26,9 +27,7 @@ interface InputConfig {
  * @param {string} inputJsonString The JSON string with schema and naming conventions.
  * @returns {string} The complete page.tsx file content as a string.
  */
-export const generateClientDetailPageFile = (
-    inputJsonFile: string
-): string => {
+export const generateClientDetailPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 

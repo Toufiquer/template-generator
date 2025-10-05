@@ -1,3 +1,4 @@
+import { ISavedInterfaceToLocalDB } from './../../../../../../../lib/store/mainStore'
 /**
  * Generates the content for a BulkDelete.tsx component file.
  *
@@ -12,6 +13,7 @@ export const generateBulkDeleteComponentFile = (
     // 1. Extract and format names from the naming convention.
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     // 2. Intelligently find the most suitable display key from the schema.
     // It prioritizes 'name', then 'title', then the first available 'STRING' field.
@@ -21,6 +23,13 @@ export const generateBulkDeleteComponentFile = (
         schemaKeys.find((key) => key.toLowerCase() === 'title') ||
         schemaKeys.find((key) => schema[key] === 'STRING') ||
         '_id' // Fallback to _id if no suitable string is found
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
 
     // 3. Construct the file content using a template literal.
     return `import React from 'react'
@@ -36,7 +45,7 @@ import {
 } from '@/components/ui/dialog'
 
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useBulkDelete${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useBulkDelete${pluralPascalCase}Mutation } from '${reduxPath}'
 import { handleSuccess, handleError } from './utils'
 
 const BulkDeleteNextComponents: React.FC = () => {

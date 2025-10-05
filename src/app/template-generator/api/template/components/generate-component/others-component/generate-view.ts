@@ -17,6 +17,7 @@ interface InputConfig {
         users_2_000___: string
         User_3_000___: string
         user_4_000___: string
+        use_generate_folder: boolean
     }
 }
 
@@ -35,6 +36,15 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
     const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
+
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
 
     /**
      * Generates the JSX for displaying each field from the schema.
@@ -182,7 +192,7 @@ import {
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}ByIdQuery } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useGet${pluralPascalCase}ByIdQuery } from '${reduxPath}'
 
 const ViewNextComponents: React.FC = () => {
     const {

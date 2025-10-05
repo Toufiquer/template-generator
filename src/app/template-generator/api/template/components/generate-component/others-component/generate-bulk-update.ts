@@ -14,6 +14,14 @@ export const generateBulkUpdateComponentFile = (
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
 
     // 2. Find a primary display key for listing items.
     const schemaKeys = Object.keys(schema)
@@ -57,7 +65,7 @@ import {
 import { ${interfaceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { ${pluralLowerCase}SelectorArr } from '../store/store-constant'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '${reduxPath}'
 import { handleSuccess, handleError } from './utils'
 
 const BulkUpdateNextComponents: React.FC = () => {

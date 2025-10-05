@@ -17,6 +17,7 @@ interface InputConfig {
         users_2_000___: string
         User_3_000___: string
         user_4_000___: string
+        use_generate_folder: boolean
     }
 }
 
@@ -109,10 +110,10 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                
-                if (typeof type !== 'string') return '';
-                
-                const [typeName] = type.toUpperCase().split('#');
+
+                if (typeof type !== 'string') return ''
+
+                const [typeName] = type.toUpperCase().split('#')
 
                 if (typeName === 'IMAGE') {
                     return `

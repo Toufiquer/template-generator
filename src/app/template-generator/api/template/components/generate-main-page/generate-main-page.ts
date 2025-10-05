@@ -13,6 +13,14 @@ export const generateMainPageFile = (inputJsonFile: string): string => {
     const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
 
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `./redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
     // Construct the file content using a template literal
     return `'use client'
 
@@ -39,7 +47,7 @@ import FilterDialog, { FilterPayload } from './components/FilterDialog'
 import Summary from './components/Summary'
 
 import { use${pluralPascalCase}Store } from './store/store'
-import { useGet${pluralPascalCase}Query } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useGet${pluralPascalCase}Query } from '${reduxPath}'
 import { handleSuccess } from './components/utils'
 
 const MainNextPage: React.FC = () => {

@@ -4,6 +4,7 @@
 interface NamingConvention {
     Users_1_000___: string // e.g., "Posts"
     users_2_000___: string // e.g., "posts"
+    use_generate_folder: boolean
 }
 
 /**
@@ -35,6 +36,15 @@ export const generateSummaryComponentFile = (
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
+
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
 
     // Check if any field in the schema is a number type. This will be used
     // to conditionally render parts of the JSX template.
@@ -175,7 +185,7 @@ import { useState } from 'react'
 import { Loader2, TrendingUp } from 'lucide-react'
 
 // Assuming your RTK API file is correctly set up
-import { useGet${pluralPascalCase}SummaryQuery } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useGet${pluralPascalCase}SummaryQuery } from '${reduxPath}'
 
 // Import Shadcn UI Components
 import { Button } from '@/components/ui/button'

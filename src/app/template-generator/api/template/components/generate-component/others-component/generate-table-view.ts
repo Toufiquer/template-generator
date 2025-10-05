@@ -7,6 +7,13 @@ export const generateViewTableComponentFile = (
     const pluralLowerCase = namingConvention.users_2_000___
     const interfaceName = `I${pluralPascalCase}`
     const displayableKeysTypeName = `Displayable${pluralPascalCase}Keys`
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
 
     // Dynamically determine which fields are suitable for table columns.
     const suitableTypes = [
@@ -97,7 +104,7 @@ import {
 import { ${interfaceName} } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}Query } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useGet${pluralPascalCase}Query } from '${reduxPath}'
 import Pagination from './Pagination'
 import ExportDialog from './ExportDialog' // Import the new dialog component
 

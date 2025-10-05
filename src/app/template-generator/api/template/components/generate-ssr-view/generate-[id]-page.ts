@@ -2,7 +2,7 @@
  * Defines the structure for the schema object, allowing for recursive nesting.
  */
 interface Schema {
-    [key:string]: string | Schema
+    [key: string]: string | Schema
 }
 
 /**
@@ -17,6 +17,7 @@ interface InputConfig {
         users_2_000___: string
         User_3_000___: string
         user_4_000___: string
+        use_generate_folder: boolean
     }
 }
 

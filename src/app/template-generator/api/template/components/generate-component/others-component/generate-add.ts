@@ -17,6 +17,7 @@ interface InputConfig {
         users_2_000___: string
         User_3_000___: string
         user_4_000___: string
+        use_generate_folder: boolean
     }
 }
 
@@ -36,6 +37,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     const componentBodyStatements = new Set<string>()
 
@@ -229,6 +231,13 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             ? `${[...componentBodyStatements].sort().join('\n\n')}`
             : ''
 
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
+
     // --- STATIC IMPORT BLOCK ---
     const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
@@ -276,7 +285,8 @@ import {
 ${staticImports}
 
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useAdd${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+
+import { useAdd${pluralPascalCase}Mutation } from '${reduxPath}'
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 

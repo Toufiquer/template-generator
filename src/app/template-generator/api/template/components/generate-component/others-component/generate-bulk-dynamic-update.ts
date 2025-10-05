@@ -14,6 +14,14 @@ export const generateBulkDynamicUpdateComponentFile = (
     const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
 
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+    }
     // 2. Intelligently find the most suitable display key from the schema.
     const schemaKeys = Object.keys(schema)
     const displayKey =
@@ -35,7 +43,7 @@ import {
 } from '@/components/ui/dialog'
 
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '${reduxPath}'
 import { handleSuccess, handleError } from './utils'
 import DynamicDataSelect from './DynamicDataSelect'
 
