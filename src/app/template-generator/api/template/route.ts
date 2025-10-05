@@ -12,15 +12,26 @@ import writeInFile from './components/create-and-write'
 export async function POST(request: NextRequest) {
     try {
         let folderName = 'example'
+        let isUseGenerateFolder = false
         const { data } = await request.json()
         const { namingConvention } = JSON.parse(data) || {}
         if (namingConvention.users_2_000___) {
             folderName = namingConvention.users_2_000___
+            isUseGenerateFolder = namingConvention.use_generate_folder
         }
-        writeInFile(
-            data,
-            `src/app/generate/${folderName}/slice-schema/slice-schema.json`
-        )
+
+        if (isUseGenerateFolder) {
+            writeInFile(
+                data,
+                `src/app/generate/${folderName}/slice-schema/slice-schema.json`
+            )
+        } else {
+            writeInFile(
+                data,
+                `src/app/dashboard/${folderName}/slice-schema/slice-schema.json`
+            )
+        }
+
         generateApi(data)
         generateRtk(data)
         generateStore(data)

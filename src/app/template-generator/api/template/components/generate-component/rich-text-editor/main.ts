@@ -4,23 +4,35 @@ import { generateRichTextEditorMenuBar } from './generate-rich-text-editor-menu-
 
 const generateRichTextEditorMain = async (data: string) => {
     //  !  create api
-
     let folderName = 'example'
-
+    let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
+        isUseGenerateFolder = namingConvention.use_generate_folder
     }
 
     const richTextEditorIndexTemplate = generateRichTextEditorIndex()
     const richTextEditorMenuBarTemplate = generateRichTextEditorMenuBar()
-    writeInFile(
-        richTextEditorIndexTemplate,
-        `src/app/generate/${folderName}/all/components/rich-text-editor/index.tsx`
-    )
-    writeInFile(
-        richTextEditorMenuBarTemplate,
-        `src/app/generate/${folderName}/all/components/rich-text-editor/menu-bar.tsx`
-    )
+
+    if (isUseGenerateFolder) {
+        writeInFile(
+            richTextEditorIndexTemplate,
+            `src/app/generate/${folderName}/all/components/rich-text-editor/index.tsx`
+        )
+        writeInFile(
+            richTextEditorMenuBarTemplate,
+            `src/app/generate/${folderName}/all/components/rich-text-editor/menu-bar.tsx`
+        )
+    } else {
+        writeInFile(
+            richTextEditorIndexTemplate,
+            `src/app/dashboard/${folderName}/all/components/rich-text-editor/index.tsx`
+        )
+        writeInFile(
+            richTextEditorMenuBarTemplate,
+            `src/app/dashboard/${folderName}/all/components/rich-text-editor/menu-bar.tsx`
+        )
+    }
 }
 export default generateRichTextEditorMain

@@ -86,7 +86,6 @@ const initialJsonTemplate = {
         hobbies: 'MULTICHECKBOX',
         ideas: 'MULTIOPTIONS#O 1, O 2, O 3, O 4',
         students: 'STRINGARRAY#Name, Class, Roll',
-        // The value is a single string, containing the type prefix and the formatted JSON object.
         complexValue: {
             id: '1234',
             title: ' The Name of Country',
@@ -241,9 +240,15 @@ const JsonEditor: React.FC = () => {
             showSuccess('Template generated successfully!')
 
             const parsedJson = JSON.parse(formattedJson)
-            setPathButton(
-                `/generate/${parsedJson.namingConvention.users_2_000___}`
-            )
+            if (parsedJson.namingConvention.use_generate_folder) {
+                setPathButton(
+                    `/generate/${parsedJson.namingConvention.users_2_000___}`
+                )
+            } else {
+                setPathButton(
+                    `/dashboard/${parsedJson.namingConvention.users_2_000___}`
+                )
+            }
         } catch (error) {
             setError('Failed to fetch: ' + (error as Error).message)
         } finally {

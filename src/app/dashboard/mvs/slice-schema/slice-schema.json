@@ -1,0 +1,16 @@
+{
+  "uid": "d001",
+  "templateName": "Dashboard Template",
+  "schema": {
+    "title": "STRING"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Mvs",
+    "users_2_000___": "mvs",
+    "User_3_000___": "Mv",
+    "user_4_000___": "mv",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select",
+    "use_generate_folder": false
+  }
+}

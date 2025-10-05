@@ -5,12 +5,12 @@ import { generateViewRichTextEditorServerComponent } from './generate-v-r-t-e-s-
 
 const generateViewRichTextEditorMain = async (data: string) => {
     //  !  create api
-
     let folderName = 'example'
-
+    let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
+        isUseGenerateFolder = namingConvention.use_generate_folder
     }
 
     const richTextEditorClientTemplate =
@@ -19,17 +19,32 @@ const generateViewRichTextEditorMain = async (data: string) => {
         generateViewRichTextEditorServerComponent()
     const richTextViewTemplate = generateViewRichTextViewComponent()
 
-    writeInFile(
-        richTextEditorClientTemplate,
-        `src/app/generate/${folderName}/all/components/view-rich-text/ClientComponent.tsx`
-    )
-    writeInFile(
-        richTextEditorServerTemplate,
-        `src/app/generate/${folderName}/all/components/view-rich-text/ServerComponent.tsx`
-    )
-    writeInFile(
-        richTextViewTemplate,
-        `src/app/generate/${folderName}/all/components/view-rich-text/ViewRichText.tsx`
-    )
+    if (isUseGenerateFolder) {
+        writeInFile(
+            richTextEditorClientTemplate,
+            `src/app/generate/${folderName}/all/components/view-rich-text/ClientComponent.tsx`
+        )
+        writeInFile(
+            richTextEditorServerTemplate,
+            `src/app/generate/${folderName}/all/components/view-rich-text/ServerComponent.tsx`
+        )
+        writeInFile(
+            richTextViewTemplate,
+            `src/app/generate/${folderName}/all/components/view-rich-text/ViewRichText.tsx`
+        )
+    } else {
+        writeInFile(
+            richTextEditorClientTemplate,
+            `src/app/dashboard/${folderName}/all/components/view-rich-text/ClientComponent.tsx`
+        )
+        writeInFile(
+            richTextEditorServerTemplate,
+            `src/app/dashboard/${folderName}/all/components/view-rich-text/ServerComponent.tsx`
+        )
+        writeInFile(
+            richTextViewTemplate,
+            `src/app/dashboard/${folderName}/all/components/view-rich-text/ViewRichText.tsx`
+        )
+    }
 }
 export default generateViewRichTextEditorMain

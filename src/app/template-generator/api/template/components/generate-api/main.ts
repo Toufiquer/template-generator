@@ -8,9 +8,15 @@ import { generateSummaryRoute } from './summary/generate-route'
 const generateApi = async (data: string) => {
     //  !  create api
     let folderName = 'example'
+    let isUseGenerateFolder = false
     const { namingConvention } = JSON.parse(data) || {}
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
+        isUseGenerateFolder = namingConvention.use_generate_folder
+    }
+
+    if (isUseGenerateFolder) {
+    } else {
     }
 
     const controllerTemplate = generateController(data)
@@ -19,26 +25,44 @@ const generateApi = async (data: string) => {
     const sumaryRouteTemplate = generateSummaryRoute(data)
     const summaryControllerTemplate = generateSummaryController(data)
 
-    writeInFile(
-        controllerTemplate,
-        `src/app/generate/${folderName}/all/api/v1/controller.ts`
-    )
-    writeInFile(
-        medelTemplate,
-        `src/app/generate/${folderName}/all/api/v1/model.ts`
-    )
-    writeInFile(
-        routeTemplate,
-        `src/app/generate/${folderName}/all/api/v1/route.ts`
-    )
+    if (isUseGenerateFolder) {
+        writeInFile(
+            controllerTemplate,
+            `src/app/generate/${folderName}/all/api/v1/controller.ts`
+        )
+        writeInFile(
+            medelTemplate,
+            `src/app/generate/${folderName}/all/api/v1/model.ts`
+        )
+        writeInFile(
+            routeTemplate,
+            `src/app/generate/${folderName}/all/api/v1/route.ts`
+        )
 
-    writeInFile(
-        sumaryRouteTemplate,
-        `src/app/generate/${folderName}/all/api/v1/summary/route.ts`
-    )
-    writeInFile(
-        summaryControllerTemplate,
-        `src/app/generate/${folderName}/all/api/v1/summary/controller.ts`
-    )
+        writeInFile(
+            sumaryRouteTemplate,
+            `src/app/generate/${folderName}/all/api/v1/summary/route.ts`
+        )
+        writeInFile(
+            summaryControllerTemplate,
+            `src/app/generate/${folderName}/all/api/v1/summary/controller.ts`
+        )
+    } else {
+        writeInFile(
+            controllerTemplate,
+            `src/app/api/${folderName}/v1/controller.ts`
+        )
+        writeInFile(medelTemplate, `src/app/api/${folderName}/v1/model.ts`)
+        writeInFile(routeTemplate, `src/app/api/${folderName}/v1/route.ts`)
+
+        writeInFile(
+            sumaryRouteTemplate,
+            `src/app/api/${folderName}/v1/summary/route.ts`
+        )
+        writeInFile(
+            summaryControllerTemplate,
+            `src/app/api/${folderName}/v1/summary/controller.ts`
+        )
+    }
 }
 export default generateApi
