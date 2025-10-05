@@ -12,7 +12,6 @@
 export const generateViewRichTextViewComponent = (
     inputJsonFile: string
 ): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return `  
 export const ViewRichText = ({ data }: { data: string }) => {
     return (

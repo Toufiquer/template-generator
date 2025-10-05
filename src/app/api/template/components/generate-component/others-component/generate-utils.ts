@@ -10,7 +10,6 @@
  * @returns {string} The complete, formatted Controller.ts file as a string.
  */
 export const generateUtils = (inputJsonFile: string): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return `
     
 

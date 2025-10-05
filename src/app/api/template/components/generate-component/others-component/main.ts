@@ -27,7 +27,6 @@ const generateAllOtherComponentsMain = async (data: string) => {
 
     let folderName = 'example'
 
-    // console.log('Data : ', data)
     const { namingConvention } = JSON.parse(data) || {}
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
@@ -37,37 +36,23 @@ const generateAllOtherComponentsMain = async (data: string) => {
     const bulkDeleteComponentContent = generateBulkDeleteComponentFile(data)
     const bulkDynamicUpdateComponentContent =
         generateBulkDynamicUpdateComponentFile(data)
-
     const bulkEditComponentContent = generateBulkEditComponentFile(data)
-
     // Generate and print the output
     const bulkUpdateComponentContent = generateBulkUpdateComponentFile(data)
-
     const dataSelectComponentContent = generateDataSelectComponentFile(data)
-
     const deleteComponentContent = generateDeleteComponentFile(data)
-
     const dynamicDataSelectComponentContent =
-        generateDynamicDataSelectComponentFile(data)
-
+    generateDynamicDataSelectComponentFile(data)
     const editComponentContent = generateEditComponentFile(data)
-
     const imageDialogComponentContent = generateImageDialogComponentFile(data)
-
     const imagesSelectComponentContent = generateImagesSelectComponentFile(data)
-
     const multiSelectComponentContent = generateMultiSelectComponentFile(data)
-
     const paginationComponentContent = generatePaginationComponentFile(data)
-
     const searchBoxComponentContent = generateSearchBoxComponentFile(data)
-
     const generateTooManyRequestContent = generateTooManyRequestComponent(data)
     const generateTypeUtilsContent = generateTypeUtils(data)
     const generateUtilsCentent = generateUtils(data)
-
     const viewComponentContent = generateViewComponentFile(data)
-
     const viewTableComponentContent = generateViewTableComponentFile(data)
     const generateFilterDialogContent = generateFilterDialogFile(data)
     const generateExportDialogContent = generateExportDialogField(data)

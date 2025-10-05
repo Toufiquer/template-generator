@@ -1,3 +1,10 @@
+act as a seniour webapp developer in NextJs with Typescript and tailwindCss.
+
+here is an example of a file. I want to modify this code.
+
+
+generate-view.tsx
+```
 /**
  * Defines the structure for the schema object, allowing for nested properties.
  */
@@ -6,29 +13,13 @@ interface Schema {
 }
 
 /**
- * Defines the overall structure of the input JSON configuration.
- */
-interface InputConfig {
-    uid: string
-    templateName: string
-    schema: Schema
-    namingConvention: {
-        Users_1_000___: string
-        users_2_000___: string
-        User_3_000___: string
-        user_4_000___: string
-    }
-}
-
-/**
  * Generates the content for a dynamic View.tsx component file based on a JSON schema.
  *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
+ * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
  * @returns {string} The complete View.tsx file content as a string.
  */
 export const generateViewComponentFile = (inputJsonFile: string): string => {
-    const { schema, namingConvention }: InputConfig =
-        JSON.parse(inputJsonFile) || {}
+    const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
     const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
@@ -39,43 +30,30 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
      * Generates the JSX for displaying each field from the schema.
      */
     const generateDetailRowsJsx = (currentSchema: Schema): string => {
-        const imageKeys = Object.keys(currentSchema).filter((key) => {
-            const value = currentSchema[key]
-            return (
-                typeof value === 'string' &&
-                ['IMAGE', 'IMAGES'].includes(value.toUpperCase().split('#')[0])
+        const imageKeys = Object.keys(currentSchema).filter((key) =>
+            ['IMAGE', 'IMAGES'].includes(
+                (currentSchema[key] as string).toUpperCase()
             )
-        })
+        )
 
         return Object.entries(currentSchema)
-            .filter(([key]) => !imageKeys.includes(key))
+            .filter(([key]) => !imageKeys.includes(key)) // Exclude image fields from the main list
             .map(([key, type]) => {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
 
-                // Handle nested objects directly
-                if (typeof type === 'object' && !Array.isArray(type)) {
-                    return `<DetailRowJson label="${label}" value={selected${pluralPascalCase}['${key}']} />`
-                }
-
-                const [typeName] = (type as string).toUpperCase().split('#')
-
-                switch (typeName) {
+                switch ((type as string).toUpperCase()) {
                     case 'BOOLEAN':
                     case 'CHECKBOX':
                         return `<DetailRow label="${label}" value={formatBoolean(selected${pluralPascalCase}['${key}'])} />`
                     case 'DATE':
                         return `<DetailRow label="${label}" value={formatDate(selected${pluralPascalCase}['${key}'])} />`
-                    case 'IMAGES': // Should be handled by image viewer, but kept as fallback
+                    case 'IMAGES':
                     case 'MULTICHECKBOX':
-                    case 'MULTIOPTIONS':
-                    case 'DYNAMICSELECT':
+                    case 'MULTISELECT':
+                    case 'MULTIDYNAMICSELECT':
                         return `<DetailRowArray label="${label}" values={selected${pluralPascalCase}['${key}']} />`
-                    // --- START: NEW CASE FOR STRINGARRAY ---
-                    case 'STRINGARRAY':
-                        return `<DetailRowJson label="${label}" value={selected${pluralPascalCase}['${key}']} />`
-                    // --- END: NEW CASE FOR STRINGARRAY ---
                     case 'DATERANGE':
                         return `<DetailRow label="${label}" value={\`\${formatDate(selected${pluralPascalCase}['${key}']?.start)} to \${formatDate(selected${pluralPascalCase}['${key}']?.end)}\`} />`
                     case 'TIMERANGE':
@@ -109,12 +87,7 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                
-                if (typeof type !== 'string') return '';
-                
-                const [typeName] = type.toUpperCase().split('#');
-
-                if (typeName === 'IMAGE') {
+                if ((type as string).toUpperCase() === 'IMAGE') {
                     return `
                         <div className="mt-4">
                             <h3 className="font-semibold text-md mb-2">${label}</h3>
@@ -122,8 +95,8 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                                 <div className="relative w-full h-48 border rounded-lg overflow-hidden">
                                     <Image
                                         src={selected${pluralPascalCase}['${key}']}
-                                        fill
-                                        style={{ objectFit: 'cover' }}
+                                        layout="fill"
+                                        objectFit="cover"
                                         alt="${label}"
                                     />
                                 </div>
@@ -132,7 +105,7 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                             )}
                         </div>`
                 }
-                if (typeName === 'IMAGES') {
+                if ((type as string).toUpperCase() === 'IMAGES') {
                     return `
                         <div className="mt-4">
                             <h3 className="font-semibold text-md mb-2">${label}</h3>
@@ -145,8 +118,8 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                                         >
                                             <Image
                                                 src={image}
-                                                fill
-                                                style={{ objectFit: 'cover' }}
+                                                layout="fill"
+                                                objectFit="cover"
                                                 alt={\`Image \${index + 1}\`}
                                             />
                                         </div>
@@ -224,8 +197,8 @@ const ViewNextComponents: React.FC = () => {
         value: React.ReactNode
     }> = ({ label, value }) => (
         <div className="grid grid-cols-3 gap-2 py-2 border-b">
-            <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">{label}</div>
-            <div className="col-span-2 text-sm text-gray-800 dark:text-gray-100">{value || 'N/A'}</div>
+            <div className="font-semibold text-sm text-gray-600">{label}</div>
+            <div className="col-span-2 text-sm">{value || 'N/A'}</div>
         </div>
     )
     
@@ -234,19 +207,6 @@ const ViewNextComponents: React.FC = () => {
         values?: (string | number)[]
     }> = ({ label, values }) => (
         <DetailRow label={label} value={values?.join(', ') || 'N/A'} />
-    )
-
-    // --- NEW HELPER COMPONENT FOR RENDERING JSON ---
-    const DetailRowJson: React.FC<{
-        label: string
-        value?: object | any[]
-    }> = ({ label, value }) => (
-        <div className="grid grid-cols-1 gap-1 py-2 border-b">
-            <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">{label}</div>
-            <div className="col-span-1 text-sm bg-slate-100 dark:bg-slate-800 p-2 rounded-md mt-1">
-                <pre className="whitespace-pre-wrap text-xs">{value ? JSON.stringify(value, null, 2) : 'N/A'}</pre>
-            </div>
-        </div>
     )
 
     return (
@@ -284,3 +244,129 @@ const ViewNextComponents: React.FC = () => {
 export default ViewNextComponents
 `
 }
+
+```
+
+and here is old inputJson
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL",
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT#Bangladesh, India, Pakistan, Canada",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",
+    "policy": "CHECKBOX",
+    "hobbies": "MULTICHECKBOX",
+    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+here is updated inputJson 
+```
+{
+  "uid": "000",
+  "templateName": "Basic Template",
+  "schema": {
+    "title": "STRING",
+    "email": "EMAIL",
+    "password": "PASSWORD",
+    "passcode": "PASSCODE",
+    "area": "SELECT#Bangladesh, India, Pakistan, Canada",
+    "sub-area": "DYNAMICSELECT",
+    "products-images": "IMAGES",
+    "personal-image": "IMAGE",
+    "description": "DESCRIPTION",
+    "age": "INTNUMBER",
+    "amount": "FLOATNUMBER",
+    "isActive": "BOOLEAN",
+    "start-date": "DATE",
+    "start-time": "TIME",
+    "schedule-date": "DATERANGE",
+    "schedule-time": "TIMERANGE",
+    "favorite-color": "COLORPICKER",
+    "number": "PHONE",
+    "profile": "URL",
+    "test": "RICHTEXT",
+    "info": "AUTOCOMPLETE",
+    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",
+    "policy": "CHECKBOX",
+    "hobbies": "MULTICHECKBOX",
+    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4",
+    "students": "STRINGARRAY#Name, Class, Roll",
+    "complexValue": {
+      "id": "1234",
+      "title": " The Name of Country",
+      "parent": {
+        "id": "111234",
+        "title": " The Name of Parent",
+        "child": {
+          "id": "1234",
+          "title": " The Name of Child",
+          "child": "",
+          "note": "The Note"
+        },
+        "note": "The Note"
+      },
+      "note": "The Note"
+    }
+  },
+  "namingConvention": {
+    "Users_1_000___": "Posts",
+    "users_2_000___": "posts",
+    "User_3_000___": "Post",
+    "user_4_000___": "post",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select"
+  }
+}
+```
+
+
+Now please Update generate-edit.tsx so it can generate with STRINGARRAY and "{
+      "id": "1234",
+      "title": " The Name of Country",
+      "parent": {
+        "id": "111234",
+        "title": " The Name of Parent",
+        "child": {
+          "id": "1234",
+          "title": " The Name of Child",
+          "child": "",
+          "note": "The Note"
+        },
+        "note": "The Note"
+      },
+      "note": "The Note"
+    }"
+
+
+Now please update the generate-edit.tsx

@@ -1,9 +1,12 @@
+export const JsonValueCoreCode = `
 // components/JsonEditor.tsx
 'use client'
 
 import React, { useState } from 'react'
+import { useJsonStore } from '@/lib/store/jsonStore'
 
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 // Success Popup Component
 const SuccessPopup = ({
@@ -38,9 +41,24 @@ const SuccessPopup = ({
 }
 
 const JsonEditor: React.FC = () => {
-    const [jsonInput, setJsonInput] = useState<string>(
-        '{\n  "uid": "000",\n  "templateName": "Basic Template",\n  "schema": {\n    "title": "STRING",\n    "email": "EMAIL", \n    "password": "PASSWORD",\n    "passcode": "PASSCODE",\n    "area": "SELECT#Bangladesh, India, Pakistan, Canada",\n    "sub-area": "DYNAMICSELECT",\n    "products-images": "IMAGES",\n    "personal-image": "IMAGE",\n    "description": "DESCRIPTION",\n    "age": "INTNUMBER",\n    "amount": "FLOATNUMBER",\n    "isActive": "BOOLEAN",\n    "start-date": "DATE",\n    "start-time": "TIME",\n    "schedule-date": "DATERANGE",\n    "schedule-time": "TIMERANGE",\n    "favorite-color": "COLORPICKER",\n    "number": "PHONE",\n    "profile": "URL",\n    "test": "RICHTEXT",\n    "info": "AUTOCOMPLETE",\n    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",\n    "policy": "CHECKBOX",\n    "hobbies": "MULTICHECKBOX",\n    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4"\n  },\n  "namingConvention": {\n    "Users_1_000___": "Posts",\n    "users_2_000___": "posts",\n    "User_3_000___": "Post",\n    "user_4_000___": "post",\n    "ISelect_6_000___": "ISelect",\n    "select_5_000___": "select"\n  }\n}'
-    )
+     const [jsonInput, setJsonInput] = useState<string>(
+         JSON.stringify( {
+       "id": "1234",
+       "title": " The Name of Country",
+       "parent": {
+         "id": "111234",
+         "title": " The Name of Parent",
+         "child": {
+           "id": "1234",
+           "title": " The Name of Child",
+           "child": "",
+           "note": "The Note"
+         },
+         "note": "The Note"
+       },
+       "note": "The Note"
+     })
+     )
     const [error, setError] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false)
@@ -71,7 +89,7 @@ const JsonEditor: React.FC = () => {
             }
             showSuccess('JSON saved successfully!')
         } catch (err: unknown) {
-            setError(`Invalid JSON format. Please check your syntax. ${err}`)
+            setError(\`Invalid JSON format. Please check your syntax. \${err}\`)
         } finally {
             setIsLoading(false)
         }
@@ -93,6 +111,9 @@ const JsonEditor: React.FC = () => {
             setError('Invalid JSON input')
         }
     }
+
+    const customBtn =
+        'px-6 py-2 mb-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
     return (
         <>
             <SuccessPopup
@@ -216,3 +237,5 @@ const JsonEditor: React.FC = () => {
 }
 
 export default JsonEditor
+
+`

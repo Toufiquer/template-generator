@@ -281,7 +281,7 @@ I want input the updated json file which look like
     "hobbies": "MULTICHECKBOX",
     "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4",
     "students": "STRINGARRAY#Name, Class, Roll",
-    "complexValue": {
+    "complexValue": PUREJSON#{
       "id": "1234",
       "title": " The Name of Country",
       "parent": {
@@ -415,3 +415,7 @@ const postSchema = new Schema({
 
 export default mongoose.models.Post || mongoose.model('Post', postSchema)
 ```
+
+
+Now you have to update generate-model.ts so that it could be handle PUREJSON and I will provide JSON file after # tag. 
+ 

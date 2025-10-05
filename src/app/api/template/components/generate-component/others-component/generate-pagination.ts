@@ -8,7 +8,6 @@
 export const generatePaginationComponentFile = (
     inputJsonFile: string
 ): string => {
-    console.log('inputJsonFile', inputJsonFile)
 
     // This component is a generic UI element for pagination.
     // Its functionality is self-contained and does not need to be altered

@@ -28,7 +28,6 @@ const JsonEditorSingleItem = ({
     const [isRemoving, setIsRemoving] = useState(false)
 
     const handleSetJson = (data: string) => {
-        console.log('saved item data: ', data)
         setJsonInput(data)
     }
 

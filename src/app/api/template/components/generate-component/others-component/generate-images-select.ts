@@ -11,7 +11,6 @@ export const generateImagesSelectComponentFile = (
     // This component is a generic wrapper for selecting multiple images.
     // Its functionality is self-contained and does not need to be altered
     // based on the provided schema or naming conventions.
-    console.log('inputJsonFile', inputJsonFile)
     return `'use client'
 
 import Image from 'next/image'

@@ -57,8 +57,8 @@ const ViewNextComponents: React.FC = () => {
         value: React.ReactNode
     }> = ({ label, value }) => (
         <div className="grid grid-cols-3 gap-2 py-2 border-b">
-            <div className="font-semibold text-sm text-gray-600">{label}</div>
-            <div className="col-span-2 text-sm">{value || 'N/A'}</div>
+            <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">{label}</div>
+            <div className="col-span-2 text-sm text-gray-800 dark:text-gray-100">{value || 'N/A'}</div>
         </div>
     )
     
@@ -67,6 +67,19 @@ const ViewNextComponents: React.FC = () => {
         values?: (string | number)[]
     }> = ({ label, values }) => (
         <DetailRow label={label} value={values?.join(', ') || 'N/A'} />
+    )
+
+    // --- NEW HELPER COMPONENT FOR RENDERING JSON ---
+    const DetailRowJson: React.FC<{
+        label: string
+        value?: object | any[]
+    }> = ({ label, value }) => (
+        <div className="grid grid-cols-1 gap-1 py-2 border-b">
+            <div className="font-semibold text-sm text-gray-600 dark:text-gray-300">{label}</div>
+            <div className="col-span-1 text-sm bg-slate-100 dark:bg-slate-800 p-2 rounded-md mt-1">
+                <pre className="whitespace-pre-wrap text-xs">{value ? JSON.stringify(value, null, 2) : 'N/A'}</pre>
+            </div>
+        </div>
     )
 
     return (
@@ -83,7 +96,7 @@ const ViewNextComponents: React.FC = () => {
                             <DetailRow label="Password" value={selectedPosts['password']} />
                             <DetailRow label="Passcode" value={selectedPosts['passcode']} />
                             <DetailRow label="Area" value={selectedPosts['area']} />
-                            <DetailRow label="Sub Area" value={selectedPosts['sub-area']} />
+                            <DetailRowArray label="Sub Area" values={selectedPosts['sub-area']} />
                             <DetailRow label="Description" value={selectedPosts['description']} />
                             <DetailRow label="Age" value={selectedPosts['age']} />
                             <DetailRow label="Amount" value={selectedPosts['amount']} />
@@ -111,8 +124,9 @@ const ViewNextComponents: React.FC = () => {
                             <DetailRow label="Shift" value={selectedPosts['shift']} />
                             <DetailRow label="Policy" value={formatBoolean(selectedPosts['policy'])} />
                             <DetailRowArray label="Hobbies" values={selectedPosts['hobbies']} />
-                            <DetailRow label="Ideas" value={selectedPosts['ideas']} />
-                            <DetailRow label="Students" value={selectedPosts['students']} />
+                            <DetailRowArray label="Ideas" values={selectedPosts['ideas']} />
+                            <DetailRowJson label="Students" value={selectedPosts['students']} />
+                            <DetailRowJson label="ComplexValue" value={selectedPosts['complexValue']} />
                             <DetailRow label="Created At" value={formatDate(selectedPosts.createdAt)} />
                             <DetailRow label="Updated At" value={formatDate(selectedPosts.updatedAt)} />
                         </div>
@@ -128,8 +142,8 @@ const ViewNextComponents: React.FC = () => {
                                         >
                                             <Image
                                                 src={image}
-                                                layout="fill"
-                                                objectFit="cover"
+                                                fill
+                                                style={{ objectFit: 'cover' }}
                                                 alt={`Image ${index + 1}`}
                                             />
                                         </div>
@@ -145,8 +159,8 @@ const ViewNextComponents: React.FC = () => {
                                 <div className="relative w-full h-48 border rounded-lg overflow-hidden">
                                     <Image
                                         src={selectedPosts['personal-image']}
-                                        layout="fill"
-                                        objectFit="cover"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
                                         alt="Personal Image"
                                     />
                                 </div>

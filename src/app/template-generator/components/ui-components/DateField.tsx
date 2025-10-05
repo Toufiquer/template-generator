@@ -19,12 +19,7 @@ export function DateField() {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
 
-    React.useEffect(() => {
-        console.log(
-            'Current selected date:',
-            date ? date.toLocaleDateString() : 'No date selected'
-        )
-    }, [date])
+
 
     return (
         <div className="flex flex-col gap-3">
@@ -56,10 +51,7 @@ export function DateField() {
                         fromYear={1900}
                         toYear={new Date().getFullYear()}
                         onSelect={(selectedDate) => {
-                            console.log(
-                                'Date selected in calendar:',
-                                selectedDate
-                            )
+                          
                             setDate(selectedDate)
                             setOpen(false)
                         }}

@@ -10,7 +10,6 @@
  * @returns {string} The complete, formatted Controller.ts file as a string.
  */
 export const generateCustomButton = (inputJsonFile: string): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return `'use client'
 
 import Link from 'next/link'

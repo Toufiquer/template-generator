@@ -93,7 +93,6 @@ const MainNextPage: React.FC = () => {
         const { start, end } = filter.value
         const filterQuery = `createdAt:range:${start}_${end}`
 
-        console.log('Applying filter:', filterQuery)
         setQueryPramsQ(filterQuery)
         setQueryPramsPage(1)
         refetch()
@@ -101,7 +100,6 @@ const MainNextPage: React.FC = () => {
     }
 
     const handleClearFilter = () => {
-        console.log('Clearing filter')
         setQueryPramsQ('')
         setQueryPramsPage(1)
         refetch()

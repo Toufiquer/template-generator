@@ -10,7 +10,6 @@ export const generateDataSelectComponentFile = (
 ): string => {
     // The content of this component is static and reusable.
     // It does not need to be changed based on the schema or naming conventions.
-    console.log('inputJsonFile', inputJsonFile)
 
     return `'use client'
 

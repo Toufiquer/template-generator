@@ -11,7 +11,6 @@
 export const generateExportDialogField = (inputJsonFile: string): string => {
     // The inputJsonFile is not needed for this component as it's generic,
     // but the parameter is kept for consistency with other generators.
-    console.log('Generating static ExportDialog component...', inputJsonFile)
 
     return `'use client'
 

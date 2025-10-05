@@ -12,7 +12,6 @@
 export const generateTooManyRequestComponent = (
     inputJsonFile: string
 ): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return `
     import { motion } from 'framer-motion'
 import React, { useState, useEffect } from 'react'

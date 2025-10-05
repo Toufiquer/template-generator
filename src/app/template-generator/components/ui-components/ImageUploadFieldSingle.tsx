@@ -25,7 +25,6 @@ const ImageUploadFieldSingle = () => {
         // }
     }, [])
     const onImageUploadSuccess = (newImageUrl: string) => {
-        console.log('new Image url :', newImageUrl)
         setProfileImageUrl(newImageUrl)
     }
     const handleImageUpload = async (
@@ -67,7 +66,6 @@ const ImageUploadFieldSingle = () => {
                 if (!saveResponse.ok) {
                     throw new Error('Error! Cannot save the profile image.')
                 }
-                console.log('saveResponse', saveResponse)
                 setProfileImageUrl(newImageUrl)
                 toast.success('Profile image uploaded successfully!')
                 if (onImageUploadSuccess) {

@@ -64,7 +64,6 @@ const AddNextComponents: React.FC = () => {
     const handleAddTest2 = async () => {
         try {
             const { _id, ...updateData } = newTest2
-            console.log('Adding new record:', updateData)
             const addedTest2 = await addTest2s(updateData).unwrap()
             setTest2s([addedTest2])
             toggleAddModal(false)

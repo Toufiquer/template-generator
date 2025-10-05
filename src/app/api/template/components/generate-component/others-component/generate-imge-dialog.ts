@@ -11,7 +11,6 @@ export const generateImageDialogComponentFile = (
     // This component's logic is generic for handling image uploads and selections.
     // It interacts with a general '/api/media' endpoint and does not need
     // to be dynamically changed based on the schema or naming conventions.
-    console.log('inputJsonFile', inputJsonFile)
     return `import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'

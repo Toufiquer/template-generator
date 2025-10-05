@@ -12,7 +12,6 @@
 export const generateViewRichTextEditorClientComponent = (
     inputJsonFile: string
 ): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return `  
     import { ViewRichText } from './ViewRichText'
     

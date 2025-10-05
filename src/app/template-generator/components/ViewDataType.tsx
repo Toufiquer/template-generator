@@ -27,6 +27,8 @@ import MultiCheckboxGroupField from './ui-components/MultiCheckboxGroupField'
 import RichTextEditorField from './ui-components/RichTextEditorField'
 import ImageUploadManager from './ui-components/ImageUploadManager'
 import MULTIOPTIONSField from './ui-components/MULTIOPTIONSField'
+import StringArrayField from './ui-components/StringArrayField'
+import JsonValueField from './ui-components/JsonValue'
 
 import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
 import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
@@ -56,9 +58,7 @@ import ImageUploadFieldSingle from './ui-components/ImageUploadFieldSingle'
 import { ImageUploadManagerCoreCode } from './core-code/ImageUploadManagerCoreCode'
 import { MULTIOPTIONSFieldCoreCode } from './core-code/MULTIOPTIONSFieldCoreCode'
 import { StringArrayFieldcoreCode } from './core-code/StringArrayFieldCoreCode'
-import StringArrayField from './ui-components/StringArrayField'
-import { PUREJSONFieldCoreCode } from './core-code/PUREJSONFieldCoreCode'
-import PUREJSONField from './ui-components/PUREJSONField'
+import { JsonValueCoreCode } from './core-code/JsonValueCoreCode'
 interface DataTypeItem {
     name: string
     mongooseSchema: string
@@ -306,12 +306,25 @@ export const allDataType: DataTypeItem[] = [
         coreCode: StringArrayFieldcoreCode,
     },
     {
-        name: 'PUREJSON',
-        mongooseSchema: `MULTIOPTIONS: [
-            type: String
-        ]`,
-        ui: '<PUREJSONField />',
-        coreCode: PUREJSONFieldCoreCode,
+        name: 'JsonValueField',
+        mongooseSchema: ` {
+      "id": "1234",
+      "title": " The Name of Country",
+      "parent": {
+        "id": "111234",
+        "title": " The Name of Parent",
+        "child": {
+          "id": "1234",
+          "title": " The Name of Child",
+          "child": "",
+          "note": "The Note"
+        },
+        "note": "The Note"
+      },
+      "note": "The Note"
+    }`,
+        ui: '<JsonValueField />',
+        coreCode: JsonValueCoreCode,
     },
 ]
 const ViewDataType = () => {
@@ -400,8 +413,8 @@ const ViewDataType = () => {
                 return <MULTIOPTIONSField />
             case '<StringArrayField />':
                 return <StringArrayField />
-            case '<PUREJSONField />':
-                return <PUREJSONField />
+            case '<JsonValueField />':
+                return <JsonValueField />
             default:
                 return (
                     <p className="text-muted-foreground">

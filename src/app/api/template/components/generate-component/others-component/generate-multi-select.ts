@@ -11,7 +11,6 @@ export const generateMultiSelectComponentFile = (
     // The content of this component is static and reusable.
     // It fetches data from a provided API URL and manages its own state.
     // It does not need to be changed based on the schema or naming conventions.
-    console.log('inputJsonFile', inputJsonFile)
 
     return `'use client'
 

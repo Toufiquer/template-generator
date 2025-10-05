@@ -23,12 +23,14 @@ import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
 import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
 import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
 import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import JsonTextareaField from '@/components/dashboard-ui/JsonTextareaField'
 import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
 import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'
 import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import StringArrayField from '@/components/dashboard-ui/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -56,9 +58,8 @@ const AddNextComponents: React.FC = () => {
     const handleAddPost = async () => {
         try {
             const { _id, ...updateData } = newPost
-            console.log('Adding new record:', updateData)
             const addedPost = await addPosts(updateData).unwrap()
-            setPosts([addedPost])
+            setPosts([addedPost]); // Example: update store, you might need a different strategy
             toggleAddModal(false)
             setNewPost(defaultPosts)
             handleSuccess('Added Successfully')
@@ -106,7 +107,7 @@ const AddNextComponents: React.FC = () => {
                     <div className="grid gap-4 py-4">
                         
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="title" className="text-right">
+                            <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
                             <div className="col-span-3">
@@ -114,7 +115,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="email" className="text-right">
+                            <Label htmlFor="email" className="text-right ">
                                 Email
                             </Label>
                             <div className="col-span-3">
@@ -122,7 +123,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="password" className="text-right">
+                            <Label htmlFor="password" className="text-right ">
                                 Password
                             </Label>
                             <div className="col-span-3">
@@ -130,7 +131,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="passcode" className="text-right">
+                            <Label htmlFor="passcode" className="text-right ">
                                 Passcode
                             </Label>
                             <div className="col-span-3">
@@ -138,7 +139,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="area" className="text-right">
+                            <Label htmlFor="area" className="text-right ">
                                 Area
                             </Label>
                             <div className="col-span-3">
@@ -146,15 +147,15 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="sub-area" className="text-right">
+                            <Label htmlFor="sub-area" className="text-right ">
                                 Sub Area
                             </Label>
                             <div className="col-span-3">
-                                <DynamicSelectField value={newPost['sub-area']}   apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
+                                <DynamicSelectField value={newPost['sub-area']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="products-images" className="text-right">
+                            <Label htmlFor="products-images" className="text-right ">
                                 Products Images
                             </Label>
                             <div className="col-span-3">
@@ -162,15 +163,15 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="personal-image" className="text-right">
+                            <Label htmlFor="personal-image" className="text-right ">
                                 Personal Image
                             </Label>
                             <div className="col-span-3">
                                 <ImageUploadFieldSingle value={newPost['personal-image']} onChange={(url) => handleFieldChange('personal-image', url)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="description" className="text-right">
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="description" className="text-right pt-3">
                                 Description
                             </Label>
                             <div className="col-span-3">
@@ -178,7 +179,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="age" className="text-right">
+                            <Label htmlFor="age" className="text-right ">
                                 Age
                             </Label>
                             <div className="col-span-3">
@@ -186,7 +187,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="amount" className="text-right">
+                            <Label htmlFor="amount" className="text-right ">
                                 Amount
                             </Label>
                             <div className="col-span-3">
@@ -194,7 +195,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="isActive" className="text-right">
+                            <Label htmlFor="isActive" className="text-right ">
                                 IsActive
                             </Label>
                             <div className="col-span-3">
@@ -202,7 +203,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="start-date" className="text-right">
+                            <Label htmlFor="start-date" className="text-right ">
                                 Start Date
                             </Label>
                             <div className="col-span-3">
@@ -210,7 +211,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="start-time" className="text-right">
+                            <Label htmlFor="start-time" className="text-right ">
                                 Start Time
                             </Label>
                             <div className="col-span-3">
@@ -218,7 +219,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="schedule-date" className="text-right">
+                            <Label htmlFor="schedule-date" className="text-right ">
                                 Schedule Date
                             </Label>
                             <div className="col-span-3">
@@ -226,7 +227,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="schedule-time" className="text-right">
+                            <Label htmlFor="schedule-time" className="text-right ">
                                 Schedule Time
                             </Label>
                             <div className="col-span-3">
@@ -234,7 +235,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="favorite-color" className="text-right">
+                            <Label htmlFor="favorite-color" className="text-right ">
                                 Favorite Color
                             </Label>
                             <div className="col-span-3">
@@ -242,7 +243,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="number" className="text-right">
+                            <Label htmlFor="number" className="text-right ">
                                 Number
                             </Label>
                             <div className="col-span-3">
@@ -250,15 +251,15 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="profile" className="text-right">
+                            <Label htmlFor="profile" className="text-right ">
                                 Profile
                             </Label>
                             <div className="col-span-3">
                                 <UrlInputField id="profile" value={newPost['profile']} onChange={(value) => handleFieldChange('profile', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="test" className="text-right">
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="test" className="text-right pt-3">
                                 Test
                             </Label>
                             <div className="col-span-3">
@@ -266,7 +267,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="info" className="text-right">
+                            <Label htmlFor="info" className="text-right ">
                                 Info
                             </Label>
                             <div className="col-span-3">
@@ -274,7 +275,7 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="shift" className="text-right">
+                            <Label htmlFor="shift" className="text-right ">
                                 Shift
                             </Label>
                             <div className="col-span-3">
@@ -282,15 +283,15 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="policy" className="text-right">
+                            <Label htmlFor="policy" className="text-right ">
                                 Policy
                             </Label>
                             <div className="col-span-3">
                                 <CheckboxField id="policy" checked={newPost['policy']} onCheckedChange={(checked) => handleFieldChange('policy', checked)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="hobbies" className="text-right">
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="hobbies" className="text-right pt-3">
                                 Hobbies
                             </Label>
                             <div className="col-span-3">
@@ -298,27 +299,28 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="ideas" className="text-right">
+                            <Label htmlFor="ideas" className="text-right ">
                                 Ideas
                             </Label>
                             <div className="col-span-3">
                                 <MultiOptionsField options={ideasOptions} value={newPost['ideas']} onChange={(values) => handleFieldChange('ideas', values)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="students" className="text-right">
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="students" className="text-right pt-3">
                                 Students
                             </Label>
-                            
-                        <Input
-                            id="students"
-                            name="students"
-                            value={newPost['students']}
-                            onChange={(e) => handleFieldChange('students', e.target.value)}
-                            placeholder="Unsupported field type: STRINGARRAY#Name, Class, Roll"
-                            className="col-span-3"
-                            disabled
-                        />
+                            <div className="col-span-3">
+                                <StringArrayField id="${key}" fields={${fieldsProp}} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />\
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="complexValue" className="text-right pt-3">
+                                ComplexValue
+                            </Label>
+                            <div className="col-span-3">
+                                <JsonTextareaField id="complexValue" value={newPost['complexValue']} onChange={(jsonValue) => handleFieldChange('complexValue', jsonValue)} />
+                            </div>
                         </div>
                     </div>
                 </ScrollArea>

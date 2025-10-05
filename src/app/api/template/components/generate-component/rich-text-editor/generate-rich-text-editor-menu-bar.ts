@@ -12,7 +12,6 @@
 export const generateRichTextEditorMenuBar = (
     inputJsonFile: string
 ): string => {
-    console.log('inputJsonFile', inputJsonFile)
     return ` import {
     AlignCenter,
     AlignLeft,

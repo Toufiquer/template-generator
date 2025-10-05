@@ -6,7 +6,6 @@ const generateRtk = async (data: string) => {
 
     let folderName = 'example'
 
-    // console.log('Data : ', data)
     const { namingConvention } = JSON.parse(data) || {}
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
