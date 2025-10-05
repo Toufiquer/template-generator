@@ -44,7 +44,12 @@ import { SelectField } from '@/components/dashboard-ui/SelectField'
 import { IPosts, defaultPosts } from '@/app/generate/posts/all/store/data/data'
 import { usePostsStore } from '../store/store'
 import { useUpdatePostsMutation } from '../redux/rtk-api'
-import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
+import {
+    formatDuplicateKeyError,
+    handleError,
+    handleSuccess,
+    isApiErrorResponse,
+} from './utils'
 
 const EditNextComponents: React.FC = () => {
     const {
@@ -64,14 +69,14 @@ const EditNextComponents: React.FC = () => {
     }, [selectedPosts])
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setPost(prev => ({ ...prev, [name]: value }));
-    };
+        setPost((prev) => ({ ...prev, [name]: value }))
+    }
 
     const handleEditPost = async () => {
         if (!selectedPosts) return
 
         try {
-            const { _id, createdAt, updatedAt, ...updateData } = editedPost;
+            const { _id, createdAt, updatedAt, ...updateData } = editedPost
             await updatePosts({
                 id: selectedPosts._id,
                 ...updateData,
@@ -82,7 +87,9 @@ const EditNextComponents: React.FC = () => {
             console.error('Failed to update record:', error)
             let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
+                errMessage =
+                    formatDuplicateKeyError(error.data.message) ||
+                    'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
@@ -94,22 +101,22 @@ const EditNextComponents: React.FC = () => {
         { label: 'Bangladesh', value: 'Bangladesh' },
         { label: 'India', value: 'India' },
         { label: 'Pakistan', value: 'Pakistan' },
-        { label: 'Canada', value: 'Canada' }
-    ];
+        { label: 'Canada', value: 'Canada' },
+    ]
 
     const ideasOptions = [
         { label: 'O 1', value: 'O 1' },
         { label: 'O 2', value: 'O 2' },
         { label: 'O 3', value: 'O 3' },
-        { label: 'O 4', value: 'O 4' }
-    ];
+        { label: 'O 4', value: 'O 4' },
+    ]
 
     const shiftOptions = [
         { label: 'OP 1', value: 'OP 1' },
         { label: 'OP 2', value: 'OP 2' },
         { label: 'OP 3', value: 'OP 3' },
-        { label: 'OP 4', value: 'OP 4' }
-    ];
+        { label: 'OP 4', value: 'OP 4' },
+    ]
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
@@ -120,13 +127,22 @@ const EditNextComponents: React.FC = () => {
 
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
-                        
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForString id="title" placeholder="Title" value={editedPost['title']} onChange={(value) => handleFieldChange('title', value as string)} />
+                                <InputFieldForString
+                                    id="title"
+                                    placeholder="Title"
+                                    value={editedPost['title']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'title',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -134,7 +150,16 @@ const EditNextComponents: React.FC = () => {
                                 Email
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForEmail id="email" value={editedPost['email']} onChange={(value) => handleFieldChange('email', value as string)} />
+                                <InputFieldForEmail
+                                    id="email"
+                                    value={editedPost['email']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'email',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -142,7 +167,16 @@ const EditNextComponents: React.FC = () => {
                                 Password
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForPassword id="password" value={editedPost['password']} onChange={(value) => handleFieldChange('password', value as string)} />
+                                <InputFieldForPassword
+                                    id="password"
+                                    value={editedPost['password']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'password',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -150,7 +184,16 @@ const EditNextComponents: React.FC = () => {
                                 Passcode
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForPasscode id="passcode" value={editedPost['passcode']} onChange={(value) => handleFieldChange('passcode', value as string)} />
+                                <InputFieldForPasscode
+                                    id="passcode"
+                                    value={editedPost['passcode']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'passcode',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -158,7 +201,13 @@ const EditNextComponents: React.FC = () => {
                                 Area
                             </Label>
                             <div className="col-span-3">
-                                <SelectField options={areaOptions} value={editedPost['area']} onValueChange={(value) => handleFieldChange('area', value)} />
+                                <SelectField
+                                    options={areaOptions}
+                                    value={editedPost['area']}
+                                    onValueChange={(value) =>
+                                        handleFieldChange('area', value)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -166,31 +215,68 @@ const EditNextComponents: React.FC = () => {
                                 Sub Area
                             </Label>
                             <div className="col-span-3">
-                                <DynamicSelectField value={editedPost['sub-area']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
+                                <DynamicSelectField
+                                    value={editedPost['sub-area']}
+                                    apiUrl="https://jsonplaceholder.typicode.com/users"
+                                    onChange={(values) =>
+                                        handleFieldChange('sub-area', values)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="products-images" className="text-right ">
+                            <Label
+                                htmlFor="products-images"
+                                className="text-right "
+                            >
                                 Products Images
                             </Label>
                             <div className="col-span-3">
-                                <ImageUploadManager value={editedPost['products-images']} onChange={(urls) => handleFieldChange('products-images', urls)} />
+                                <ImageUploadManager
+                                    value={editedPost['products-images']}
+                                    onChange={(urls) =>
+                                        handleFieldChange(
+                                            'products-images',
+                                            urls
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="personal-image" className="text-right ">
+                            <Label
+                                htmlFor="personal-image"
+                                className="text-right "
+                            >
                                 Personal Image
                             </Label>
                             <div className="col-span-3">
-                                <ImageUploadFieldSingle value={editedPost['personal-image']} onChange={(url) => handleFieldChange('personal-image', url)} />
+                                <ImageUploadFieldSingle
+                                    value={editedPost['personal-image']}
+                                    onChange={(url) =>
+                                        handleFieldChange('personal-image', url)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label htmlFor="description" className="text-right pt-3">
+                            <Label
+                                htmlFor="description"
+                                className="text-right pt-3"
+                            >
                                 Description
                             </Label>
                             <div className="col-span-3">
-                                <TextareaFieldForDescription id="description" value={editedPost['description']} onChange={(e) => handleFieldChange('description', e.target.value)} />
+                                <TextareaFieldForDescription
+                                    id="description"
+                                    value={editedPost['description']}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            'description',
+                                            e.target.value
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -198,7 +284,16 @@ const EditNextComponents: React.FC = () => {
                                 Age
                             </Label>
                             <div className="col-span-3">
-                                <NumberInputFieldInteger id="age" value={editedPost['age']} onChange={(value) => handleFieldChange('age',  value as number)} />
+                                <NumberInputFieldInteger
+                                    id="age"
+                                    value={editedPost['age']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'age',
+                                            value as number
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -206,7 +301,16 @@ const EditNextComponents: React.FC = () => {
                                 Amount
                             </Label>
                             <div className="col-span-3">
-                                <NumberInputFieldFloat id="amount" value={editedPost['amount']} onChange={(value) => handleFieldChange('amount', value as number)} />
+                                <NumberInputFieldFloat
+                                    id="amount"
+                                    value={editedPost['amount']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'amount',
+                                            value as number
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -214,7 +318,13 @@ const EditNextComponents: React.FC = () => {
                                 IsActive
                             </Label>
                             <div className="col-span-3">
-                                <BooleanInputField id="isActive" checked={editedPost['isActive']} onCheckedChange={(checked) => handleFieldChange('isActive', checked)} />
+                                <BooleanInputField
+                                    id="isActive"
+                                    checked={editedPost['isActive']}
+                                    onCheckedChange={(checked) =>
+                                        handleFieldChange('isActive', checked)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -222,7 +332,13 @@ const EditNextComponents: React.FC = () => {
                                 Start Date
                             </Label>
                             <div className="col-span-3">
-                                <DateField id="start-date" value={editedPost['start-date']} onChange={(date) => handleFieldChange('start-date', date)} />
+                                <DateField
+                                    id="start-date"
+                                    value={editedPost['start-date']}
+                                    onChange={(date) =>
+                                        handleFieldChange('start-date', date)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -230,31 +346,73 @@ const EditNextComponents: React.FC = () => {
                                 Start Time
                             </Label>
                             <div className="col-span-3">
-                                <TimeField id="start-time" value={editedPost['start-time']} onChange={(time) => handleFieldChange('start-time', time)} />
+                                <TimeField
+                                    id="start-time"
+                                    value={editedPost['start-time']}
+                                    onChange={(time) =>
+                                        handleFieldChange('start-time', time)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="schedule-date" className="text-right ">
+                            <Label
+                                htmlFor="schedule-date"
+                                className="text-right "
+                            >
                                 Schedule Date
                             </Label>
                             <div className="col-span-3">
-                                <DateRangePickerField id="schedule-date" value={editedPost['schedule-date']} onChange={(range) => handleFieldChange('schedule-date', range)} />
+                                <DateRangePickerField
+                                    id="schedule-date"
+                                    value={editedPost['schedule-date']}
+                                    onChange={(range) =>
+                                        handleFieldChange(
+                                            'schedule-date',
+                                            range
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="schedule-time" className="text-right ">
+                            <Label
+                                htmlFor="schedule-time"
+                                className="text-right "
+                            >
                                 Schedule Time
                             </Label>
                             <div className="col-span-3">
-                                <TimeRangePickerField id="schedule-time" value={editedPost['schedule-time']} onChange={(range) => handleFieldChange('schedule-time', range)} />
+                                <TimeRangePickerField
+                                    id="schedule-time"
+                                    value={editedPost['schedule-time']}
+                                    onChange={(range) =>
+                                        handleFieldChange(
+                                            'schedule-time',
+                                            range
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
-                            <Label htmlFor="favorite-color" className="text-right ">
+                            <Label
+                                htmlFor="favorite-color"
+                                className="text-right "
+                            >
                                 Favorite Color
                             </Label>
                             <div className="col-span-3">
-                                <ColorPickerField id="favorite-color" value={editedPost['favorite-color']} onChange={(value) => handleFieldChange('favorite-color', value as string)} />
+                                <ColorPickerField
+                                    id="favorite-color"
+                                    value={editedPost['favorite-color']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'favorite-color',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -262,7 +420,13 @@ const EditNextComponents: React.FC = () => {
                                 Number
                             </Label>
                             <div className="col-span-3">
-                                <PhoneInputField id="number" value={editedPost['number']} onChange={(value) => handleFieldChange('number', value)} />
+                                <PhoneInputField
+                                    id="number"
+                                    value={editedPost['number']}
+                                    onChange={(value) =>
+                                        handleFieldChange('number', value)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -270,7 +434,16 @@ const EditNextComponents: React.FC = () => {
                                 Profile
                             </Label>
                             <div className="col-span-3">
-                                <UrlInputField id="profile" value={editedPost['profile']} onChange={(value) => handleFieldChange('profile', value as string)} />
+                                <UrlInputField
+                                    id="profile"
+                                    value={editedPost['profile']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'profile',
+                                            value as string
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
@@ -278,7 +451,13 @@ const EditNextComponents: React.FC = () => {
                                 Test
                             </Label>
                             <div className="col-span-3">
-                                <RichTextEditorField id="test" value={editedPost['test']} onChange={(value) => handleFieldChange('test', value)} />
+                                <RichTextEditorField
+                                    id="test"
+                                    value={editedPost['test']}
+                                    onChange={(value) =>
+                                        handleFieldChange('test', value)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -286,7 +465,10 @@ const EditNextComponents: React.FC = () => {
                                 Info
                             </Label>
                             <div className="col-span-3">
-                                <AutocompleteField id="info" value={editedPost['info']} />
+                                <AutocompleteField
+                                    id="info"
+                                    value={editedPost['info']}
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -294,7 +476,13 @@ const EditNextComponents: React.FC = () => {
                                 Shift
                             </Label>
                             <div className="col-span-3">
-                                <RadioButtonGroupField options={shiftOptions} value={editedPost['shift']} onChange={(value) => handleFieldChange('shift', value)} />
+                                <RadioButtonGroupField
+                                    options={shiftOptions}
+                                    value={editedPost['shift']}
+                                    onChange={(value) =>
+                                        handleFieldChange('shift', value)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -302,15 +490,29 @@ const EditNextComponents: React.FC = () => {
                                 Policy
                             </Label>
                             <div className="col-span-3">
-                                <CheckboxField id="policy" checked={editedPost['policy']} onCheckedChange={(checked) => handleFieldChange('policy', checked)} />
+                                <CheckboxField
+                                    id="policy"
+                                    checked={editedPost['policy']}
+                                    onCheckedChange={(checked) =>
+                                        handleFieldChange('policy', checked)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label htmlFor="hobbies" className="text-right pt-3">
+                            <Label
+                                htmlFor="hobbies"
+                                className="text-right pt-3"
+                            >
                                 Hobbies
                             </Label>
                             <div className="col-span-3">
-                                <MultiCheckboxGroupField value={editedPost['hobbies']} onChange={(values) => handleFieldChange('hobbies', values)} />
+                                <MultiCheckboxGroupField
+                                    value={editedPost['hobbies']}
+                                    onChange={(values) =>
+                                        handleFieldChange('hobbies', values)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -318,23 +520,44 @@ const EditNextComponents: React.FC = () => {
                                 Ideas
                             </Label>
                             <div className="col-span-3">
-                                <MultiOptionsField options={ideasOptions} value={editedPost['ideas']} onChange={(values) => handleFieldChange('ideas', values)} />
+                                <MultiOptionsField
+                                    options={ideasOptions}
+                                    value={editedPost['ideas']}
+                                    onChange={(values) =>
+                                        handleFieldChange('ideas', values)
+                                    }
+                                />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label htmlFor="students" className="text-right pt-3">
+                            <Label
+                                htmlFor="students"
+                                className="text-right pt-3"
+                            >
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField id="${key}" fields={${fieldsProp}} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />
+                                <StringArrayField />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label htmlFor="complexValue" className="text-right pt-3">
+                            <Label
+                                htmlFor="complexValue"
+                                className="text-right pt-3"
+                            >
                                 ComplexValue
                             </Label>
                             <div className="col-span-3">
-                                <JsonTextareaField id="complexValue" value={editedPost['complexValue']} onChange={(jsonValue) => handleFieldChange('complexValue', jsonValue)} />
+                                <JsonTextareaField
+                                    id="complexValue"
+                                    value={editedPost['complexValue']}
+                                    onChange={(jsonValue) =>
+                                        handleFieldChange(
+                                            'complexValue',
+                                            jsonValue
+                                        )
+                                    }
+                                />
                             </div>
                         </div>
                     </div>

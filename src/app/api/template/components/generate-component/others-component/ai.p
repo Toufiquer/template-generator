@@ -351,7 +351,7 @@ here is updated inputJson
 ```
 
 
-Now please Update generate-edit.tsx so it can generate with STRINGARRAY and "{
+Now please Update generate-view.tsx so it can generate with STRINGARRAY and "{
       "id": "1234",
       "title": " The Name of Country",
       "parent": {
@@ -369,4 +369,4 @@ Now please Update generate-edit.tsx so it can generate with STRINGARRAY and "{
     }"
 
 
-Now please update the generate-edit.tsx
+Now please update the generate-view.tsx
