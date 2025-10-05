@@ -1,16 +1,4 @@
-/**
- * Generates the content for the ImageDialog.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete ImageDialog.tsx file content as a string.
- */
-export const generateImageDialogComponentFile = (
-    inputJsonFile: string
-): string => {
-    // This component's logic is generic for handling image uploads and selections.
-    // It interacts with a general '/api/media' endpoint and does not need
-    // to be dynamically changed based on the schema or naming conventions.
+export const generateImageDialogComponentFile = (): string => {
     return `import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'

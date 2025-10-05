@@ -1,16 +1,4 @@
-/**
- * Generates the content for the ImagesSelect.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete ImagesSelect.tsx file content as a string.
- */
-export const generateImagesSelectComponentFile = (
-    inputJsonFile: string
-): string => {
-    // This component is a generic wrapper for selecting multiple images.
-    // Its functionality is self-contained and does not need to be altered
-    // based on the provided schema or naming conventions.
+export const generateImagesSelectComponentFile = (): string => {
     return `'use client'
 
 import Image from 'next/image'

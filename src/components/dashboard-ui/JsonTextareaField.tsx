@@ -9,13 +9,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
 interface JsonTextareaFieldProps {
     id: string
-    value: any // The value from the parent state (can be any object)
-    onChange: (jsonValue: any) => void // Callback to update the parent state
+    value: unknown // The value from the parent state (can be unknown object)
+    onChange: (jsonValue: unknown) => void // Callback to update the parent state
 }
 
 const JsonTextareaField: React.FC<JsonTextareaFieldProps> = ({
@@ -23,12 +22,9 @@ const JsonTextareaField: React.FC<JsonTextareaFieldProps> = ({
     value,
     onChange,
 }) => {
-    // Internal state to hold the string representation of the JSON
     const [textValue, setTextValue] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
 
-    // Effect to sync the textarea when the parent's value prop changes
-    // This is crucial for initializing the field or if the form is reset
     useEffect(() => {
         try {
             // Pretty-print the incoming object value
@@ -36,7 +32,7 @@ const JsonTextareaField: React.FC<JsonTextareaFieldProps> = ({
             setTextValue(formattedJson)
             setError(null)
         } catch (e) {
-            setTextValue('Error formatting JSON')
+            setTextValue('Error formatting JSON' + e)
             setError('The provided initial value is not a valid object.')
         }
     }, [value])
@@ -45,15 +41,12 @@ const JsonTextareaField: React.FC<JsonTextareaFieldProps> = ({
         const newText = e.target.value
         setTextValue(newText)
 
-        // Validate the JSON in real-time
         try {
             const parsedJson = JSON.parse(newText)
             setError(null)
-            // If valid, call the parent's onChange with the parsed object
             onChange(parsedJson)
         } catch (err) {
-            // If invalid, set an error and do not update the parent state
-            setError('Invalid JSON format.')
+            setError('Invalid JSON format.' + err)
         }
     }
 

@@ -20,13 +20,6 @@ interface InputConfig {
     }
 }
 
-/**
- * Generates the content for a dynamic Edit.tsx component file based on a JSON schema,
- * with conditional imports for required components.
- *
- * @param {string} inputJsonString The JSON string with schema and naming conventions.
- * @returns {string} The complete Edit.tsx file content as a string.
- */
 export const generateEditComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
@@ -38,16 +31,12 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
     const editedStateName = `edited${singularPascalCase}` // e.g., "editedPost"
 
-    const requiredImports = new Set<string>()
     const componentBodyStatements = new Set<string>()
 
     const toCamelCase = (str: string) => {
         return str.replace(/-(\w)/g, (_, c) => c.toUpperCase())
     }
 
-    /**
-     * Generates a variable definition for an options array for selects, radios, etc.
-     */
     const generateOptionsVariable = (
         key: string,
         optionsString: string | undefined,
@@ -69,14 +58,11 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
             .join(',\n')}\n    ]`
 
         componentBodyStatements.add(
-            `const ${varName} = ${optionsJsArrayString};`
+            `    const ${varName} = ${optionsJsArrayString};`
         )
         return varName
     }
 
-    /**
-     * Generates the JSX for a specific form field based on its schema type.
-     */
     const generateFormFieldJsx = (key: string, type: string): string => {
         const label = key
             .replace(/-/g, ' ')
@@ -93,8 +79,8 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                             alignTop ? 'items-start' : 'items-center'
                         } gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right ${
-            alignTop ? 'pt-3' : ''
-        }">
+                                alignTop ? 'pt-3' : ''
+                            }">
                                 ${label}
                             </Label>
                             <div className="col-span-3">
@@ -107,120 +93,103 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
         switch (typeName.toUpperCase()) {
             case 'STRING':
-                requiredImports.add("import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'")
                 componentJsx = `<InputFieldForString id="${key}" placeholder="${label}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'EMAIL':
-                requiredImports.add("import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'")
                 componentJsx = `<InputFieldForEmail id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PASSWORD':
-                requiredImports.add("import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'")
                 componentJsx = `<InputFieldForPassword id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PASSCODE':
-                requiredImports.add("import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'")
                 componentJsx = `<InputFieldForPasscode id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'URL':
-                requiredImports.add("import UrlInputField from '@/components/dashboard-ui/UrlInputField'")
                 componentJsx = `<UrlInputField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'PHONE':
-                requiredImports.add("import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'")
                 componentJsx = `<PhoneInputField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DESCRIPTION':
                 isTallComponent = true
-                requiredImports.add("import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'")
                 componentJsx = `<TextareaFieldForDescription id="${key}" value={${editedStateName}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
                 break
             case 'RICHTEXT':
                 isTallComponent = true
-                requiredImports.add("import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'")
                 componentJsx = `<RichTextEditorField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'INTNUMBER':
-                requiredImports.add("import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'")
                 componentJsx = `<NumberInputFieldInteger id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
                 break
             case 'FLOATNUMBER':
-                requiredImports.add("import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'")
                 componentJsx = `<NumberInputFieldFloat id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
                 break
             case 'BOOLEAN':
-                requiredImports.add("import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'")
                 componentJsx = `<BooleanInputField id="${key}" checked={${editedStateName}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
                 break
             case 'CHECKBOX':
-                requiredImports.add("import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'")
                 componentJsx = `<CheckboxField id="${key}" checked={${editedStateName}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
                 break
             case 'DATE':
-                requiredImports.add("import { DateField } from '@/components/dashboard-ui/DateField'")
                 componentJsx = `<DateField id="${key}" value={${editedStateName}['${key}']} onChange={(date) => handleFieldChange('${key}', date)} />`
                 break
             case 'TIME':
-                requiredImports.add("import TimeField from '@/components/dashboard-ui/TimeField'")
                 componentJsx = `<TimeField id="${key}" value={${editedStateName}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
                 break
             case 'DATERANGE':
-                requiredImports.add("import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'")
                 componentJsx = `<DateRangePickerField id="${key}" value={${editedStateName}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
                 break
             case 'TIMERANGE':
-                requiredImports.add("import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'")
                 componentJsx = `<TimeRangePickerField id="${key}" value={${editedStateName}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
                 break
             case 'COLORPICKER':
-                requiredImports.add("import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'")
                 componentJsx = `<ColorPickerField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 break
             case 'SELECT':
-                requiredImports.add("import { SelectField } from '@/components/dashboard-ui/SelectField'")
-                const selectVarName = generateOptionsVariable(key, optionsString, [{ label: 'Option 1', value: 'Option 1' }])
+                const selectVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Option 1', value: 'Option 1' }]
+                )
                 componentJsx = `<SelectField options={${selectVarName}} value={${editedStateName}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'RADIOBUTTON':
-                requiredImports.add("import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'")
-                const radioVarName = generateOptionsVariable(key, optionsString, [{ label: 'Choice A', value: 'Choice A' }])
+                const radioVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Choice A', value: 'Choice A' }]
+                )
                 componentJsx = `<RadioButtonGroupField options={${radioVarName}} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'DYNAMICSELECT':
-                requiredImports.add("import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'")
                 componentJsx = `<DynamicSelectField value={${editedStateName}['${key}']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'IMAGE':
-                requiredImports.add("import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'")
                 componentJsx = `<ImageUploadFieldSingle value={${editedStateName}['${key}']} onChange={(url) => handleFieldChange('${key}', url)} />`
                 break
             case 'IMAGES':
-                requiredImports.add("import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'")
                 componentJsx = `<ImageUploadManager value={${editedStateName}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
                 break
             case 'MULTICHECKBOX':
                 isTallComponent = true
-                requiredImports.add("import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'")
                 componentJsx = `<MultiCheckboxGroupField value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'MULTIOPTIONS':
-                requiredImports.add("import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'")
-                const multiOptionsVarName = generateOptionsVariable(key, optionsString, [{ label: 'Default A', value: 'Default A' }])
+                const multiOptionsVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Default A', value: 'Default A' }]
+                )
                 componentJsx = `<MultiOptionsField options={${multiOptionsVarName}} value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
             case 'STRINGARRAY':
                 isTallComponent = true
-                requiredImports.add("import StringArrayField from '@/components/dashboard-ui/StringArrayField'")
-                const fields = optionsString ? optionsString.split(',').map(s => s.trim()) : []
-                const fieldsProp = `[\${fields.map(f => \`'\${f}'\`).join(', ')}]\\`
-                componentJsx = `<StringArrayField id="\${key}" fields={\${fieldsProp}} value={\${editedStateName}['\${key}']} onChange={(value) => handleFieldChange('\${key}', value)} />`
+                componentJsx = `<StringArrayField />`
                 break
             case 'AUTOCOMPLETE':
-                requiredImports.add("import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'")
                 componentJsx = `<AutocompleteField id="${key}" value={${editedStateName}['${key}']} />`
                 break
             default:
-                // FIX: Changed 'return' to 'break' to ensure a consistent return path.
                 componentJsx = `<Input id="${key}" value={String(${editedStateName}['${key}'] || '')} disabled placeholder="Unsupported type: ${typeName}" />`
                 break
         }
@@ -230,11 +199,11 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const formFieldsJsx = Object.entries(schema)
         .map(([key, value]) => {
-            // Handle nested objects first
             if (typeof value === 'object' && !Array.isArray(value)) {
-                requiredImports.add("import JsonTextareaField from '@/components/dashboard-ui/JsonTextareaField'")
-                const label = key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-                const componentJsx = `<JsonTextareaField id="${key}" value={${editedStateName}['${key}']} onChange={(jsonValue) => handleFieldChange('${key}', jsonValue)} />`
+                const label = key
+                    .replace(/-/g, ' ')
+                    .replace(/\b\w/g, (l) => l.toUpperCase())
+                const componentJsx = `<JsonTextareaField />`
                 return `
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right pt-3">
@@ -245,17 +214,42 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                             </div>
                         </div>`
             }
-            // Handle string-defined types
             return generateFormFieldJsx(key, value as string)
         })
         .join('')
 
-    const dynamicImports = [...requiredImports].sort().join('\n')
-
     const dynamicVariablesContent =
         componentBodyStatements.size > 0
-            ? `    ${[...componentBodyStatements].sort().join('\n\n    ')}`
+            ? `${[...componentBodyStatements].sort().join('\n\n')}`
             : ''
+
+    const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
+import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
+import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
+import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'
+import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'
+import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
+import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
+import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
+import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import JsonTextareaField from '@/components/dashboard-ui/JsonTextareaField'
+import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'
+import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
+import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
+import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
+import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import StringArrayField from '@/components/dashboard-ui/StringArrayField'
+import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
+import TimeField from '@/components/dashboard-ui/TimeField'
+import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
+import UrlInputField from '@/components/dashboard-ui/UrlInputField'
+import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
+import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
+import { DateField } from '@/components/dashboard-ui/DateField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import { SelectField } from '@/components/dashboard-ui/SelectField'`
 
     return `import React, { useEffect, useState } from 'react'
 
@@ -271,8 +265,8 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-// Dynamically import only the components needed for the form
-${dynamicImports}
+// Static import for all possible form components
+${staticImports}
 
 import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'

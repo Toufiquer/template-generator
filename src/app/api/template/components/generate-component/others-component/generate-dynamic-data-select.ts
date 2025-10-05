@@ -1,15 +1,4 @@
-/**
- * Generates the content for the DynamicDataSelect.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete DynamicDataSelect.tsx file content as a string.
- */
-export const generateDynamicDataSelectComponentFile = (
-    inputJsonFile: string
-): string => {
-    // The content of this component is static and reusable.
-    // It does not need to be changed based on the schema or naming conventions.
+export const generateDynamicDataSelectComponentFile = (): string => {
     return `'use client'
 
 import { useState, useEffect } from 'react'

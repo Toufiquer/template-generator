@@ -1,17 +1,4 @@
-/**
- * Generates the content for the MultiSelect.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete MultiSelect.tsx file content as a string.
- */
-export const generateMultiSelectComponentFile = (
-    inputJsonFile: string
-): string => {
-    // The content of this component is static and reusable.
-    // It fetches data from a provided API URL and manages its own state.
-    // It does not need to be changed based on the schema or naming conventions.
-
+export const generateMultiSelectComponentFile = (): string => {
     return `'use client'
 
 import { useEffect, useState } from 'react'

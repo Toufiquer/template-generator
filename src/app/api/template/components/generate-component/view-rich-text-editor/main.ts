@@ -14,10 +14,10 @@ const generateViewRichTextEditorMain = async (data: string) => {
     }
 
     const richTextEditorClientTemplate =
-        generateViewRichTextEditorClientComponent(data)
+        generateViewRichTextEditorClientComponent()
     const richTextEditorServerTemplate =
-        generateViewRichTextEditorServerComponent(data)
-    const richTextViewTemplate = generateViewRichTextViewComponent(data)
+        generateViewRichTextEditorServerComponent()
+    const richTextViewTemplate = generateViewRichTextViewComponent()
 
     writeInFile(
         richTextEditorClientTemplate,

@@ -55,7 +55,6 @@ const SuccessPopup = ({
 // --- START: PROGRAMMATIC AND READABLE INITIAL STATE ---
 // Define the complex object separately for clarity.
 
-
 // Construct the initial template object.
 const initialJsonTemplate = {
     uid: '000',
@@ -210,7 +209,7 @@ const JsonEditor: React.FC = () => {
             showSuccess('JSON formatted successfully!')
             return formattedJson
         } catch (error) {
-            setError('Invalid JSON input')
+            setError('Invalid JSON input: ' + (error as Error).message)
             return null
         }
     }
@@ -238,8 +237,6 @@ const JsonEditor: React.FC = () => {
             if (!response.ok) {
                 throw new Error('Network response was not ok')
             }
-
-            const result = await response.json()
             showSuccess('Template generated successfully!')
 
             const parsedJson = JSON.parse(formattedJson)

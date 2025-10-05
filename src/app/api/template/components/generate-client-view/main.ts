@@ -14,7 +14,7 @@ const generateClientView = async (data: string) => {
     }
 
     const mainPageTemplate = generateClientListPageFile(data)
-    const custombuttonTemplate = generateCustomButton(data)
+    const custombuttonTemplate = generateCustomButton()
     const idHomeButtonTemplate = generateIDHomeButton(data)
     const detailPageTemplate = generateClientDetailPageFile(data)
     writeInFile(

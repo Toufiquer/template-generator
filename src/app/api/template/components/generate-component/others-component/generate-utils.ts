@@ -9,7 +9,7 @@
  * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
  * @returns {string} The complete, formatted Controller.ts file as a string.
  */
-export const generateUtils = (inputJsonFile: string): string => {
+export const generateUtils = (): string => {
     return `
     
 

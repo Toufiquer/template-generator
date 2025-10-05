@@ -1,13 +1,4 @@
-/**
- * Generates the content for the SearchBox.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete SearchBox.tsx file content as a string.
- */
-export const generateSearchBoxComponentFile = (
-    inputJsonFile: string
-): string => {
+export const generateSearchBoxComponentFile = (): string => {
     // This component is a generic UI element for search functionality.
     // Its logic is self-contained and does not need to be altered
     // based on the provided schema or naming conventions.

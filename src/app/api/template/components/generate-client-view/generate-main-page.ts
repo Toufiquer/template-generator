@@ -30,10 +30,8 @@ export const generateClientListPageFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    // 1. Extract the required names for API paths, titles, and data keys.
-    const pluralLowerCase = namingConvention.users_2_000___ // e.g., "posts"
-    const pluralUpperCase = namingConvention.Users_1_000___ // e.g., "Posts"
-    const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
+    const pluralLowerCase = namingConvention.users_2_000___
+    const pluralUpperCase = namingConvention.Users_1_000___
 
     // 2. Intelligently find the display key.
     // Looks for 'title' or 'name', falls back to the first 'STRING' field, then to a default.

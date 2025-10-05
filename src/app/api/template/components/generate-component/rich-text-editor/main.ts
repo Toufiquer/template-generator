@@ -12,8 +12,8 @@ const generateRichTextEditorMain = async (data: string) => {
         folderName = namingConvention.users_2_000___
     }
 
-    const richTextEditorIndexTemplate = generateRichTextEditorIndex(data)
-    const richTextEditorMenuBarTemplate = generateRichTextEditorMenuBar(data)
+    const richTextEditorIndexTemplate = generateRichTextEditorIndex()
+    const richTextEditorMenuBarTemplate = generateRichTextEditorMenuBar()
     writeInFile(
         richTextEditorIndexTemplate,
         `src/app/generate/${folderName}/all/components/rich-text-editor/index.tsx`

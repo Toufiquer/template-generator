@@ -15,7 +15,7 @@ const generateSSRView = async (data: string) => {
     }
 
     const mainPageTemplate = generateMainPage(data)
-    const custombuttonTemplate = generateCustomButton(data)
+    const custombuttonTemplate = generateCustomButton()
     const idHomeButtonTemplate = generateIDHomeButton(data)
     const detailPageTemplate = generateDetailPageFile(data)
     writeInFile(

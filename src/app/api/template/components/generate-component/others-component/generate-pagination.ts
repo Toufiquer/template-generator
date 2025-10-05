@@ -1,17 +1,4 @@
-/**
- * Generates the content for the Pagination.tsx component file.
- * Note: This component is static and does not depend on the input JSON.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object (not used in this function).
- * @returns {string} The complete Pagination.tsx file content as a string.
- */
-export const generatePaginationComponentFile = (
-    inputJsonFile: string
-): string => {
-
-    // This component is a generic UI element for pagination.
-    // Its functionality is self-contained and does not need to be altered
-    // based on the provided schema or naming conventions.
+export const generatePaginationComponentFile = (): string => {
     return `import React from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 

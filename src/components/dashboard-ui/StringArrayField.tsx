@@ -14,15 +14,15 @@ import { Button } from '@/components/ui/button'
 import { X, PlusCircle } from 'lucide-react'
 
 // Define the shape of each item in the array
-type Item = Record<string, any>
+type Item = Record<string, unknown>
 
-interface StringArrayFieldProps {}
-
-const StringArrayField: React.FC<StringArrayFieldProps> = () => {
+const StringArrayField: React.FC = () => {
     const id = Math.random().toString(36).substring(2)
     const fields = ['field1', 'field2', 'field3'] // Example fields
     const value: { [key in string]: string }[] = []
-    const onChange = (newValue: Item[]) => {}
+    const onChange = (newValue: Item[]) => {
+        console.log('newValue', newValue)
+    }
     // Handles changes to an input field within a specific item
     const handleItemChange = (
         index: number,

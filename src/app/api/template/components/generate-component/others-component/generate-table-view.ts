@@ -1,10 +1,3 @@
-/**
- * Generates the content for a dynamic ViewTable.tsx component file that integrates
- * with a separate ExportDialog for handling XLSX exports.
- *
- * @param {InputJsonFile} inputJsonFile The JSON object with schema and naming conventions.
- * @returns {string} The complete, updated ViewTable.tsx file content as a string.
- */
 export const generateViewTableComponentFile = (
     inputJsonFile: string
 ): string => {
