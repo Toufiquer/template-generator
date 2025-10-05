@@ -1,4 +1,3 @@
-import { ISavedInterfaceToLocalDB } from './../../../../../../../lib/store/mainStore'
 /**
  * Generates the content for a BulkDelete.tsx component file.
  *

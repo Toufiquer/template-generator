@@ -37,8 +37,6 @@ function generateStoreFile(inputJson: string): string {
     const config: InputConfig = JSON.parse(inputJson)
     const { namingConvention } = config
 
-    const folderName = namingConvention.users_2_000___
-    // The template for the store.ts file with placeholders.
     const template = `import { create } from 'zustand'
 import { IUsers_1_000___ ,defaultUsers_1_000___} from '../store/data/data'
 import { Users_1_000___Store } from '../store/store-type' 
