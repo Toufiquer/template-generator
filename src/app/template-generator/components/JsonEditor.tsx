@@ -111,6 +111,7 @@ const initialJsonTemplate = {
         user_4_000___: 'post',
         ISelect_6_000___: 'ISelect',
         select_5_000___: 'select',
+        use_generate_folder: false,
     },
 }
 // --- END: PROGRAMMATIC AND READABLE INITIAL STATE ---
