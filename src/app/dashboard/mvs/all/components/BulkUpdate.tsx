@@ -20,7 +20,7 @@ import {
 import { IMvs } from '../store/data/data'
 import { useMvsStore } from '../store/store'
 import { mvsSelectorArr } from '../store/store-constant'
-import { useBulkUpdateMvsMutation } from '../redux/rtk-api'
+import { useBulkUpdateMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const BulkUpdateNextComponents: React.FC = () => {

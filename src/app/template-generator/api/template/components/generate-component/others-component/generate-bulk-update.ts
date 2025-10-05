@@ -57,7 +57,7 @@ import {
 import { ${interfaceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
 import { ${pluralLowerCase}SelectorArr } from '../store/store-constant'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const BulkUpdateNextComponents: React.FC = () => {

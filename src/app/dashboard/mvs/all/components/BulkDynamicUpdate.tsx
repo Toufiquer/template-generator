@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 
 import { useMvsStore } from '../store/store'
-import { useBulkUpdateMvsMutation } from '../redux/rtk-api'
+import { useBulkUpdateMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { handleSuccess, handleError } from './utils'
 import DynamicDataSelect from './DynamicDataSelect'
 

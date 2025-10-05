@@ -277,7 +277,7 @@ import {
 ${dynamicImports}
 
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useAdd${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { ${interfaceName}, ${defaultInstanceName} } from '@/app/generate/${pluralLowerCase}/all/store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
@@ -396,7 +396,7 @@ import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGrou
 import { SelectField } from '@/components/dashboard-ui/SelectField'
 
 import { usePostsStore } from '../store/store'
-import { useAddPostsMutation } from '../redux/rtk-api'
+import { useAddPostsMutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { IPosts, defaultPosts } from '@/app/generate/posts/all/store/data/data'
 import {
     formatDuplicateKeyError,

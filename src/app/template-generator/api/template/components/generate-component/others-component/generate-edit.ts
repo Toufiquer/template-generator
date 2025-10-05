@@ -270,7 +270,7 @@ ${staticImports}
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useUpdate${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const EditNextComponents: React.FC = () => {

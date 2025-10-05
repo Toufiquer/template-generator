@@ -97,7 +97,7 @@ import {
 import { ${interfaceName} } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
+import { useGet${pluralPascalCase}Query } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import Pagination from './Pagination'
 import ExportDialog from './ExportDialog' // Import the new dialog component
 

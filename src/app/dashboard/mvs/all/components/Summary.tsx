@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Loader2, TrendingUp } from 'lucide-react'
 
 // Assuming your RTK API file is correctly set up
-import { useGetMvsSummaryQuery } from '../redux/rtk-api'
+import { useGetMvsSummaryQuery } from '@/redux/features/mvs/mvsSlice.ts'
 
 // Import Shadcn UI Components
 import { Button } from '@/components/ui/button'

@@ -23,7 +23,7 @@ import FilterDialog, { FilterPayload } from './components/FilterDialog'
 import Summary from './components/Summary'
 
 import { useMvsStore } from './store/store'
-import { useGetMvsQuery } from './redux/rtk-api'
+import { useGetMvsQuery } from '@/redux/features/mvs/mvsSlice.ts'
 import { handleSuccess } from './components/utils'
 
 const MainNextPage: React.FC = () => {

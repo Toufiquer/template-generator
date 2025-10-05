@@ -10,6 +10,7 @@ export const generateMainPageFile = (inputJsonFile: string): string => {
 
     // Extract names and format them for different uses
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
+    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
 
     // Construct the file content using a template literal
@@ -38,7 +39,7 @@ import FilterDialog, { FilterPayload } from './components/FilterDialog'
 import Summary from './components/Summary'
 
 import { use${pluralPascalCase}Store } from './store/store'
-import { useGet${pluralPascalCase}Query } from './redux/rtk-api'
+import { useGet${pluralPascalCase}Query } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { handleSuccess } from './components/utils'
 
 const MainNextPage: React.FC = () => {

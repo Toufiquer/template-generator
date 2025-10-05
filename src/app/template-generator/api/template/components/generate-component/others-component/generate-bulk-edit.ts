@@ -89,7 +89,7 @@ import {
 
 import { ${interfaceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useBulkUpdate${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useBulkUpdate${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const BulkEditNextComponents: React.FC = () => {

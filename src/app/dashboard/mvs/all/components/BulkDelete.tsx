@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog'
 
 import { useMvsStore } from '../store/store'
-import { useBulkDeleteMvsMutation } from '../redux/rtk-api'
+import { useBulkDeleteMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const BulkDeleteNextComponents: React.FC = () => {

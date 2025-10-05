@@ -175,7 +175,7 @@ import { useState } from 'react'
 import { Loader2, TrendingUp } from 'lucide-react'
 
 // Assuming your RTK API file is correctly set up
-import { useGet${pluralPascalCase}SummaryQuery } from '../redux/rtk-api'
+import { useGet${pluralPascalCase}SummaryQuery } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 
 // Import Shadcn UI Components
 import { Button } from '@/components/ui/button'

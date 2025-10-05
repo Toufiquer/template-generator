@@ -43,7 +43,7 @@ import { SelectField } from '@/components/dashboard-ui/SelectField'
 
 import { IMvs, defaultMvs } from '../store/data/data'
 import { useMvsStore } from '../store/store'
-import { useUpdateMvsMutation } from '../redux/rtk-api'
+import { useUpdateMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const EditNextComponents: React.FC = () => {

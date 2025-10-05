@@ -109,7 +109,7 @@ import {
 import { ${interfaceName} } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}Query } from '../redux/rtk-api'
+import { useGet${pluralPascalCase}Query } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import Pagination from './Pagination'
 
 // Dynamically generated types for type safety
@@ -445,7 +445,7 @@ import {
 import { IPosts } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { usePostsStore } from '../store/store'
-import { useGetPostsQuery } from '../redux/rtk-api'
+import { useGetPostsQuery } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import Pagination from './Pagination'
 import ExportDialog from './ExportDialog' // <-- 1. Import the new component
 

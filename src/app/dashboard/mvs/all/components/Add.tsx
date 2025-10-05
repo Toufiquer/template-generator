@@ -42,7 +42,7 @@ import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGrou
 import { SelectField } from '@/components/dashboard-ui/SelectField'
 
 import { useMvsStore } from '../store/store'
-import { useAddMvsMutation } from '../redux/rtk-api'
+import { useAddMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { IMvs, defaultMvs } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 

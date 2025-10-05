@@ -11,7 +11,7 @@ import {
 
 import { IMvs, defaultMvs } from '../store/data/data'
 import { useMvsStore } from '../store/store'
-import { useDeleteMvsMutation } from '../redux/rtk-api'
+import { useDeleteMvsMutation } from '@/redux/features/mvs/mvsSlice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const DeleteNextComponents: React.FC = () => {

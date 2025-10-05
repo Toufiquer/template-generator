@@ -42,7 +42,7 @@ import {
 import { IMvs } from '../store/data/data'
 import { pageLimitArr } from '../store/store-constant'
 import { useMvsStore } from '../store/store'
-import { useGetMvsQuery } from '../redux/rtk-api'
+import { useGetMvsQuery } from '@/redux/features/mvs/mvsSlice.ts'
 import Pagination from './Pagination'
 import ExportDialog from './ExportDialog' // Import the new dialog component
 

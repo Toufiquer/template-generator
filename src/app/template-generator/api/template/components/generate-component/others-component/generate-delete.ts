@@ -9,6 +9,7 @@ export const generateDeleteComponentFile = (inputJsonFile: string): string => {
 
     // 1. Extract and format names.
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
+    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
     const singularPascalCase = namingConvention.User_3_000___ // e.g., "Post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
 
@@ -34,7 +35,7 @@ import {
 
 import { ${interfaceName}, default${pluralPascalCase} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useDelete${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useDelete${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { handleSuccess, handleError } from './utils'
 
 const DeleteNextComponents: React.FC = () => {

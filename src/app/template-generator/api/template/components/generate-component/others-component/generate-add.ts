@@ -276,7 +276,7 @@ import {
 ${staticImports}
 
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useAdd${pluralPascalCase}Mutation } from '../redux/rtk-api'
+import { useAdd${pluralPascalCase}Mutation } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 

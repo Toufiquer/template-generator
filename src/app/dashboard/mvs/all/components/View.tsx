@@ -14,7 +14,7 @@ import {
 
 import { IMvs, defaultMvs } from '../store/data/data'
 import { useMvsStore } from '../store/store'
-import { useGetMvsByIdQuery } from '../redux/rtk-api'
+import { useGetMvsByIdQuery } from '@/redux/features/mvs/mvsSlice.ts'
 
 const ViewNextComponents: React.FC = () => {
     const {

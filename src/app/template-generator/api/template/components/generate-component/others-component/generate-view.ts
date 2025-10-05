@@ -31,6 +31,7 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
         JSON.parse(inputJsonFile) || {}
 
     const pluralPascalCase = namingConvention.Users_1_000___ // e.g., "Posts"
+    const pluralLowerCase = pluralPascalCase.toLowerCase() // e.g., "posts"
     const singularLowerCase = namingConvention.user_4_000___ // e.g., "post"
     const interfaceName = `I${pluralPascalCase}` // e.g., "IPosts"
     const defaultInstanceName = `default${pluralPascalCase}` // e.g., "defaultPosts"
@@ -109,10 +110,10 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                
-                if (typeof type !== 'string') return '';
-                
-                const [typeName] = type.toUpperCase().split('#');
+
+                if (typeof type !== 'string') return ''
+
+                const [typeName] = type.toUpperCase().split('#')
 
                 if (typeName === 'IMAGE') {
                     return `
@@ -181,7 +182,7 @@ import {
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { use${pluralPascalCase}Store } from '../store/store'
-import { useGet${pluralPascalCase}ByIdQuery } from '../redux/rtk-api'
+import { useGet${pluralPascalCase}ByIdQuery } from '@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts'
 
 const ViewNextComponents: React.FC = () => {
     const {
