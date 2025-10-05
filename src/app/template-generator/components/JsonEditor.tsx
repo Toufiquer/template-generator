@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button'
 import ViewDataType, { allDataType } from './ViewDataType'
 import Link from 'next/link'
+import { v4 as uuidv4 } from 'uuid' // Import uuidv4
 
 // Success Popup Component
 const SuccessPopup = ({
@@ -87,20 +88,20 @@ const initialJsonTemplate = {
         ideas: 'MULTIOPTIONS#O 1, O 2, O 3, O 4',
         students: 'STRINGARRAY#Name, Class, Roll',
         complexValue: {
-            id: '1234',
-            title: ' The Name of Country',
+            id: 'STRING', // Changed from '1234' to 'STRING'
+            title: 'STRING', // Changed from ' The Name of Country' to 'STRING'
             parent: {
-                id: '111234',
-                title: ' The Name of Parent',
+                id: 'STRING', // Changed from '111234' to 'STRING'
+                title: 'STRING', // Changed from ' The Name of Parent' to 'STRING'
                 child: {
-                    id: '1234',
-                    title: ' The Name of Child',
-                    child: '',
-                    note: 'The Note',
+                    id: 'STRING', // Changed from '1234' to 'STRING'
+                    title: 'STRING', // Changed from ' The Name of Child' to 'STRING'
+                    child: 'STRING', // Assuming this should be a STRING type
+                    note: 'STRING', // Changed from 'The Note' to 'STRING'
                 },
-                note: 'The Note',
+                note: 'STRING', // Changed from 'The Note' to 'STRING'
             },
-            note: 'The Note',
+            note: 'STRING', // Changed from 'The Note' to 'STRING'
         },
     },
     namingConvention: {
@@ -127,7 +128,8 @@ const JsonEditor: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState<string>('')
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
 
-    const { items, addItem, removeItem, clearItems } = useJsonStore()
+    const { items, addItem, removeItem, clearItems, updateItem } =
+        useJsonStore() // Added updateItem
 
     const showSuccess = (message: string) => {
         setSuccessMessage(message)
@@ -157,38 +159,86 @@ const JsonEditor: React.FC = () => {
                 allDataType.map((item) => item.name.trim())
             )
 
-            const invalidEntry = Object.entries(schema).find(([, value]) => {
-                const baseType = (value as string).split('#')[0]
-                return !validDataTypes.has(baseType)
-            })
+            // Recursive function to validate schema types
+            const validateSchemaTypes = (
+                currentSchema: any,
+                path: string = ''
+            ): { isValid: boolean; error?: string } => {
+                for (const key in currentSchema) {
+                    if (
+                        Object.prototype.hasOwnProperty.call(currentSchema, key)
+                    ) {
+                        const value = currentSchema[key]
+                        const currentPath = path ? `${path}.${key}` : key
 
-            if (invalidEntry) {
-                const [fieldName, invalidType] = invalidEntry
-                setError(
-                    `Validation Error: The type "${
-                        (invalidType as string).split('#')[0]
-                    }" for field "${fieldName}" is invalid. Please ensure the base type is a valid, case-sensitive name from the DataType Library.`
-                )
+                        if (typeof value === 'object' && value !== null) {
+                            // If it's an object, recurse
+                            const result = validateSchemaTypes(
+                                value,
+                                currentPath
+                            )
+                            if (!result.isValid) {
+                                return result // Pass the error up
+                            }
+                        } else if (typeof value === 'string') {
+                            // Only validate if it's a string type and is expected to be a data type definition
+                            // This assumes that only leaf-node strings in the schema represent data types.
+                            const baseType = value.split('#')[0]
+                            if (!validDataTypes.has(baseType)) {
+                                return {
+                                    isValid: false,
+                                    error: `Validation Error: The type "${baseType}" for field "${currentPath}" is invalid. Please ensure the base type is a valid, case-sensitive name from the DataType Library.`,
+                                }
+                            }
+                        }
+                        // Other primitive types (numbers, booleans) are currently not validated as DataTypes
+                        // If your schema should include specific validations for them, you'd add conditions here.
+                    }
+                }
+                return { isValid: true }
+            }
+
+            const schemaValidationResult = validateSchemaTypes(schema)
+
+            if (!schemaValidationResult.isValid) {
+                setError(schemaValidationResult.error!)
                 setIsLoading(false)
                 return
             }
             // --- END: MODIFIED VALIDATION LOGIC ---
 
-            const isAlreadyExist = items.find(
+            // Generate a new UID if it's '000' or if you always want a new one on save
+            // If parsedJson.uid is always meant to be a NEW uuid, you can uncomment the line below
+            // parsedJson.uid = uuidv4();
+
+            // If parsedJson.uid is meant to be editable by the user and used for updates,
+            // ensure it's a string. If '000' is a placeholder for "generate a new one",
+            // then keep the conditional uuidv4() call.
+            if (parsedJson.uid === '000' || !parsedJson.uid) {
+                parsedJson.uid = uuidv4()
+            }
+
+            // --- MODIFIED LOGIC FOR SAVING/UPDATING ---
+            const existingItem = items.find(
                 (i) =>
                     typeof i.data === 'object' &&
                     i.data !== null &&
                     'uid' in i.data &&
                     (i.data as { uid: string }).uid === parsedJson.uid
             )
-            if (isAlreadyExist?.id) {
-                setError('Json already exist with this uid.')
-                return
+
+            if (existingItem) {
+                // If item with same UID exists, update it
+                updateItem(existingItem.id, parsedJson) // You'll need to implement updateItem in your store
+                setJsonInput(JSON.stringify(parsedJson, null, 2)) // Keep the updated JSON in the textarea
+                showSuccess('JSON updated successfully!')
             } else {
+                // Otherwise, add a new item
                 addItem(parsedJson)
-                setJsonInput('')
+                setJsonInput('') // Clear the input after adding a new one
                 showSuccess('JSON saved successfully!')
             }
+            // --- END MODIFIED LOGIC ---
         } catch (err: unknown) {
             setError(`Invalid JSON format. Please check your syntax. ${err}`)
         } finally {

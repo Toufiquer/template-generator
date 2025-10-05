@@ -1,17 +1,19 @@
-// store/jsonStore.ts
+// ../store/jsonStore.ts (Example - adjust based on your actual store implementation)
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { v4 as uuidv4 } from 'uuid'
 
-export interface JsonItem {
+interface JsonItem {
     id: string
-    data: undefined | string | object | { uid: string; templateName: string }
-    timestamp: Date
+    data: any
+    timestamp: number
 }
 
-export interface JsonStore {
+interface JsonStore {
     items: JsonItem[]
-    addItem: (data: undefined | string) => void
+    addItem: (data: any) => void
     removeItem: (id: string) => void
+    updateItem: (id: string, newData: any) => void // Add this line
     clearItems: () => void
 }
 
@@ -22,11 +24,7 @@ export const useJsonStore = create<JsonStore>()(
             addItem: (data) =>
                 set((state) => ({
                     items: [
-                        {
-                            id: Date.now().toString(),
-                            data,
-                            timestamp: new Date(),
-                        },
+                        { id: uuidv4(), data, timestamp: Date.now() },
                         ...state.items,
                     ],
                 })),
@@ -34,11 +32,22 @@ export const useJsonStore = create<JsonStore>()(
                 set((state) => ({
                     items: state.items.filter((item) => item.id !== id),
                 })),
+            updateItem: (
+                id,
+                newData // Implement updateItem
+            ) =>
+                set((state) => ({
+                    items: state.items.map((item) =>
+                        item.id === id
+                            ? { ...item, data: newData, timestamp: Date.now() }
+                            : item
+                    ),
+                })),
             clearItems: () => set({ items: [] }),
         }),
         {
-            name: 'json-storage', // unique name for the storage item
-            storage: createJSONStorage(() => localStorage), // (optional) by default the storage is localStorage
+            name: 'json-storage', // name of the item in the storage (e.g. localStorage)
+            storage: createJSONStorage(() => localStorage), // use localStorage as the storage
         }
     )
 )
