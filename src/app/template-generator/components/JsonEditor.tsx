@@ -2,7 +2,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useJsonStore } from '../store/jsonStore'
+import { useJsonStore, JsonTemplateItem } from '../store/jsonStore' // Import JsonTemplateItem
 import JsonEditorSingleItem from './JsonEditorSingleItem'
 
 import {
@@ -20,6 +20,23 @@ import { Button } from '@/components/ui/button'
 import ViewDataType, { allDataType } from './ViewDataType'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid' // Import uuidv4
+
+// Define a type for the schema structure
+// This is a recursive type definition for a JSON schema that can contain nested objects
+type JsonSchema = {
+    [key: string]: string | JsonSchema
+}
+
+// Define the overall structure of your JSON template
+interface JsonTemplate {
+    uid: string
+    templateName: string
+    schema: JsonSchema
+    namingConvention: {
+        [key: string]: string | boolean
+        use_generate_folder: boolean
+    }
+}
 
 // Success Popup Component
 const SuccessPopup = ({
@@ -54,10 +71,8 @@ const SuccessPopup = ({
 }
 
 // --- START: PROGRAMMATIC AND READABLE INITIAL STATE ---
-// Define the complex object separately for clarity.
-
 // Construct the initial template object.
-const initialJsonTemplate = {
+const initialJsonTemplate: JsonTemplate = {
     uid: '000',
     templateName: 'Basic Template',
     schema: {
@@ -88,20 +103,20 @@ const initialJsonTemplate = {
         ideas: 'MULTIOPTIONS#O 1, O 2, O 3, O 4',
         students: 'STRINGARRAY#Name, Class, Roll',
         complexValue: {
-            id: 'STRING', // Changed from '1234' to 'STRING'
-            title: 'STRING', // Changed from ' The Name of Country' to 'STRING'
+            id: 'STRING',
+            title: 'STRING',
             parent: {
-                id: 'STRING', // Changed from '111234' to 'STRING'
-                title: 'STRING', // Changed from ' The Name of Parent' to 'STRING'
+                id: 'STRING',
+                title: 'STRING',
                 child: {
-                    id: 'STRING', // Changed from '1234' to 'STRING'
-                    title: 'STRING', // Changed from ' The Name of Child' to 'STRING'
-                    child: 'STRING', // Assuming this should be a STRING type
-                    note: 'STRING', // Changed from 'The Note' to 'STRING'
+                    id: 'STRING',
+                    title: 'STRING',
+                    child: 'STRING',
+                    note: 'STRING',
                 },
-                note: 'STRING', // Changed from 'The Note' to 'STRING'
+                note: 'STRING',
             },
-            note: 'STRING', // Changed from 'The Note' to 'STRING'
+            note: 'STRING',
         },
     },
     namingConvention: {
@@ -117,8 +132,7 @@ const initialJsonTemplate = {
 // --- END: PROGRAMMATIC AND READABLE INITIAL STATE ---
 
 const JsonEditor: React.FC = () => {
-    const [pathButton, setPathButton] = useState('')
-    // The entire object is stringified to create the initial, nicely formatted input.
+    const [pathButton, setPathButton] = useState<string>('')
     const [jsonInput, setJsonInput] = useState<string>(
         JSON.stringify(initialJsonTemplate, null, 2)
     )
@@ -129,7 +143,7 @@ const JsonEditor: React.FC = () => {
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
 
     const { items, addItem, removeItem, clearItems, updateItem } =
-        useJsonStore() // Added updateItem
+        useJsonStore()
 
     const showSuccess = (message: string) => {
         setSuccessMessage(message)
@@ -142,8 +156,8 @@ const JsonEditor: React.FC = () => {
         setIsLoading(true)
 
         try {
-            // Validate JSON
-            const parsedJson = JSON.parse(jsonInput)
+            // Validate JSON and parse it into the JsonTemplate type
+            const parsedJson: JsonTemplate = JSON.parse(jsonInput)
 
             // --- START: MODIFIED VALIDATION LOGIC ---
             const schema = parsedJson.schema
@@ -160,8 +174,9 @@ const JsonEditor: React.FC = () => {
             )
 
             // Recursive function to validate schema types
+            // currentSchema is now typed as JsonSchema
             const validateSchemaTypes = (
-                currentSchema: any,
+                currentSchema: JsonSchema, // Changed from 'any' to 'JsonSchema'
                 path: string = ''
             ): { isValid: boolean; error?: string } => {
                 for (const key in currentSchema) {
@@ -174,15 +189,13 @@ const JsonEditor: React.FC = () => {
                         if (typeof value === 'object' && value !== null) {
                             // If it's an object, recurse
                             const result = validateSchemaTypes(
-                                value,
+                                value as JsonSchema, // Explicitly cast to JsonSchema for recursion
                                 currentPath
                             )
                             if (!result.isValid) {
                                 return result // Pass the error up
                             }
                         } else if (typeof value === 'string') {
-                            // Only validate if it's a string type and is expected to be a data type definition
-                            // This assumes that only leaf-node strings in the schema represent data types.
                             const baseType = value.split('#')[0]
                             if (!validDataTypes.has(baseType)) {
                                 return {
@@ -191,8 +204,6 @@ const JsonEditor: React.FC = () => {
                                 }
                             }
                         }
-                        // Other primitive types (numbers, booleans) are currently not validated as DataTypes
-                        // If your schema should include specific validations for them, you'd add conditions here.
                     }
                 }
                 return { isValid: true }
@@ -207,40 +218,35 @@ const JsonEditor: React.FC = () => {
             }
             // --- END: MODIFIED VALIDATION LOGIC ---
 
-            // Generate a new UID if it's '000' or if you always want a new one on save
-            // If parsedJson.uid is always meant to be a NEW uuid, you can uncomment the line below
-            // parsedJson.uid = uuidv4();
-
-            // If parsedJson.uid is meant to be editable by the user and used for updates,
-            // ensure it's a string. If '000' is a placeholder for "generate a new one",
-            // then keep the conditional uuidv4() call.
             if (parsedJson.uid === '000' || !parsedJson.uid) {
                 parsedJson.uid = uuidv4()
             }
 
-            // --- MODIFIED LOGIC FOR SAVING/UPDATING ---
             const existingItem = items.find(
-                (i) =>
+                (
+                    i
+                ): i is JsonTemplateItem => // Type assertion for i
                     typeof i.data === 'object' &&
                     i.data !== null &&
                     'uid' in i.data &&
-                    (i.data as { uid: string }).uid === parsedJson.uid
+                    (i.data as JsonTemplate).uid === parsedJson.uid // Cast i.data to JsonTemplate for uid access
             )
 
             if (existingItem) {
-                // If item with same UID exists, update it
-                updateItem(existingItem.id, parsedJson) // You'll need to implement updateItem in your store
-                setJsonInput(JSON.stringify(parsedJson, null, 2)) // Keep the updated JSON in the textarea
+                updateItem(existingItem.id, parsedJson)
+                setJsonInput(JSON.stringify(parsedJson, null, 2))
                 showSuccess('JSON updated successfully!')
             } else {
-                // Otherwise, add a new item
                 addItem(parsedJson)
-                setJsonInput('') // Clear the input after adding a new one
+                setJsonInput('')
                 showSuccess('JSON saved successfully!')
             }
-            // --- END MODIFIED LOGIC ---
         } catch (err: unknown) {
-            setError(`Invalid JSON format. Please check your syntax. ${err}`)
+            setError(
+                `Invalid JSON format. Please check your syntax. ${
+                    (err as Error).message
+                }`
+            )
         } finally {
             setIsLoading(false)
         }
@@ -253,7 +259,7 @@ const JsonEditor: React.FC = () => {
 
     const handleFormat = (): string | null => {
         try {
-            const parsedJson = JSON.parse(jsonInput)
+            const parsedJson: JsonTemplate = JSON.parse(jsonInput) // Ensure consistent typing
             const formattedJson = JSON.stringify(parsedJson, null, 2)
             setJsonInput(formattedJson)
             showSuccess('JSON formatted successfully!')
@@ -289,14 +295,20 @@ const JsonEditor: React.FC = () => {
             }
             showSuccess('Template generated successfully!')
 
-            const parsedJson = JSON.parse(formattedJson)
+            const parsedJson: JsonTemplate = JSON.parse(formattedJson) // Ensure consistent typing
             if (parsedJson.namingConvention.use_generate_folder) {
+                // Type assertion for parsedJson.namingConvention.users_2_000___
                 setPathButton(
-                    `/generate/${parsedJson.namingConvention.users_2_000___}`
+                    `/generate/${
+                        parsedJson.namingConvention.users_2_000___ as string // Assert type to string
+                    }`
                 )
             } else {
+                // Type assertion for parsedJson.namingConvention.users_2_000___
                 setPathButton(
-                    `/dashboard/${parsedJson.namingConvention.users_2_000___}`
+                    `/dashboard/${
+                        parsedJson.namingConvention.users_2_000___ as string // Assert type to string
+                    }`
                 )
             }
         } catch (error) {

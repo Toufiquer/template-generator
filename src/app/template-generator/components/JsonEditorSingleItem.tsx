@@ -1,6 +1,7 @@
 // components/JsonEditorSingleItem.tsx
 import { Button } from '@/components/ui/button'
-import { JsonItem } from '../store/jsonStore'
+
+import { JsonTemplateItem } from '../store/jsonStore' // Import JsonTemplateItem
 import { useState } from 'react'
 
 import {
@@ -20,7 +21,7 @@ const JsonEditorSingleItem = ({
     removeItem,
     setJsonInput,
 }: {
-    item: JsonItem
+    item: JsonTemplateItem
     setJsonInput: React.Dispatch<React.SetStateAction<string>>
     removeItem: (id: string) => void
 }) => {

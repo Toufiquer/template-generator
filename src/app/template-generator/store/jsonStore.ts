@@ -1,19 +1,39 @@
-// ../store/jsonStore.ts (Example - adjust based on your actual store implementation)
+// ../store/jsonStore.ts
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 
-interface JsonItem {
+// Define a type for the schema structure
+// This is a recursive type definition for a JSON schema that can contain nested objects
+type JsonSchema = {
+    [key: string]: string | JsonSchema
+}
+
+// Define the overall structure of your JSON template
+export interface JsonTemplate {
+    // Export this interface as it's used elsewhere
+    uid: string
+    templateName: string
+    schema: JsonSchema
+    namingConvention: {
+        [key: string]: string | boolean
+        use_generate_folder: boolean
+    }
+}
+
+// Define the type for an item stored in the JSON store
+export interface JsonTemplateItem {
+    // Renamed from JsonItem to JsonTemplateItem and exported
     id: string
-    data: any
+    data: JsonTemplate // 'data' is now strongly typed as JsonTemplate
     timestamp: number
 }
 
 interface JsonStore {
-    items: JsonItem[]
-    addItem: (data: any) => void
+    items: JsonTemplateItem[] // Use JsonTemplateItem here
+    addItem: (data: JsonTemplate) => void // 'data' is now strongly typed
     removeItem: (id: string) => void
-    updateItem: (id: string, newData: any) => void // Add this line
+    updateItem: (id: string, newData: JsonTemplate) => void // 'newData' is now strongly typed
     clearItems: () => void
 }
 
@@ -34,7 +54,7 @@ export const useJsonStore = create<JsonStore>()(
                 })),
             updateItem: (
                 id,
-                newData // Implement updateItem
+                newData // 'newData' is now strongly typed
             ) =>
                 set((state) => ({
                     items: state.items.map((item) =>
@@ -46,8 +66,8 @@ export const useJsonStore = create<JsonStore>()(
             clearItems: () => set({ items: [] }),
         }),
         {
-            name: 'json-storage', // name of the item in the storage (e.g. localStorage)
-            storage: createJSONStorage(() => localStorage), // use localStorage as the storage
+            name: 'json-storage',
+            storage: createJSONStorage(() => localStorage),
         }
     )
 )
