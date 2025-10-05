@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 // Import all UI components
 import InputFieldForString from './ui-components/InputFieldForString'
@@ -32,7 +33,6 @@ import JsonValueField from './ui-components/JsonValue'
 
 import { AutocompleteFieldCoreCode } from './core-code/AutocompleteFieldCoreCode'
 import { InputFieldForStringCoreCode } from './core-code/InputFieldForStringCoreCode'
-import { toast } from 'react-toastify'
 import { MultiCheckboxGroupFieldCoreCode } from './core-code/MultiCheckboxGroupFieldCoreCode'
 import { CheckboxFieldCoreCode } from './core-code/CheckboxFieldCoreCode'
 import { RadioButtonGroupFieldCoreCode } from './core-code/RadioButtonGroupFieldCoreCode'

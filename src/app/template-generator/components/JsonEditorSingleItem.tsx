@@ -1,6 +1,6 @@
 // components/JsonEditorSingleItem.tsx
 import { Button } from '@/components/ui/button'
-import { JsonItem } from '@/lib/store/jsonStore'
+import { JsonItem } from '../store/jsonStore'
 import { useState } from 'react'
 
 import {

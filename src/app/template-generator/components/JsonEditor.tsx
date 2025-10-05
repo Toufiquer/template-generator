@@ -2,7 +2,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useJsonStore } from '@/lib/store/jsonStore'
+import { useJsonStore } from '../store/jsonStore'
 import JsonEditorSingleItem from './JsonEditorSingleItem'
 
 import {
@@ -226,7 +226,7 @@ const JsonEditor: React.FC = () => {
         }
 
         try {
-            const response = await fetch('/api/template', {
+            const response = await fetch('/template-generator/api/template', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
