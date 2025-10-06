@@ -309,7 +309,7 @@ ${dynamicVariablesContent}
 
     return (
         <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
-            <DialogContent className="sm:max-w-[625px]">
+            <DialogContent className="sm:max-w-[825px]">
                 <DialogHeader>
                     <DialogTitle>Add New ${singularPascalCase}</DialogTitle>
                 </DialogHeader>
