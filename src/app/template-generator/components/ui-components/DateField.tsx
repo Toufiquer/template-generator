@@ -19,13 +19,8 @@ export function DateField() {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
 
-
-
     return (
         <div className="flex flex-col gap-3">
-            <div className="text-red-700">
-                This component works without popup
-            </div>
             <Label htmlFor="date-field" className="px-1">
                 Date of birth
             </Label>
@@ -51,7 +46,6 @@ export function DateField() {
                         fromYear={1900}
                         toYear={new Date().getFullYear()}
                         onSelect={(selectedDate) => {
-                          
                             setDate(selectedDate)
                             setOpen(false)
                         }}

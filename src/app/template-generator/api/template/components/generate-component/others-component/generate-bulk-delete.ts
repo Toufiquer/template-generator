@@ -1,11 +1,10 @@
-
 export const generateBulkDeleteComponentFile = (
     inputJsonFile: string
 ): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ 
-    const pluralLowerCase = namingConvention.users_2_000___ 
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const pluralLowerCase = namingConvention.users_2_000___
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     const schemaKeys = Object.keys(schema)
@@ -13,13 +12,13 @@ export const generateBulkDeleteComponentFile = (
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
         schemaKeys.find((key) => key.toLowerCase() === 'title') ||
         schemaKeys.find((key) => schema[key] === 'STRING') ||
-        '_id' 
+        '_id'
 
     let reduxPath = ''
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     return `import React from 'react'

@@ -12,7 +12,7 @@ export const generateViewTableComponentFile = (
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     const suitableTypes = [

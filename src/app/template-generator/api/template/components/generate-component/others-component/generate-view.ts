@@ -1,8 +1,6 @@
-
 interface Schema {
     [key: string]: string | Schema
 }
-
 
 interface InputConfig {
     uid: string
@@ -21,11 +19,11 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ 
-    const pluralLowerCase = pluralPascalCase.toLowerCase() 
-    const singularLowerCase = namingConvention.user_4_000___ 
-    const interfaceName = `I${pluralPascalCase}` 
-    const defaultInstanceName = `default${pluralPascalCase}` 
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const pluralLowerCase = pluralPascalCase.toLowerCase()
+    const singularLowerCase = namingConvention.user_4_000___
+    const interfaceName = `I${pluralPascalCase}`
+    const defaultInstanceName = `default${pluralPascalCase}`
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -33,10 +31,9 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
- 
     const generateDetailRowsJsx = (currentSchema: Schema): string => {
         const imageKeys = Object.keys(currentSchema).filter((key) => {
             const value = currentSchema[key]
@@ -65,15 +62,15 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
                         return `<DetailRow label="${label}" value={formatBoolean(selected${pluralPascalCase}['${key}'])} />`
                     case 'DATE':
                         return `<DetailRow label="${label}" value={formatDate(selected${pluralPascalCase}['${key}'])} />`
-                    case 'IMAGES': 
+                    case 'IMAGES':
                     case 'MULTICHECKBOX':
                     case 'MULTIOPTIONS':
                     case 'DYNAMICSELECT':
                         return `<DetailRowArray label="${label}" values={selected${pluralPascalCase}['${key}']} />`
-          
+
                     case 'STRINGARRAY':
                         return `<DetailRowJson label="${label}" value={selected${pluralPascalCase}['${key}']} />`
-                    
+
                     case 'DATERANGE':
                         return `<DetailRow label="${label}" value={\`\${formatDate(selected${pluralPascalCase}['${key}']?.start)} to \${formatDate(selected${pluralPascalCase}['${key}']?.end)}\`} />`
                     case 'TIMERANGE':
@@ -97,7 +94,6 @@ export const generateViewComponentFile = (inputJsonFile: string): string => {
             })
             .join('\n                            ')
     }
-
 
     const generateImageViewerJsx = (currentSchema: Schema): string => {
         return Object.entries(currentSchema)

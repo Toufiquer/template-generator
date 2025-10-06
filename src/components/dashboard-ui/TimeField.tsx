@@ -1,26 +1,16 @@
-// TimeField.tsx
-
 'use client'
 
 import * as React from 'react'
 import { Clock } from 'lucide-react'
-import { format } from 'date-fns' // Using a reliable library for date/time formatting
+import { format } from 'date-fns'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Label } from '@/components/ui/label'
 
-// Define a clear, reusable props interface
 export interface TimeFieldProps {
-    // The value should be a string in "HH:mm" (24-hour) format for data consistency
     value: string | null | undefined
-    // The callback to notify the parent of the new "HH:mm" time string
     onChange: (time: string | undefined) => void
     id: string
     label?: string
@@ -37,10 +27,21 @@ export default function TimeField({
     className,
 }: TimeFieldProps) {
     const [isOpen, setIsOpen] = React.useState(false)
+    const ref = React.useRef<HTMLDivElement>(null)
     const hourScrollRef = React.useRef<HTMLDivElement>(null)
     const minuteScrollRef = React.useRef<HTMLDivElement>(null)
 
-    // Memoize parsing the time string to avoid re-calculating on every render
+    React.useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setIsOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
     const parsedTime = React.useMemo(() => {
         if (!value) return { hour: null, minute: null }
         const [h, m] = value.split(':').map(Number)
@@ -50,37 +51,28 @@ export default function TimeField({
         return { hour: null, minute: null }
     }, [value])
 
-    // Format the "HH:mm" string for user-friendly display (e.g., "02:30 PM")
     const displayTime = React.useMemo(() => {
         if (parsedTime.hour === null || parsedTime.minute === null) {
             return placeholder
         }
         const date = new Date()
         date.setHours(parsedTime.hour, parsedTime.minute)
-        return format(date, 'hh:mm a') // e.g., 02:30 PM
+        return format(date, 'hh:mm a')
     }, [parsedTime, placeholder])
 
-    // A single handler to update the time
     const handleTimeChange = (part: 'hour' | 'minute', val: number) => {
-        // Use the current time as a fallback if nothing is selected yet
         const now = new Date()
         const currentHour = parsedTime.hour ?? now.getHours()
         const currentMinute = parsedTime.minute ?? now.getMinutes()
-
         const newHour = part === 'hour' ? val : currentHour
         const newMinute = part === 'minute' ? val : currentMinute
-
-        // Format to "HH:mm" and notify the parent
-        const newTimeString = `${String(newHour).padStart(2, '0')}:${String(newMinute).padStart(2, '0')}`
+        const newTimeString = `${String(newHour).padStart(2, '0')}:${String(
+            newMinute
+        ).padStart(2, '0')}`
         onChange(newTimeString)
-
-        // If they've selected a minute, we can assume they're done and close the popover
-        if (part === 'minute') {
-            setIsOpen(false)
-        }
+        if (part === 'minute') setIsOpen(false)
     }
 
-    // Scroll to the selected time when the popover opens
     React.useEffect(() => {
         if (isOpen && parsedTime.hour !== null) {
             hourScrollRef.current
@@ -98,23 +90,37 @@ export default function TimeField({
     const minutes = Array.from({ length: 60 }, (_, i) => i)
 
     return (
-        <div className={cn('grid w-full items-center gap-1.5', className)}>
+        <div
+            className={cn(
+                'relative grid w-full items-center gap-1.5',
+                className
+            )}
+            ref={ref}
+        >
             {label && <Label htmlFor={id}>{label}</Label>}
-            <Popover open={isOpen} onOpenChange={setIsOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        id={id}
-                        variant="outline"
-                        className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !value && 'text-muted-foreground'
-                        )}
-                    >
-                        <Clock className="mr-2 h-4 w-4" />
-                        {displayTime}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50">
+
+            <Button
+                id={id}
+                variant="outline"
+                className={cn(
+                    'w-full justify-start text-left font-normal',
+                    !value && 'text-muted-foreground'
+                )}
+                onClick={() => setIsOpen((prev) => !prev)}
+                type="button"
+            >
+                <Clock className="mr-2 h-4 w-4" />
+                {displayTime}
+            </Button>
+
+            {isOpen && (
+                <div
+                    className="
+            absolute top-full left-0 mt-2 z-[9999]
+            rounded-md border bg-popover shadow-md
+            p-0
+          "
+                >
                     <div className="flex max-h-52">
                         <ScrollArea
                             className="h-52 w-24 border-r"
@@ -143,6 +149,7 @@ export default function TimeField({
                                 ))}
                             </div>
                         </ScrollArea>
+
                         <ScrollArea className="h-52 w-20" ref={minuteScrollRef}>
                             <div className="p-1">
                                 {minutes.map((minute) => (
@@ -165,8 +172,8 @@ export default function TimeField({
                             </div>
                         </ScrollArea>
                     </div>
-                </PopoverContent>
-            </Popover>
+                </div>
+            )}
         </div>
     )
 }

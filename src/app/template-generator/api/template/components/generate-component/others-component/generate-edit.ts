@@ -1,8 +1,6 @@
-
 interface Schema {
     [key: string]: string | Schema
 }
-
 
 interface InputConfig {
     uid: string
@@ -21,12 +19,12 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonFile) || {}
 
-    const pluralPascalCase = namingConvention.Users_1_000___ 
-    const singularPascalCase = namingConvention.User_3_000___ 
-    const pluralLowerCase = namingConvention.users_2_000___ 
-    const interfaceName = `I${pluralPascalCase}` 
-    const defaultInstanceName = `default${pluralPascalCase}` 
-    const editedStateName = `edited${singularPascalCase}` 
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const singularPascalCase = namingConvention.User_3_000___
+    const pluralLowerCase = namingConvention.users_2_000___
+    const interfaceName = `I${pluralPascalCase}`
+    const defaultInstanceName = `default${pluralPascalCase}`
+    const editedStateName = `edited${singularPascalCase}`
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
     const componentBodyStatements = new Set<string>()
@@ -225,7 +223,7 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'

@@ -1,19 +1,16 @@
-// TimeRangePickerField.tsx
-
 'use client'
 
 import * as React from 'react'
 import { Clock } from 'lucide-react'
+import { format } from 'date-fns'
 
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-// Define a clear props interface with a proper data structure for the range
 export interface TimeRangePickerProps {
-    // The value should be an object representing the start and end times
     value: { start: string; end: string } | undefined
-    // The callback to notify the parent of the updated range object
     onChange: (range: { start: string; end: string } | undefined) => void
     id: string
     label?: string
@@ -22,56 +19,163 @@ export interface TimeRangePickerProps {
 
 export default function TimeRangePickerField({
     id,
-    label = 'Time Range', // Provide a default label
+    label = 'Time Range',
     value,
     onChange,
     className,
 }: TimeRangePickerProps) {
-    // The component is now stateless. All internal useState calls have been removed.
+    const [openPicker, setOpenPicker] = React.useState<'start' | 'end' | null>(
+        null
+    )
+    const wrapperRef = React.useRef<HTMLDivElement>(null)
 
-    // A single, robust handler to update either the start or end time.
+    // Detect click outside and close popup
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                wrapperRef.current &&
+                !wrapperRef.current.contains(event.target as Node)
+            ) {
+                setOpenPicker(null)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    const hours = Array.from({ length: 24 }, (_, i) => i)
+    const minutes = Array.from({ length: 60 }, (_, i) => i)
+
+    const formatDisplayTime = (time: string | undefined) => {
+        if (!time) return 'Select time'
+        const [h, m] = time.split(':').map(Number)
+        const date = new Date()
+        date.setHours(h, m)
+        return format(date, 'hh:mm a')
+    }
+
     const handleTimeChange = (part: 'start' | 'end', timeValue: string) => {
-        // Create a new range object based on the current value, providing defaults if none exists
         const newRange = {
             start: value?.start ?? '00:00',
             end: value?.end ?? '00:00',
         }
-
-        // Update either the 'start' or 'end' property
         newRange[part] = timeValue
-
-        // Notify the parent component with the complete, updated range object
         onChange(newRange)
+        setOpenPicker(null)
+    }
+
+    const renderPicker = (part: 'start' | 'end') => {
+        const current = value?.[part]
+        const [hour, minute] = current
+            ? current.split(':').map(Number)
+            : [null, null]
+
+        return (
+            <div
+                className="
+          absolute top-full left-0 mt-2 z-[9999]
+          w-[180px] rounded-md border bg-popover shadow-md p-0
+        "
+            >
+                <div className="flex max-h-52">
+                    <ScrollArea className="h-52 w-24 border-r">
+                        <div className="p-1">
+                            {hours.map((h) => (
+                                <Button
+                                    key={h}
+                                    variant="ghost"
+                                    className={cn(
+                                        'w-full justify-center text-sm p-2',
+                                        hour === h && 'bg-accent'
+                                    )}
+                                    onClick={() => {
+                                        const newTime = `${String(h).padStart(2, '0')}:${String(
+                                            minute ?? 0
+                                        ).padStart(2, '0')}`
+                                        handleTimeChange(part, newTime)
+                                    }}
+                                >
+                                    {format(new Date().setHours(h), 'hh a')}
+                                </Button>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                    <ScrollArea className="h-52 w-20">
+                        <div className="p-1">
+                            {minutes.map((m) => (
+                                <Button
+                                    key={m}
+                                    variant="ghost"
+                                    className={cn(
+                                        'w-full justify-center text-sm p-2',
+                                        minute === m && 'bg-accent'
+                                    )}
+                                    onClick={() => {
+                                        const newTime = `${String(
+                                            hour ?? 0
+                                        ).padStart(
+                                            2,
+                                            '0'
+                                        )}:${String(m).padStart(2, '0')}`
+                                        handleTimeChange(part, newTime)
+                                    }}
+                                >
+                                    {String(m).padStart(2, '0')}
+                                </Button>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                </div>
+            </div>
+        )
     }
 
     return (
-        <div className={cn('grid w-full items-center gap-1.5', className)}>
-            {/* The Label is now dynamic and properly associated with the first input */}
+        <div
+            className={cn(
+                'relative grid w-full items-center gap-1.5',
+                className
+            )}
+            ref={wrapperRef}
+        >
             <div className="flex items-center">
                 <Clock className="mr-2 h-4 w-4" />
                 <Label htmlFor={id}>{label}</Label>
             </div>
+
             <div className="flex items-center gap-2">
-                <Input
-                    id={id} // The main id is on the start time input
-                    type="time"
-                    // The value is controlled by the parent's state
-                    value={value?.start ?? ''}
-                    // The onChange handler reports changes back to the parent
-                    onChange={(e) => handleTimeChange('start', e.target.value)}
-                    className="w-full"
-                    aria-label="Start time"
-                />
+                <div className="relative w-full">
+                    <Button
+                        variant="outline"
+                        className="w-full justify-between font-normal"
+                        onClick={() =>
+                            setOpenPicker(
+                                openPicker === 'start' ? null : 'start'
+                            )
+                        }
+                        type="button"
+                    >
+                        {formatDisplayTime(value?.start)}
+                    </Button>
+                    {openPicker === 'start' && renderPicker('start')}
+                </div>
+
                 <span className="text-gray-500">-</span>
-                <Input
-                    type="time"
-                    // The value is controlled by the parent's state
-                    value={value?.end ?? ''}
-                    // The onChange handler reports changes back to the parent
-                    onChange={(e) => handleTimeChange('end', e.target.value)}
-                    className="w-full"
-                    aria-label="End time"
-                />
+
+                <div className="relative w-full">
+                    <Button
+                        variant="outline"
+                        className="w-full justify-between font-normal"
+                        onClick={() =>
+                            setOpenPicker(openPicker === 'end' ? null : 'end')
+                        }
+                        type="button"
+                    >
+                        {formatDisplayTime(value?.end)}
+                    </Button>
+                    {openPicker === 'end' && renderPicker('end')}
+                </div>
             </div>
         </div>
     )

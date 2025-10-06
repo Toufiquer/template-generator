@@ -1,10 +1,9 @@
-
 export const generateDeleteComponentFile = (inputJsonFile: string): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile)
 
-    const pluralPascalCase = namingConvention.Users_1_000___ 
-    const pluralLowerCase = pluralPascalCase.toLowerCase() 
-    const singularPascalCase = namingConvention.User_3_000___ 
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const pluralLowerCase = pluralPascalCase.toLowerCase()
+    const singularPascalCase = namingConvention.User_3_000___
     const interfaceName = `I${pluralPascalCase}`
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
@@ -13,7 +12,7 @@ export const generateDeleteComponentFile = (inputJsonFile: string): string => {
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     const schemaKeys = Object.keys(schema)
@@ -21,7 +20,7 @@ export const generateDeleteComponentFile = (inputJsonFile: string): string => {
         schemaKeys.find((key) => key.toLowerCase() === 'name') ||
         schemaKeys.find((key) => key.toLowerCase() === 'title') ||
         schemaKeys.find((key) => schema[key] === 'STRING') ||
-        '_id' 
+        '_id'
 
     return `import React from 'react'
 

@@ -1,10 +1,8 @@
-
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
     use_generate_folder: boolean
 }
-
 
 interface InputConfig {
     schema: Record<string, string>
@@ -17,7 +15,7 @@ export const generateSummaryComponentFile = (
     const { schema, namingConvention }: InputConfig =
         JSON.parse(inputJsonString)
 
-    const pluralPascalCase = namingConvention.Users_1_000___ 
+    const pluralPascalCase = namingConvention.Users_1_000___
     const pluralLowerCase = namingConvention.users_2_000___
 
     const isUsedGenerateFolder = namingConvention.use_generate_folder
@@ -26,7 +24,7 @@ export const generateSummaryComponentFile = (
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     const hasNumericFields = Object.values(schema).some(

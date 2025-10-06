@@ -1,13 +1,12 @@
-
 export const generateBulkUpdateComponentFile = (
     inputJsonFile: string
 ): string => {
     const { schema, namingConvention } = JSON.parse(inputJsonFile) || {}
 
     // 1. Extract and format names.
-    const pluralPascalCase = namingConvention.Users_1_000___ 
-    const pluralLowerCase = namingConvention.users_2_000___ 
-    const singularPascalCase = namingConvention.User_3_000___ 
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const pluralLowerCase = namingConvention.users_2_000___
+    const singularPascalCase = namingConvention.User_3_000___
     const interfaceName = `I${pluralPascalCase}`
     const isUsedGenerateFolder = namingConvention.use_generate_folder
 
@@ -15,7 +14,7 @@ export const generateBulkUpdateComponentFile = (
     if (isUsedGenerateFolder) {
         reduxPath = `../redux/rtk-api`
     } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice.ts`
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
     }
 
     const schemaKeys = Object.keys(schema)

@@ -1,88 +1,74 @@
-// DateField.tsx
-
 'use client'
 
 import * as React from 'react'
 import { format } from 'date-fns'
-import { Calendar as CalendarIcon } from 'lucide-react' // Use a more standard icon
+import { Calendar as ChevronDownIcon } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Label } from '@/components/ui/label'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
 
-// Define a more consistent and flexible props interface
 export interface DateFieldProps {
-    // Use `value` for consistency with standard form inputs
-    value: Date | null | undefined
-    // Use `onChange` for consistency. It can receive `undefined` when a date is cleared.
-    onChange: (date: Date | undefined) => void
     id?: string
-    label?: string
-    placeholder?: string
-    className?: string
+    value: Date | undefined
+    onChange: (date: Date | undefined) => void
 }
 
 export function DateField({
-    id = Math.random().toString(36).substring(2),
-    label,
     value,
     onChange,
-    placeholder = 'Pick a date',
-    className,
+    id = Math.random().toString(),
 }: DateFieldProps) {
-    // This state is for controlling the popover's visibility only, which is fine.
     const [open, setOpen] = React.useState(false)
+    const ref = React.useRef<HTMLDivElement>(null)
 
-    // The component is now "dumb" and relies entirely on props for its date value.
-    // The internal `date` and `setDate` state has been removed.
+    // Close calendar if clicked outside
+    React.useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
 
     return (
-        <div className={cn('grid w-full items-center gap-1.5', className)}>
-            {/* The label is now dynamic and correctly linked to the input via `id` */}
-            {label && <Label htmlFor={id}>{label}</Label>}
+        <div id={id} className="flex flex-col gap-3 relative" ref={ref}>
+            <Label htmlFor={id} className="px-1">
+                Date
+            </Label>
 
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant={'outline'}
-                        id={id} // Use the `id` prop here
-                        className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !value && 'text-muted-foreground'
-                        )}
-                    >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {/* The button's text is now driven by the `value` prop */}
-                        {value ? (
-                            format(value, 'PPP')
-                        ) : (
-                            <span>{placeholder}</span>
-                        )}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+            <Button
+                variant="outline"
+                id={id}
+                className="w-48 justify-between font-normal"
+                onClick={() => setOpen((prev) => !prev)}
+                type="button"
+            >
+                {value ? format(value, 'PPP') : 'Select date'}
+                <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+            </Button>
+
+            {open && (
+                <div
+                    className="
+            absolute top-full left-0 mt-2 z-[9999]
+            rounded-md border bg-popover shadow-md p-2
+          "
+                >
                     <Calendar
                         mode="single"
-                        // The selected date is controlled by the `value` prop
-                        selected={value ?? undefined}
-                        // When a date is selected, call the parent's `onChange` and close the popover
+                        selected={value}
+                        captionLayout="dropdown"
                         onSelect={(selectedDate) => {
-                            onChange(selectedDate)
+                            onChange(selectedDate ?? undefined)
                             setOpen(false)
                         }}
-                        captionLayout="dropdown" // A more modern layout
-                        fromYear={1900}
-                        toYear={new Date().getFullYear()}
-                        initialFocus
                     />
-                </PopoverContent>
-            </Popover>
+                </div>
+            )}
         </div>
     )
 }
