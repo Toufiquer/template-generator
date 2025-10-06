@@ -21,7 +21,7 @@ const generateRtk = async (data: string) => {
         const rtkApiTemplateSlice = generateRtkApiFileSlice(data)
         writeInFile(
             rtkApiTemplateSlice,
-            `src/redux/features/${folderName}/${folderName}Slice`
+            `src/redux/features/${folderName}/${folderName}Slice.ts`
         )
     }
 }
