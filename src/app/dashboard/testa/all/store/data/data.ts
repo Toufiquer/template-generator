@@ -3,8 +3,8 @@ import { DateRange } from 'react-day-picker'
 export interface DataItem {
     _id: string
     Name: string
-    Class: string
     Roll: number
+    Class: string
 }
 
 export interface ITesta {
