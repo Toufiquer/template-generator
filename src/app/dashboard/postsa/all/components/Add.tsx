@@ -1,9 +1,4 @@
-act as a seniour webapp developer in NextJs with Typescript and tailwindCss.
-
-here is example of 
-
-generate-add.tsx
-```import { useState } from 'react'
+import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -50,12 +45,7 @@ import { usePostsaStore } from '../store/store'
 
 import { useAddPostsaMutation } from '@/redux/features/postsa/postsaSlice'
 import { IPostsa, defaultPostsa } from '../store/data/data'
-import {
-    formatDuplicateKeyError,
-    handleError,
-    handleSuccess,
-    isApiErrorResponse,
-} from './utils'
+import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const AddNextComponents: React.FC = () => {
     const { toggleAddModal, isAddModalOpen, setPostsa } = usePostsaStore()
@@ -63,14 +53,14 @@ const AddNextComponents: React.FC = () => {
     const [newPosta, setNewPosta] = useState<IPostsa>(defaultPostsa)
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setNewPosta((prev) => ({ ...prev, [name]: value }))
-    }
+        setNewPosta(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleAddPosta = async () => {
         try {
             const { _id, ...updateData } = newPosta
             const addedPosta = await addPostsa(updateData).unwrap()
-            setPostsa([addedPosta]) // Example: update store, you might need a different strategy
+            setPostsa([addedPosta]); // Example: update store, you might need a different strategy
             toggleAddModal(false)
             setNewPosta(defaultPostsa)
             handleSuccess('Added Successfully')
@@ -78,15 +68,15 @@ const AddNextComponents: React.FC = () => {
             console.error('Failed to add record:', error)
             let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage =
-                    formatDuplicateKeyError(error.data.message) ||
-                    'An API error occurred.'
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
             handleError(errMessage)
         }
     }
+
+
 
     return (
         <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
@@ -97,29 +87,17 @@ const AddNextComponents: React.FC = () => {
 
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
+                        
                         <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
                             <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForString
-                                    id="title"
-                                    placeholder="Title"
-                                    value={newPosta['title']}
-                                    onChange={(value) =>
-                                        handleFieldChange(
-                                            'title',
-                                            value as string
-                                        )
-                                    }
-                                />
+                                <InputFieldForString id="title" placeholder="Title" value={newPosta['title']} onChange={(value) => handleFieldChange('title', value as string)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
-                            <Label
-                                htmlFor="students"
-                                className="text-right pt-3"
-                            >
+                            <Label htmlFor="students" className="text-right pt-3">
                                 Students
                             </Label>
                             <div className="col-span-3">
@@ -127,23 +105,11 @@ const AddNextComponents: React.FC = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label
-                                htmlFor="complexValue"
-                                className="text-right pt-3"
-                            >
+                            <Label htmlFor="complexValue" className="text-right pt-3">
                                 ComplexValue
                             </Label>
                             <div className="col-span-3">
-                                <JsonTextareaField
-                                    id="complexValue"
-                                    value={newPosta['complexValue']}
-                                    onChange={(value) =>
-                                        handleFieldChange(
-                                            'complexValue',
-                                            value as string
-                                        )
-                                    }
-                                />
+                                <JsonTextareaField id="complexValue" value={String(newPosta['complexValue'] || '')} onChange={(value) => handleFieldChange('complexValue', value as string)} />
                             </div>
                         </div>
                     </div>
@@ -156,7 +122,10 @@ const AddNextComponents: React.FC = () => {
                     >
                         Cancel
                     </Button>
-                    <Button disabled={isLoading} onClick={handleAddPosta}>
+                    <Button
+                        disabled={isLoading}
+                        onClick={handleAddPosta}
+                    >
                         {isLoading ? 'Adding...' : 'Add Posta'}
                     </Button>
                 </DialogFooter>
@@ -166,31 +135,3 @@ const AddNextComponents: React.FC = () => {
 }
 
 export default AddNextComponents
-```
-
-
-update formFieldsJsx function so it can generate 
-```
-        <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label
-                                htmlFor="complexValue"
-                                className="text-right pt-3"
-                            >
-                                ComplexValue
-                            </Label>
-                            <div className="col-span-3">
-                                <JsonTextareaField
-                                    id="complexValue"
-                                    value={newPosta['complexValue']}
-                                    onChange={(value) =>
-                                        handleFieldChange(
-                                            'complexValue',
-                                            value as string
-                                        )
-                                    }
-                                />
-                            </div>
-                        </div>
-                        ```
-
-                        components. And just return formFieldsJsx function.
