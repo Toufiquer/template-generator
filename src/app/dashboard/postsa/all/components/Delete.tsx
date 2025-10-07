@@ -44,7 +44,7 @@ const DeleteNextComponents: React.FC = () => {
         setSelectedPostsa({ ...defaultPostsa } as IPostsa)
     }
 
-    const displayName = (selectedPostsa)?.['title'] || ''
+    const displayName = (selectedPostsa)?.['_id'] || ''
 
     return (
         <Dialog open={isDeleteModalOpen} onOpenChange={toggleDeleteModal}>

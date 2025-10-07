@@ -83,7 +83,7 @@ const BulkDynamicUpdateNextComponents: React.FC = () => {
                                 <div className="flex flex-col">
                                     <span>
                                         {idx + 1}.{' '}
-                                        {(posta)['title'] as string || ''}
+                                        {(posta)['_id'] as string || ''}
                                     </span>
                                     <span className="text-xs mt-0 text-blue-500">
                                         Will be updated to: {newItemTags.join(', ') || 'N/A'}

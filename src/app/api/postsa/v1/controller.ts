@@ -97,7 +97,7 @@ export async function getPostsa(req: Request): Promise<IResponse> {
                 const orConditions: FilterQuery<unknown>[] = []
 
                 // Add regex search conditions for all string-like fields
-                const stringFields = ["title","complexValue.id","complexValue.title","complexValue.parent.id","complexValue.parent.title","complexValue.parent.child.id","complexValue.parent.child.title","complexValue.parent.child.child","complexValue.parent.child.note","complexValue.parent.note","complexValue.note"];
+                const stringFields = ["complexValue.id","complexValue.title","complexValue.parent.id","complexValue.parent.title","complexValue.parent.child.id","complexValue.parent.child.title","complexValue.parent.child.child","complexValue.parent.child.note","complexValue.parent.note","complexValue.note"];
                 stringFields.forEach(field => {
                     orConditions.push({ [field]: { $regex: searchQuery, $options: 'i' } });
                 });

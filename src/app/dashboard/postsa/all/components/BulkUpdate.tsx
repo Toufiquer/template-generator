@@ -113,9 +113,9 @@ const BulkUpdateNextComponents: React.FC = () => {
                                 className="flex items-center justify-between"
                             >
                                 <span>
-                                    {idx + 1}. {(posta)['title'] as string || ''}
+                                    {idx + 1}. {(posta)['_id'] as string || ''}
                                 </span>
-                                <span className="text-blue-500">{posta['title'] as string}</span>
+                                <span className="text-blue-500">{posta['_id'] as string}</span>
                             </div>
                         ))}
                     </div>

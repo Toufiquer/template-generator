@@ -3,8 +3,6 @@ import HomeButton from './HomeButton'
 
 // Dynamically generated interface based on the schema
 interface IPosta {
-    "title": string;
-    "students": Array<{ Name: string; Class: string; Roll: string }>;
     "complexValue": {
         "id": string;
         "title": string;
@@ -36,12 +34,6 @@ const DataDetails = ({ data }: { data: IPosta }) => {
             <h1 className="text-2xl font-bold">Posta Details</h1>
             <div className="border border-slate-300 rounded-md overflow-hidden dark:border-slate-600">
                 <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
-                <strong className="capitalize">title:</strong> {data?.["title"]?.toString()}
-            </div>
-            <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
-                <strong className="capitalize">students:</strong> <pre className="text-sm">{JSON.stringify(data?.["students"], null, 2)}</pre>
-            </div>
-            <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
                 <strong className="capitalize">complexValue:</strong> <pre className="text-sm">{JSON.stringify(data?.["complexValue"], null, 2)}</pre>
             </div>
             </div>
@@ -91,7 +83,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
     // Safely access the display key, providing a fallback title.
     return {
-        title: data?.data?.["title"]?.toString() || 'Posta',
+        title: data?.data?.["complexValue"]?.toString() || 'Posta',
     }
 }
 

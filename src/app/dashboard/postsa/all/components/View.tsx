@@ -91,8 +91,6 @@ const ViewNextComponents: React.FC = () => {
                 {selectedPostsa && (
                     <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                         <div className="grid gap-1">
-                            <DetailRow label="Title" value={selectedPostsa['title']} />
-                            <DetailRowJson label="Students" value={selectedPostsa['students']} />
                             <DetailRowJson label="ComplexValue" value={selectedPostsa['complexValue']} />
                             <DetailRow label="Created At" value={formatDate(selectedPostsa.createdAt)} />
                             <DetailRow label="Updated At" value={formatDate(selectedPostsa.updatedAt)} />

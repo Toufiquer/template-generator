@@ -78,7 +78,7 @@ const BulkEditNextComponents: React.FC = () => {
                                 className="flex items-center justify-between"
                             >
                                 <span>
-                                    {idx + 1}. {(posta)['title'] as string || ''}
+                                    {idx + 1}. {(posta)['_id'] as string || ''}
                                 </span>
                                 
                             </div>

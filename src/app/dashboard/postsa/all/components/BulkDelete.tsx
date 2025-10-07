@@ -65,7 +65,7 @@ const BulkDeleteNextComponents: React.FC = () => {
                                 key={(postsa._id as string) + idx}
                                 className="text-xs"
                             >
-                                {idx + 1}. {(postsa)['title'] as string || ''}
+                                {idx + 1}. {(postsa)['_id'] as string || ''}
                             </span>
                         ))}
                     </div>

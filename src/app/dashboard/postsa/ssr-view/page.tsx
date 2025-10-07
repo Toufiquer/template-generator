@@ -28,15 +28,15 @@ const Page = async () => {
             return []
         }
     }
-    const data: { title: string; _id: string }[] = await fetchData()
+    const data: { name: string; _id: string }[] = await fetchData()
     return (
         <main className="w-full flex flex-col gap-2 p-1 md:p-4">
             {data &&
                 data.length > 0 &&
-                data.map((i: { title: string; _id: string }, idx: number) => (
-                    <div key={idx + i?.title}>
+                data.map((i: { name: string; _id: string }, idx: number) => (
+                    <div key={idx + i?.name}>
                         <CustomLInk
-                            name={i.title}
+                            name={i.name}
                             url={`/generate/postsa/ssr-view/details/${i._id}`}
                         />
                     </div>

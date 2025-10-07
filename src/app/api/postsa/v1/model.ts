@@ -1,14 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
 const postaSchema = new Schema({
-    "title": { type: String },
-    "students": [
-            {
-                "Name": { type: String },
-                "Class": { type: String },
-                "Roll": { type: String }
-            }
-        ],
     "complexValue": {
         "id": { type: String },
         "title": { type: String },

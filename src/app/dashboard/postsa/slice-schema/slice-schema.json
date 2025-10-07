@@ -1,9 +1,7 @@
 {
   "uid": "9b02473a-0e79-4326-80a3-584b9cc506f0",
-  "templateName": "Basic Template v2",
+  "templateName": "JSONVALUE",
   "schema": {
-    "title": "STRING",
-    "students": "STRINGARRAY#Name, Class, Roll",
     "complexValue": {
       "id": "STRING",
       "title": "STRING",

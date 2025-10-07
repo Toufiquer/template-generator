@@ -48,7 +48,6 @@ import ExportDialog from './ExportDialog' // Import the new dialog component
 
 // Dynamically generated types for type safety
 type DisplayablePostsaKeys = 
-    | 'title'
     | 'createdAt'
 type ColumnVisibilityState = Record<DisplayablePostsaKeys, boolean>
 
@@ -96,7 +95,6 @@ const ViewTableNextComponents: React.FC = () => {
     )
 
     const tableHeaders: { key: DisplayablePostsaKeys; label: string }[] = [
-        { key: 'title', label: 'Title' },
         { key: 'createdAt', label: 'Created At' }
     ];
 

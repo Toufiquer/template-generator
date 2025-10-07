@@ -6,7 +6,7 @@ import CustomLink from './CustomButton' // Renamed for clarity (component should
 // A more specific type for the data items, ensuring type safety.
 type DataItem = {
     _id: string;
-    title: string;
+    name: string;
     [key: string]: any; // Allow for other properties from the API
 };
 
@@ -73,7 +73,7 @@ const Page = () => {
                     {data.map((item) => (
                         <div key={item._id}>
                             <CustomLink
-                                name={item.title}
+                                name={item.name}
                                 url={`/dashboard/postsa/client-view/details/${item._id}`}
                             />
                         </div>

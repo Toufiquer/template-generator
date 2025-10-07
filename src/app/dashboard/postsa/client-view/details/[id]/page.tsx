@@ -7,8 +7,6 @@ import { useEffect, useState } from 'react'
 // Dynamically generated type for the data state
 type Data = {
     _id: string; // Assuming an ID field from the database
-    "title"?: string;
-    "students"?: Array<{ Name: string; Class: string; Roll: string }>;
     "complexValue"?: {
         "id"?: string;
         "title"?: string;
@@ -105,12 +103,6 @@ const Page = () => {
             <h1 className="text-2xl font-bold">Posta Details</h1>
             <div className="border border-slate-300 rounded-md overflow-hidden dark:border-slate-600">
                 <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
-                <strong className="capitalize">title:</strong> {data?.["title"]?.toString()}
-            </div>
-            <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
-                <strong className="capitalize">students:</strong> <pre className="text-sm bg-slate-200 dark:bg-slate-900 p-2 rounded-md whitespace-pre-wrap">{JSON.stringify(data?.["students"], null, 2)}</pre>
-            </div>
-            <div className="w-full hover:bg-slate-200 bg-slate-100 block p-2 border-b border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500">
                 <strong className="capitalize">complexValue:</strong> <pre className="text-sm bg-slate-200 dark:bg-slate-900 p-2 rounded-md whitespace-pre-wrap">{JSON.stringify(data?.["complexValue"], null, 2)}</pre>
             </div>
             </div>

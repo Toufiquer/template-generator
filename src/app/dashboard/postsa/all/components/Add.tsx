@@ -88,22 +88,6 @@ const AddNextComponents: React.FC = () => {
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
                         
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
-                            <Label htmlFor="title" className="text-right ">
-                                Title
-                            </Label>
-                            <div className="col-span-3">
-                                <InputFieldForString id="title" placeholder="Title" value={newPosta['title']} onChange={(value) => handleFieldChange('title', value as string)} />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
-                            <Label htmlFor="students" className="text-right pt-3">
-                                Students
-                            </Label>
-                            <div className="col-span-3">
-                                <StringArrayField />
-                            </div>
-                        </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="complexValue" className="text-right pt-3">
                                 ComplexValue

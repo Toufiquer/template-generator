@@ -3,8 +3,6 @@
     import { DateRange } from 'react-day-picker'
 
 export interface IPostsa {
-    "title": string;
-    "students": string;
     "complexValue": {
         "id": string;
         "title": string;
@@ -27,8 +25,6 @@ export interface IPostsa {
 }
 
 export const defaultPostsa = {
-    "title": '',
-    "students": '',
     "complexValue": {
         "id": '',
         "title": '',
