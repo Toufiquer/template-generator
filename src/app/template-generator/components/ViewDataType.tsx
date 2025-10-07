@@ -294,7 +294,10 @@ export const allDataType: DataTypeItem[] = [
     },
     {
         name: 'STRINGARRAY',
-        mongooseSchema: `MULTIOPTIONS: [{
+        mongooseSchema: `STRINGARRAY: [{
+            id:{
+                type: String
+            },
             title:{
                 type: String
             },

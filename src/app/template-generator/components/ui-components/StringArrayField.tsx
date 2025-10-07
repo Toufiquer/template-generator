@@ -64,11 +64,24 @@ const StringArrayField: React.FC = () => {
             <h1 className="text-2xl text-white mb-4">Data List</h1>
 
             <div className="flex flex-col gap-4 w-full mb-4">
+                <div className="flex items-center gap-2 p-3 bg-gray-700 rounded-md shadow-md hover:bg-gray-600 transition-colors duration-200">
+                    <span className="text-white text-sm">ID</span>
+                    <span className="text-white text-sm">Title</span>
+                    <span className="text-white text-sm">Quantity</span>
+                </div>
                 {data.map((item) => (
                     <div
                         key={item.id}
                         className="flex items-center gap-2 p-3 bg-gray-700 rounded-md shadow-md hover:bg-gray-600 transition-colors duration-200"
                     >
+                        <input
+                            type="text"
+                            className="flex-1 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
+                            value={item.id}
+                            readOnly
+                            onChange={(e) => handleTitleChange(item.id, e)}
+                            placeholder="ID"
+                        />
                         <input
                             type="text"
                             className="flex-1 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
