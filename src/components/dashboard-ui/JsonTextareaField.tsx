@@ -29,7 +29,7 @@ const JsonTextareaField: React.FC<JsonTextareaFieldProps> = ({
         try {
             // Pretty-print the incoming object value
             const formattedJson = JSON.stringify(value, null, 2)
-            setTextValue(value as string)
+            setTextValue(formattedJson as string)
             setError(null)
         } catch (e) {
             setTextValue('Error formatting JSON' + e)

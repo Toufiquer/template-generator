@@ -198,7 +198,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                const componentJsx = `<JsonTextareaField id="${key}" value={String(new${singularPascalCase}['${key}'] || '')} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                const componentJsx = `<JsonTextareaField id="${key}" value={(new${singularPascalCase}['${key}'] || '')} onChange={(value) => handleFieldChange('${key}', value as string)} />`
                 return `
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right pt-3">

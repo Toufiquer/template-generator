@@ -180,7 +180,7 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 break
             case 'STRINGARRAY':
                 isTallComponent = true
-                componentJsx = `<StringArrayField />`
+                componentJsx = `<StringArrayField />` // Note: This may need updating based on previous discussions
                 break
             case 'AUTOCOMPLETE':
                 componentJsx = `<AutocompleteField id="${key}" value={${editedStateName}['${key}']} />`
@@ -195,11 +195,13 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const formFieldsJsx = Object.entries(schema)
         .map(([key, value]) => {
+            // --- MODIFIED SECTION ---
             if (typeof value === 'object' && !Array.isArray(value)) {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                const componentJsx = `<JsonTextareaField />`
+                // Correctly bind the component to the state for editing.
+                const componentJsx = `<JsonTextareaField id="${key}" value={${editedStateName}['${key}'] || {}} onChange={(value) => handleFieldChange('${key}', value)} />`
                 return `
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="${key}" className="text-right pt-3">
@@ -210,6 +212,7 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                             </div>
                         </div>`
             }
+            // --- END MODIFIED SECTION ---
             return generateFormFieldJsx(key, value as string)
         })
         .join('')
