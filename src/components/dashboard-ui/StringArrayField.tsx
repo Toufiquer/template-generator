@@ -1,105 +1,178 @@
-/*
-|-----------------------------------------
-| setting up StringArrayField for the App
-| @author: Toufiquer Rahman<toufiquer.0@gmail.com>
-| @copyright: template-generator, October, 2025
-|-----------------------------------------
-*/
+import { DataItem } from '@/app/dashboard/testa/all/store/data/data'
+import React, { ChangeEvent, useState } from 'react'
+import { FaTrash } from 'react-icons/fa'
 
-'use client'
+interface StringArrayFieldProps {
+    value: DataItem[]
+    onChange: (newValue: DataItem[]) => void
+}
 
-import React from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { X, PlusCircle } from 'lucide-react'
+const StringArrayField: React.FC<StringArrayFieldProps> = ({
+    value,
+    onChange,
+}) => {
+    // Local editing state
+    const [isEditing, setIsEditing] = useState(false)
+    const [editList, setEditList] = useState<DataItem[]>(value)
 
-// Define the shape of each item in the array
-type Item = Record<string, unknown>
+    // 🔹 Sync editList when parent value changes
+    React.useEffect(() => {
+        setEditList(value)
+    }, [value])
 
-const StringArrayField: React.FC = () => {
-    const id = Math.random().toString(36).substring(2)
-    const fields = ['field1', 'field2', 'field3'] // Example fields
-    const value: { [key in string]: string }[] = []
-    const onChange = (newValue: Item[]) => {
-        console.log('newValue', newValue)
-    }
-    // Handles changes to an input field within a specific item
-    const handleItemChange = (
-        index: number,
-        field: string,
-        fieldValue: string
+    // 🔹 Handle field changes inside edit form
+    const handleTitleChange = (
+        id: number,
+        e: ChangeEvent<HTMLInputElement>
     ) => {
-        // Create a new array with the updated item (immutability)
-        const newItems = value.map((item, i) => {
-            if (i === index) {
-                return { ...item, [field]: fieldValue }
-            }
-            return item
-        })
-        onChange(newItems)
+        const newTitle = e.target.value
+        setEditList((prev) =>
+            prev.map((item) =>
+                item.id === id ? { ...item, title: newTitle } : item
+            )
+        )
     }
 
-    // Adds a new, empty item to the array
-    const handleAddItem = () => {
-        // Create a new object with all specified fields initialized to empty strings
-        const newItem = fields.reduce((acc, field) => {
-            acc[field] = ''
-            return acc
-        }, {} as Item)
-        // Create a new array by appending the new item
-        onChange([...value, newItem])
+    const handleQuantityChange = (
+        id: number,
+        e: ChangeEvent<HTMLInputElement>
+    ) => {
+        const newQuantity = parseInt(e.target.value, 10)
+        setEditList((prev) =>
+            prev.map((item) =>
+                item.id === id
+                    ? {
+                          ...item,
+                          quantity: isNaN(newQuantity) ? 0 : newQuantity,
+                      }
+                    : item
+            )
+        )
     }
 
-    // Removes an item from the array at a specific index
-    const handleRemoveItem = (index: number) => {
-        // Create a new array excluding the item at the specified index
-        const newItems = value.filter((_, i) => i !== index)
-        onChange(newItems)
+    // 🔹 Add & delete rows in form
+    const handleAddListItem = () => {
+        const nextId =
+            editList.length > 0 ? Math.max(...editList.map((i) => i.id)) + 1 : 1
+        const newItem: DataItem = { id: nextId, title: '', quantity: 0 }
+        setEditList([...editList, newItem])
+    }
+
+    const handleDeleteListItem = (id: number) => {
+        setEditList((prev) => prev.filter((item) => item.id !== id))
+    }
+
+    // 🔹 Submit updates to parent component
+    const handleSubmit = () => {
+        onChange(editList)
+        setIsEditing(false)
+    }
+
+    // 🔹 Toggle back to display view
+    const handleCancel = () => {
+        setEditList(value)
+        setIsEditing(false)
     }
 
     return (
-        <div id={id} className="w-full p-3 border rounded-lg space-y-3">
-            {value.map((item, index) => (
-                <div
-                    key={index}
-                    className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800 rounded-md"
-                >
-                    {fields.map((field) => (
-                        <div key={field} className="flex-1 min-w-0">
-                            <Input
+        <div className="flex flex-col items-center p-4 bg-gray-800/70 rounded-lg shadow-lg border border-gray-700 w-full">
+            <h2 className="text-lg md:text-xl text-white mb-3 font-semibold text-center">
+                Students List
+            </h2>
+
+            {/* -------------------- PART 1: DISPLAY -------------------- */}
+            {!isEditing && (
+                <div className="w-full space-y-3">
+                    {value.length === 0 ? (
+                        <p className="text-gray-400 text-sm text-center">
+                            Nothing found.
+                        </p>
+                    ) : (
+                        value.map((item) => (
+                            <div
+                                key={item.id}
+                                className="flex justify-between items-center p-3 bg-gray-700 rounded-md shadow-md"
+                            >
+                                <span className="text-white text-sm">
+                                    {item.title || 'Untitled'}
+                                </span>
+                                <span className="text-gray-300 text-sm">
+                                    Qty: {item.quantity}
+                                </span>
+                            </div>
+                        ))
+                    )}
+
+                    <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 w-full mt-3"
+                        onClick={() => setIsEditing(true)}
+                    >
+                        Update
+                    </button>
+                </div>
+            )}
+
+            {/* -------------------- PART 2: EDIT FORM -------------------- */}
+            {isEditing && (
+                <div className="flex flex-col gap-3 w-full mt-2">
+                    {editList.length === 0 && (
+                        <p className="text-gray-400 text-sm text-center">
+                            No students yet — add some below.
+                        </p>
+                    )}
+
+                    {editList.map((item) => (
+                        <div
+                            key={item.id}
+                            className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-gray-700 rounded-md shadow-md hover:bg-gray-600 transition-colors duration-200"
+                        >
+                            <input
                                 type="text"
-                                placeholder={field}
-                                value={item[field] || ''}
-                                onChange={(e) =>
-                                    handleItemChange(
-                                        index,
-                                        field,
-                                        e.target.value
-                                    )
-                                }
+                                className="flex-1 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
+                                value={item.title}
+                                onChange={(e) => handleTitleChange(item.id, e)}
+                                placeholder="Student Name"
                             />
+                            <input
+                                type="number"
+                                className="w-full sm:w-24 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
+                                value={item.quantity}
+                                onChange={(e) =>
+                                    handleQuantityChange(item.id, e)
+                                }
+                                placeholder="Qty"
+                            />
+                            <button
+                                className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 focus:outline-none"
+                                onClick={() => handleDeleteListItem(item.id)}
+                            >
+                                <FaTrash size={14} />
+                            </button>
                         </div>
                     ))}
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 hover:text-red-700"
-                        onClick={() => handleRemoveItem(index)}
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
+
+                    <div className="flex gap-2 mt-2">
+                        <button
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 flex-1"
+                            onClick={handleAddListItem}
+                        >
+                            + Add
+                        </button>
+                        <button
+                            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors duration-200 flex-1"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </button>
+                        <button
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors duration-200 flex-1"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
-            ))}
-            <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={handleAddItem}
-            >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add Item
-            </Button>
+            )}
         </div>
     )
 }

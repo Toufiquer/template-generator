@@ -1,0 +1,17 @@
+{
+  "uid": "55244be4-4f82-4393-a19e-b6c820490464",
+  "templateName": "STRINGARRAY",
+  "schema": {
+    "title": "STRING",
+    "students": "STRINGARRAY#Name, Class, Roll"
+  },
+  "namingConvention": {
+    "Users_1_000___": "Testa",
+    "users_2_000___": "testa",
+    "User_3_000___": "Testa",
+    "user_4_000___": "testa",
+    "ISelect_6_000___": "ISelect",
+    "select_5_000___": "select",
+    "use_generate_folder": false
+  }
+}
