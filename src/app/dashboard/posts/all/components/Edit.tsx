@@ -12,7 +12,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-// Static import for all possible form components
+import StringArrayField from '@/app/dashboard/posts/all/components/others-fields-types/StringArrayField'
 import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
 import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
@@ -30,7 +30,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/components/dashboard-ui/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -110,6 +109,8 @@ const EditNextComponents: React.FC = () => {
         { label: 'OP 3', value: 'OP 3' },
         { label: 'OP 4', value: 'OP 4' }
     ];
+
+    const studentsFields = [{ label: 'Name', type: 'STRING' }, { label: 'Class', type: 'STRING' }, { label: 'Roll', type: 'NUMBER' }];
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
@@ -198,7 +199,7 @@ const EditNextComponents: React.FC = () => {
                                 Age
                             </Label>
                             <div className="col-span-3">
-                                <NumberInputFieldInteger id="age" value={editedPost['age']} onChange={(value) => handleFieldChange('age',  value as number)} />
+                                <NumberInputFieldInteger id="age" value={editedPost['age']} onChange={(value) => handleFieldChange('age', value as number)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
@@ -326,7 +327,7 @@ const EditNextComponents: React.FC = () => {
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField />
+                                <StringArrayField fields={studentsFields} value={editedPost['students']} onChange={(value) => handleFieldChange('students', value)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">

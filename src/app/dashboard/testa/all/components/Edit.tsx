@@ -12,7 +12,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-// Static import for all possible form components
+import StringArrayField from '@/app/dashboard/testa/all/components/others-field-type/StringArrayField'
 import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
 import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
@@ -30,7 +30,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/app/dashboard/testa/all/components/others-fields-types/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -44,12 +43,7 @@ import { SelectField } from '@/components/dashboard-ui/SelectField'
 import { ITesta, defaultTesta } from '../store/data/data'
 import { useTestaStore } from '../store/store'
 import { useUpdateTestaMutation } from '@/redux/features/testa/testaSlice'
-import {
-    formatDuplicateKeyError,
-    handleError,
-    handleSuccess,
-    isApiErrorResponse,
-} from './utils'
+import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const EditNextComponents: React.FC = () => {
     const {
@@ -69,14 +63,14 @@ const EditNextComponents: React.FC = () => {
     }, [selectedTesta])
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setTesta((prev) => ({ ...prev, [name]: value }))
-    }
+        setTesta(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleEditTesta = async () => {
         if (!selectedTesta) return
 
         try {
-            const { _id, createdAt, updatedAt, ...updateData } = editedTesta
+            const { _id, createdAt, updatedAt, ...updateData } = editedTesta;
             await updateTesta({
                 id: selectedTesta._id,
                 ...updateData,
@@ -87,15 +81,15 @@ const EditNextComponents: React.FC = () => {
             console.error('Failed to update record:', error)
             let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage =
-                    formatDuplicateKeyError(error.data.message) ||
-                    'An API error occurred.'
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
             handleError(errMessage)
         }
     }
+
+    const studentsFields = [{ label: 'Name', type: 'STRING' }, { label: 'Class', type: 'STRING' }, { label: 'Roll', type: 'NUMBER' }];
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
@@ -106,38 +100,21 @@ const EditNextComponents: React.FC = () => {
 
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
+                        
                         <div className="grid grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForString
-                                    id="title"
-                                    placeholder="Title"
-                                    value={editedTesta['title']}
-                                    onChange={(value) =>
-                                        handleFieldChange(
-                                            'title',
-                                            value as string
-                                        )
-                                    }
-                                />
+                                <InputFieldForString id="title" placeholder="Title" value={editedTesta['title']} onChange={(value) => handleFieldChange('title', value as string)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
-                            <Label
-                                htmlFor="students"
-                                className="text-right pt-3"
-                            >
+                            <Label htmlFor="students" className="text-right pt-3">
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField
-                                    value={editedTesta['students']}
-                                    onChange={(value) =>
-                                        handleFieldChange('students', value)
-                                    }
-                                />
+                                <StringArrayField fields={studentsFields} value={editedTesta['students']} onChange={(value) => handleFieldChange('students', value)} />
                             </div>
                         </div>
                     </div>

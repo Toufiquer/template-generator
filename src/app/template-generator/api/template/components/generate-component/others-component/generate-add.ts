@@ -1,3 +1,4 @@
+// ✅ Updated generate-add.tsx
 interface Schema {
     [key: string]: string | Schema
 }
@@ -28,9 +29,8 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
 
     const componentBodyStatements = new Set<string>()
 
-    const toCamelCase = (str: string) => {
-        return str.replace(/-(\w)/g, (_, c) => c.toUpperCase())
-    }
+    const toCamelCase = (str: string) =>
+        str.replace(/-(\w)/g, (_, c) => c.toUpperCase())
 
     const generateOptionsVariable = (
         key: string,
@@ -62,7 +62,6 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
         const label = key
             .replace(/-/g, ' ')
             .replace(/\b\w/g, (l) => l.toUpperCase())
-
         const [typeName, optionsString] = type.split('#')
 
         const formFieldWrapper = (
@@ -70,12 +69,8 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             componentJsx: string,
             alignTop: boolean = false
         ): string => `
-                        <div className="grid grid-cols-1 md:grid-cols-4  ${
-                            alignTop ? 'items-start' : 'items-center'
-                        } gap-4 pr-1">
-                            <Label htmlFor="${key}" className="text-right ${
-                                alignTop ? 'pt-3' : ''
-                            }">
+                        <div className="grid grid-cols-1 md:grid-cols-4 ${alignTop ? 'items-start' : 'items-center'} gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right ${alignTop ? 'pt-3' : ''}">
                                 ${label}
                             </Label>
                             <div className="col-span-3">
@@ -83,7 +78,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                             </div>
                         </div>`
 
-        let componentJsx: string
+        let componentJsx = ''
         let isTallComponent = false
 
         switch (typeName.toUpperCase()) {
@@ -114,7 +109,7 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<RichTextEditorField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'INTNUMBER':
-                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
                 break
             case 'FLOATNUMBER':
                 componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
@@ -177,9 +172,10 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
                 isTallComponent = true
                 componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
+            // ✅ Fixed: Proper StringArray JSX
             case 'STRINGARRAY':
                 isTallComponent = true
-                componentJsx = `<StringArrayField />`
+                componentJsx = `<StringArrayField value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'AUTOCOMPLETE':
                 componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
@@ -218,12 +214,9 @@ export const generateAddComponentFile = (inputJsonFile: string): string => {
             ? `${[...componentBodyStatements].sort().join('\n\n')}`
             : ''
 
-    let reduxPath = ''
-    if (isUsedGenerateFolder) {
-        reduxPath = `../redux/rtk-api`
-    } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
-    }
+    const reduxPath = isUsedGenerateFolder
+        ? `../redux/rtk-api`
+        : `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
 
     const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
@@ -242,7 +235,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/components/dashboard-ui/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -251,7 +243,11 @@ import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
 import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
 import { DateField } from '@/components/dashboard-ui/DateField'
 import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
-import { SelectField } from '@/components/dashboard-ui/SelectField'`
+import { SelectField } from '@/components/dashboard-ui/SelectField'
+
+import StringArrayField from './others-field-type/StringArrayField'
+
+`
 
     return `import { useState } from 'react'
 
@@ -271,7 +267,6 @@ import {
 ${staticImports}
 
 import { use${pluralPascalCase}Store } from '../store/store'
-
 import { useAdd${pluralPascalCase}Mutation } from '${reduxPath}'
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
@@ -282,14 +277,22 @@ const AddNextComponents: React.FC = () => {
     const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
-    };
+        setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }))
+    }
 
     const handleAdd${singularPascalCase} = async () => {
         try {
-            const { _id, ...updateData } = new${singularPascalCase}
+            const updateData = { ...new${singularPascalCase} }
+            delete updateData._id
+            if (updateData.students) {
+                updateData.students = updateData.students.map((i: any) => {
+                    const r = { ...i }
+                    delete r._id
+                    return r
+                })
+            }
             const added${singularPascalCase} = await add${pluralPascalCase}(updateData).unwrap()
-            set${pluralPascalCase}([added${singularPascalCase}]); // Example: update store, you might need a different strategy
+            set${pluralPascalCase}([added${singularPascalCase}])
             toggleAddModal(false)
             setNew${singularPascalCase}(${defaultInstanceName})
             handleSuccess('Added Successfully')
@@ -321,16 +324,10 @@ ${dynamicVariablesContent}
                 </ScrollArea>
 
                 <DialogFooter>
-                    <Button
-                        variant="outline"
-                        onClick={() => toggleAddModal(false)}
-                    >
+                    <Button variant="outline" onClick={() => toggleAddModal(false)}>
                         Cancel
                     </Button>
-                    <Button
-                        disabled={isLoading}
-                        onClick={handleAdd${singularPascalCase}}
-                    >
+                    <Button disabled={isLoading} onClick={handleAdd${singularPascalCase}}>
                         {isLoading ? 'Adding...' : 'Add ${singularPascalCase}'}
                     </Button>
                 </DialogFooter>

@@ -25,6 +25,7 @@ export const apiSlice = createApi({
         'tagTypeMvs2',
         'tagTypePostsa',
         'tagTypeTesta',
+        'tagTypePostsb',
     ],
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({

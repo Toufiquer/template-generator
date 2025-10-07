@@ -30,7 +30,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/app/dashboard/testa/all/components/others-fields-types/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -41,16 +40,14 @@ import { DateField } from '@/components/dashboard-ui/DateField'
 import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
 import { SelectField } from '@/components/dashboard-ui/SelectField'
 
-import { useTestaStore } from '../store/store'
+import StringArrayField from './others-field-type/StringArrayField'
 
+
+
+import { useTestaStore } from '../store/store'
 import { useAddTestaMutation } from '@/redux/features/testa/testaSlice'
 import { ITesta, defaultTesta } from '../store/data/data'
-import {
-    formatDuplicateKeyError,
-    handleError,
-    handleSuccess,
-    isApiErrorResponse,
-} from './utils'
+import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
 
 const AddNextComponents: React.FC = () => {
     const { toggleAddModal, isAddModalOpen, setTesta } = useTestaStore()
@@ -58,21 +55,22 @@ const AddNextComponents: React.FC = () => {
     const [newTesta, setNewTesta] = useState<ITesta>(defaultTesta)
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setNewTesta((prev) => ({ ...prev, [name]: value }))
+        setNewTesta(prev => ({ ...prev, [name]: value }))
     }
 
     const handleAddTesta = async () => {
         try {
             const updateData = { ...newTesta }
             delete updateData._id
-            updateData.students = updateData.students.map((i) => {
-                const r = { ...i }
-                delete r._id
-                return r
-            })
-            console.log('udpateData : ', updateData)
+            if (updateData.students) {
+                updateData.students = updateData.students.map((i: any) => {
+                    const r = { ...i }
+                    delete r._id
+                    return r
+                })
+            }
             const addedTesta = await addTesta(updateData).unwrap()
-            setTesta([addedTesta]) // Example: update store, you might need a different strategy
+            setTesta([addedTesta])
             toggleAddModal(false)
             setNewTesta(defaultTesta)
             handleSuccess('Added Successfully')
@@ -80,15 +78,15 @@ const AddNextComponents: React.FC = () => {
             console.error('Failed to add record:', error)
             let errMessage: string = 'An unknown error occurred.'
             if (isApiErrorResponse(error)) {
-                errMessage =
-                    formatDuplicateKeyError(error.data.message) ||
-                    'An API error occurred.'
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
             } else if (error instanceof Error) {
                 errMessage = error.message
             }
             handleError(errMessage)
         }
     }
+
+
 
     return (
         <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
@@ -99,48 +97,28 @@ const AddNextComponents: React.FC = () => {
 
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
                             <div className="col-span-3">
-                                <InputFieldForString
-                                    id="title"
-                                    placeholder="Title"
-                                    value={newTesta['title']}
-                                    onChange={(value) =>
-                                        handleFieldChange(
-                                            'title',
-                                            value as string
-                                        )
-                                    }
-                                />
+                                <InputFieldForString id="title" placeholder="Title" value={newTesta['title']} onChange={(value) => handleFieldChange('title', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
-                            <Label
-                                htmlFor="students"
-                                className="text-right pt-3"
-                            >
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="students" className="text-right pt-3">
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField
-                                    value={newTesta['students']}
-                                    onChange={(value) =>
-                                        handleFieldChange('students', value)
-                                    }
-                                />
+                                <StringArrayField value={newTesta['students']} onChange={(value) => handleFieldChange('students', value)} />
                             </div>
                         </div>
                     </div>
                 </ScrollArea>
 
                 <DialogFooter>
-                    <Button
-                        variant="outline"
-                        onClick={() => toggleAddModal(false)}
-                    >
+                    <Button variant="outline" onClick={() => toggleAddModal(false)}>
                         Cancel
                     </Button>
                     <Button disabled={isLoading} onClick={handleAddTesta}>

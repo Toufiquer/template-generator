@@ -8,6 +8,7 @@ import generateMainPage from './components/generate-main-page/main'
 import generateClientView from './components/generate-client-view/main'
 import generateAllOtherComponents from './components/generate-component/main'
 import writeInFile from './components/create-and-write'
+import generateOthersFields from './components/generate-others-field/main'
 
 export async function POST(request: NextRequest) {
     try {
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
 
         generateMainPage(data)
         generateClientView(data)
+        generateOthersFields(data)
         generateAllOtherComponents(data)
 
         return NextResponse.json({ message: 'file found' }, { status: 200 })

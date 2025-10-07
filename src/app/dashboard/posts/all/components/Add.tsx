@@ -30,7 +30,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/components/dashboard-ui/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -41,8 +40,11 @@ import { DateField } from '@/components/dashboard-ui/DateField'
 import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
 import { SelectField } from '@/components/dashboard-ui/SelectField'
 
-import { usePostsStore } from '../store/store'
+import StringArrayField from './others-fields-types/StringArrayField'
 
+
+
+import { usePostsStore } from '../store/store'
 import { useAddPostsMutation } from '@/redux/features/posts/postsSlice'
 import { IPosts, defaultPosts } from '../store/data/data'
 import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
@@ -53,14 +55,22 @@ const AddNextComponents: React.FC = () => {
     const [newPost, setNewPost] = useState<IPosts>(defaultPosts)
 
     const handleFieldChange = (name: string, value: unknown) => {
-        setNewPost(prev => ({ ...prev, [name]: value }));
-    };
+        setNewPost(prev => ({ ...prev, [name]: value }))
+    }
 
     const handleAddPost = async () => {
         try {
-            const { _id, ...updateData } = newPost
+            const updateData = { ...newPost }
+            delete updateData._id
+            if (updateData.students) {
+                updateData.students = updateData.students.map((i: any) => {
+                    const r = { ...i }
+                    delete r._id
+                    return r
+                })
+            }
             const addedPost = await addPosts(updateData).unwrap()
-            setPosts([addedPost]); // Example: update store, you might need a different strategy
+            setPosts([addedPost])
             toggleAddModal(false)
             setNewPost(defaultPosts)
             handleSuccess('Added Successfully')
@@ -107,7 +117,7 @@ const AddNextComponents: React.FC = () => {
                 <ScrollArea className="h-[500px] w-full rounded-md border p-4">
                     <div className="grid gap-4 py-4">
                         
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="title" className="text-right ">
                                 Title
                             </Label>
@@ -115,7 +125,7 @@ const AddNextComponents: React.FC = () => {
                                 <InputFieldForString id="title" placeholder="Title" value={newPost['title']} onChange={(value) => handleFieldChange('title', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="email" className="text-right ">
                                 Email
                             </Label>
@@ -123,7 +133,7 @@ const AddNextComponents: React.FC = () => {
                                 <InputFieldForEmail id="email" value={newPost['email']} onChange={(value) => handleFieldChange('email', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="password" className="text-right ">
                                 Password
                             </Label>
@@ -131,7 +141,7 @@ const AddNextComponents: React.FC = () => {
                                 <InputFieldForPassword id="password" value={newPost['password']} onChange={(value) => handleFieldChange('password', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="passcode" className="text-right ">
                                 Passcode
                             </Label>
@@ -139,7 +149,7 @@ const AddNextComponents: React.FC = () => {
                                 <InputFieldForPasscode id="passcode" value={newPost['passcode']} onChange={(value) => handleFieldChange('passcode', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="area" className="text-right ">
                                 Area
                             </Label>
@@ -147,7 +157,7 @@ const AddNextComponents: React.FC = () => {
                                 <SelectField options={areaOptions} value={newPost['area']} onValueChange={(value) => handleFieldChange('area', value)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="sub-area" className="text-right ">
                                 Sub Area
                             </Label>
@@ -155,7 +165,7 @@ const AddNextComponents: React.FC = () => {
                                 <DynamicSelectField value={newPost['sub-area']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('sub-area', values)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="products-images" className="text-right ">
                                 Products Images
                             </Label>
@@ -163,7 +173,7 @@ const AddNextComponents: React.FC = () => {
                                 <ImageUploadManager value={newPost['products-images']} onChange={(urls) => handleFieldChange('products-images', urls)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="personal-image" className="text-right ">
                                 Personal Image
                             </Label>
@@ -171,7 +181,7 @@ const AddNextComponents: React.FC = () => {
                                 <ImageUploadFieldSingle value={newPost['personal-image']} onChange={(url) => handleFieldChange('personal-image', url)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="description" className="text-right pt-3">
                                 Description
                             </Label>
@@ -179,15 +189,15 @@ const AddNextComponents: React.FC = () => {
                                 <TextareaFieldForDescription id="description" value={newPost['description']} onChange={(e) => handleFieldChange('description', e.target.value)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="age" className="text-right ">
                                 Age
                             </Label>
                             <div className="col-span-3">
-                                <NumberInputFieldInteger id="age" value={newPost['age']} onChange={(value) => handleFieldChange('age',  value as number)} />
+                                <NumberInputFieldInteger id="age" value={newPost['age']} onChange={(value) => handleFieldChange('age', value as number)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="amount" className="text-right ">
                                 Amount
                             </Label>
@@ -195,7 +205,7 @@ const AddNextComponents: React.FC = () => {
                                 <NumberInputFieldFloat id="amount" value={newPost['amount']} onChange={(value) => handleFieldChange('amount', value as number)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="isActive" className="text-right ">
                                 IsActive
                             </Label>
@@ -203,7 +213,7 @@ const AddNextComponents: React.FC = () => {
                                 <BooleanInputField id="isActive" checked={newPost['isActive']} onCheckedChange={(checked) => handleFieldChange('isActive', checked)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="start-date" className="text-right ">
                                 Start Date
                             </Label>
@@ -211,7 +221,7 @@ const AddNextComponents: React.FC = () => {
                                 <DateField id="start-date" value={newPost['start-date']} onChange={(date) => handleFieldChange('start-date', date)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="start-time" className="text-right ">
                                 Start Time
                             </Label>
@@ -219,7 +229,7 @@ const AddNextComponents: React.FC = () => {
                                 <TimeField id="start-time" value={newPost['start-time']} onChange={(time) => handleFieldChange('start-time', time)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="schedule-date" className="text-right ">
                                 Schedule Date
                             </Label>
@@ -227,7 +237,7 @@ const AddNextComponents: React.FC = () => {
                                 <DateRangePickerField id="schedule-date" value={newPost['schedule-date']} onChange={(range) => handleFieldChange('schedule-date', range)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="schedule-time" className="text-right ">
                                 Schedule Time
                             </Label>
@@ -235,7 +245,7 @@ const AddNextComponents: React.FC = () => {
                                 <TimeRangePickerField id="schedule-time" value={newPost['schedule-time']} onChange={(range) => handleFieldChange('schedule-time', range)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="favorite-color" className="text-right ">
                                 Favorite Color
                             </Label>
@@ -243,7 +253,7 @@ const AddNextComponents: React.FC = () => {
                                 <ColorPickerField id="favorite-color" value={newPost['favorite-color']} onChange={(value) => handleFieldChange('favorite-color', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="number" className="text-right ">
                                 Number
                             </Label>
@@ -251,7 +261,7 @@ const AddNextComponents: React.FC = () => {
                                 <PhoneInputField id="number" value={newPost['number']} onChange={(value) => handleFieldChange('number', value)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="profile" className="text-right ">
                                 Profile
                             </Label>
@@ -259,7 +269,7 @@ const AddNextComponents: React.FC = () => {
                                 <UrlInputField id="profile" value={newPost['profile']} onChange={(value) => handleFieldChange('profile', value as string)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="test" className="text-right pt-3">
                                 Test
                             </Label>
@@ -267,7 +277,7 @@ const AddNextComponents: React.FC = () => {
                                 <RichTextEditorField id="test" value={newPost['test']} onChange={(value) => handleFieldChange('test', value)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="info" className="text-right ">
                                 Info
                             </Label>
@@ -275,7 +285,7 @@ const AddNextComponents: React.FC = () => {
                                 <AutocompleteField id="info" value={newPost['info']} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="shift" className="text-right ">
                                 Shift
                             </Label>
@@ -283,7 +293,7 @@ const AddNextComponents: React.FC = () => {
                                 <RadioButtonGroupField options={shiftOptions} value={newPost['shift']} onChange={(value) => handleFieldChange('shift', value)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="policy" className="text-right ">
                                 Policy
                             </Label>
@@ -291,7 +301,7 @@ const AddNextComponents: React.FC = () => {
                                 <CheckboxField id="policy" checked={newPost['policy']} onCheckedChange={(checked) => handleFieldChange('policy', checked)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="hobbies" className="text-right pt-3">
                                 Hobbies
                             </Label>
@@ -299,7 +309,7 @@ const AddNextComponents: React.FC = () => {
                                 <MultiCheckboxGroupField value={newPost['hobbies']} onChange={(values) => handleFieldChange('hobbies', values)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4 pr-1">
                             <Label htmlFor="ideas" className="text-right ">
                                 Ideas
                             </Label>
@@ -307,12 +317,12 @@ const AddNextComponents: React.FC = () => {
                                 <MultiOptionsField options={ideasOptions} value={newPost['ideas']} onChange={(values) => handleFieldChange('ideas', values)} />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4 pr-1">
                             <Label htmlFor="students" className="text-right pt-3">
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField />
+                                <StringArrayField value={newPost['students']} onChange={(value) => handleFieldChange('students', value)} />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
@@ -327,16 +337,10 @@ const AddNextComponents: React.FC = () => {
                 </ScrollArea>
 
                 <DialogFooter>
-                    <Button
-                        variant="outline"
-                        onClick={() => toggleAddModal(false)}
-                    >
+                    <Button variant="outline" onClick={() => toggleAddModal(false)}>
                         Cancel
                     </Button>
-                    <Button
-                        disabled={isLoading}
-                        onClick={handleAddPost}
-                    >
+                    <Button disabled={isLoading} onClick={handleAddPost}>
                         {isLoading ? 'Adding...' : 'Add Post'}
                     </Button>
                 </DialogFooter>

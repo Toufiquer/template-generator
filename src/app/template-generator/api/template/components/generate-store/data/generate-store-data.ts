@@ -1,7 +1,8 @@
+// generate-store-data.ts
+
 interface Schema {
     [key: string]: string | Schema
 }
-
 
 interface NamingConvention {
     Users_1_000___: string
@@ -17,13 +18,13 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-
 export const generateStoreData = (inputJsonFile: string): string => {
     const config: InputConfig = JSON.parse(inputJsonFile)
     const { namingConvention, schema } = config
 
     const interfaceName = namingConvention.Users_1_000___ || 'Items'
 
+    // 🔹 Map schema types to TS interface types
     const mapToInterfaceType = (type: string): string => {
         const [typeName] = type.split('#')
 
@@ -37,8 +38,10 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS': 
+            case 'MULTIOPTIONS':
                 return 'string[]'
+            case 'STRINGARRAY':
+                return 'StringArrayData[]'
             case 'DATE':
                 return 'Date'
             case 'DATERANGE':
@@ -50,6 +53,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
         }
     }
 
+    // 🔹 Map schema types to default values
     const mapToDefaultValue = (type: string): string => {
         const [typeName] = type.split('#')
 
@@ -63,7 +67,8 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS': 
+            case 'MULTIOPTIONS':
+            case 'STRINGARRAY':
                 return '[]'
             case 'DATE':
                 return 'new Date()'
@@ -76,7 +81,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
         }
     }
 
- 
+    // 🔹 Recursive interface field generator
     const generateInterfaceFields = (
         currentSchema: Schema,
         depth: number
@@ -93,6 +98,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             .join(';\n')
     }
 
+    // 🔹 Recursive default object generator
     const generateDefaultObjectFields = (
         currentSchema: Schema,
         depth: number
@@ -109,19 +115,18 @@ export const generateStoreData = (inputJsonFile: string): string => {
             .join(',\n')
     }
 
-
     const interfaceContent = generateInterfaceFields(schema, 1)
     const defaultObjectContent = generateDefaultObjectFields(schema, 1)
 
     return `
-
-    import { DateRange } from 'react-day-picker'
+import { DateRange } from 'react-day-picker'
+import { StringArrayData } from '../../components/others-field-type/types'
 
 export interface I${interfaceName} {
 ${interfaceContent};
     createdAt: Date;
     updatedAt: Date;
-    _id: string;
+    _id?: string;
 }
 
 export const default${interfaceName} = {

@@ -1,4 +1,7 @@
-here is an example of 
+act as a seniour webapp developer in NextJs with Typescript and tailwindCss.
+
+look at those code 
+
 
 generate-store-data.ts 
 ```
@@ -6,9 +9,7 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-/**
- * Defines the structure for the naming conventions provided in the JSON.
- */
+
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
@@ -16,9 +17,6 @@ interface NamingConvention {
     user_4_000___: string
 }
 
-/**
- * Defines the overall structure of the input JSON configuration.
- */
 interface InputConfig {
     uid: string
     templateName: string
@@ -26,27 +24,17 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-/**
- * Generates the entire Controller.ts file content as a string based on a JSON configuration.
- *
- * This function parses the JSON to extract naming conventions and a data schema. It then
- * uses a template to build the controller's TypeScript code, dynamically inserting the correct
- * names for models, variables, and functions. It also recursively traverses the schema to
- * build a comprehensive search filter that includes all specified fields, including nested ones.
- *
- * @param {string} inputJsonString - A JSON string containing the schema and naming conventions.
- * @returns {string} The complete, formatted Controller.ts file as a string.
- */
+
 export const generateStoreData = (inputJsonFile: string): string => {
     const config: InputConfig = JSON.parse(inputJsonFile)
     const { namingConvention, schema } = config
 
-    // --- 1. Extract Naming Conventions ---
     const interfaceName = namingConvention.Users_1_000___ || 'Items'
 
-    // Maps schema types to TypeScript interface types
     const mapToInterfaceType = (type: string): string => {
-        switch (type.toUpperCase()) {
+        const [typeName] = type.split('#')
+
+        switch (typeName.toUpperCase()) {
             case 'INTNUMBER':
             case 'FLOATNUMBER':
                 return 'number'
@@ -56,7 +44,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS':
+            case 'MULTIOPTIONS': 
                 return 'string[]'
             case 'DATE':
                 return 'Date'
@@ -69,9 +57,10 @@ export const generateStoreData = (inputJsonFile: string): string => {
         }
     }
 
-    // Maps schema types to default values for the default object
     const mapToDefaultValue = (type: string): string => {
-        switch (type.toUpperCase()) {
+        const [typeName] = type.split('#')
+
+        switch (typeName.toUpperCase()) {
             case 'INTNUMBER':
             case 'FLOATNUMBER':
                 return '0'
@@ -81,7 +70,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
             case 'IMAGES':
             case 'MULTICHECKBOX':
             case 'DYNAMICSELECT':
-            case 'MULTIOPTIONS':
+            case 'MULTIOPTIONS': 
                 return '[]'
             case 'DATE':
                 return 'new Date()'
@@ -94,10 +83,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
         }
     }
 
-    /**
-     * Recursively generates the TypeScript interface definition.
-     * All keys are quoted to handle special characters.
-     */
+ 
     const generateInterfaceFields = (
         currentSchema: Schema,
         depth: number
@@ -105,7 +91,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
         const indent = '    '.repeat(depth)
         return Object.entries(currentSchema)
             .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
+                const quotedKey = `"${key}"`
                 if (typeof value === 'object' && !Array.isArray(value)) {
                     return `${indent}${quotedKey}: {\n${generateInterfaceFields(value, depth + 1)}\n${indent}}`
                 }
@@ -114,10 +100,6 @@ export const generateStoreData = (inputJsonFile: string): string => {
             .join(';\n')
     }
 
-    /**
-     * Recursively generates the default object definition.
-     * All keys are quoted to handle special characters.
-     */
     const generateDefaultObjectFields = (
         currentSchema: Schema,
         depth: number
@@ -125,7 +107,7 @@ export const generateStoreData = (inputJsonFile: string): string => {
         const indent = '    '.repeat(depth)
         return Object.entries(currentSchema)
             .map(([key, value]) => {
-                const quotedKey = `"${key}"` // Always quote the key
+                const quotedKey = `"${key}"`
                 if (typeof value === 'object' && !Array.isArray(value)) {
                     return `${indent}${quotedKey}: {\n${generateDefaultObjectFields(value, depth + 1)}\n${indent}}`
                 }
@@ -134,7 +116,6 @@ export const generateStoreData = (inputJsonFile: string): string => {
             .join(',\n')
     }
 
-    // --- 4. Assemble the Final File Content ---
 
     const interfaceContent = generateInterfaceFields(schema, 1)
     const defaultObjectContent = generateDefaultObjectFields(schema, 1)
@@ -158,120 +139,36 @@ ${defaultObjectContent},
 }
 `
 }
+
 ```
 
-
-it can generate 
-store-data.ts
+data.ts 
 ```
+import { DateRange } from 'react-day-picker'
+import { StringArrayData } from '../../components/others-field-type/types'
 
-    import { DateRange } from 'react-day-picker'
-
-export interface IPosts {
-    "title": string;
-    "email": string;
-    "password": string;
-    "passcode": string;
-    "area": string;
-    "sub-area": string[];
-    "products-images": string[];
-    "personal-image": string;
-    "description": string;
-    "age": number;
-    "amount": number;
-    "isActive": boolean;
-    "start-date": Date;
-    "start-time": string;
-    "schedule-date": { from: Date; to: Date };
-    "schedule-time": { start: string; end: string };
-    "favorite-color": string;
-    "number": string;
-    "profile": string;
-    "test": string;
-    "info": string;
-    "shift": string;
-    "policy": boolean;
-    "hobbies": string[];
-    "ideas": string;
-    createdAt: Date;
-    updatedAt: Date;
-    _id: string;
+export interface ITesta {
+    title: string
+    students: StringArrayData[]
+    createdAt: Date
+    updatedAt: Date
+    _id: string
 }
 
-export const defaultPosts = {
-    "title": '',
-    "email": '',
-    "password": '',
-    "passcode": '',
-    "area": '',
-    "sub-area": [],
-    "products-images": [],
-    "personal-image": '',
-    "description": '',
-    "age": 0,
-    "amount": 0,
-    "isActive": false,
-    "start-date": new Date(),
-    "start-time": '',
-    "schedule-date": { from: new Date(), to: new Date() },
-    "schedule-time": { start: "", end: "" },
-    "favorite-color": '',
-    "number": '',
-    "profile": '',
-    "test": '',
-    "info": '',
-    "shift": '',
-    "policy": false,
-    "hobbies": [],
-    "ideas": '',
+export const defaultTesta = {
+    title: '',
+    students: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     _id: '',
 }
-``` 
 
-and here is inputJsonFile
 ```
-{
-  "uid": "000",
-  "templateName": "Basic Template",
-  "schema": {
-    "title": "STRING",
-    "email": "EMAIL",
-    "password": "PASSWORD",
-    "passcode": "PASSCODE",
-    "area": "SELECT#Bangladesh, India, Pakistan, Canada",
-    "sub-area": "DYNAMICSELECT",
-    "products-images": "IMAGES",
-    "personal-image": "IMAGE",
-    "description": "DESCRIPTION",
-    "age": "INTNUMBER",
-    "amount": "FLOATNUMBER",
-    "isActive": "BOOLEAN",
-    "start-date": "DATE",
-    "start-time": "TIME",
-    "schedule-date": "DATERANGE",
-    "schedule-time": "TIMERANGE",
-    "favorite-color": "COLORPICKER",
-    "number": "PHONE",
-    "profile": "URL",
-    "test": "RICHTEXT",
-    "info": "AUTOCOMPLETE",
-    "shift": "RADIOBUTTON#OP 1, OP 2, OP 3, OP 4",
-    "policy": "CHECKBOX",
-    "hobbies": "MULTICHECKBOX",
-    "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4"
-  },
-  "namingConvention": {
-    "Users_1_000___": "Posts",
-    "users_2_000___": "posts",
-    "User_3_000___": "Post",
-    "user_4_000___": "post",
-    "ISelect_6_000___": "ISelect",
-    "select_5_000___": "select"
-  }
-}``` 
 
-Now please have a look in ideas. its MULTIOPTIONS, so the interface will look like string[] and default value look like [].
 
-Now please tell me where is the porblem and why it is not working. 
+inputJsonFile
+```
+```
+
+
+Now please udpate generate-store-data.ts for update STRINGARRAY case.

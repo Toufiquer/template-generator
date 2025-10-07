@@ -2,218 +2,519 @@ act as a seniour webapp developer in NextJs with Typescript and tailwindCss.
 
 look at those code 
 
-generate-model.ts 
-```
-// generate-model.ts
 
+generate-add.tsx
+```
 interface Schema {
     [key: string]: string | Schema
-}
-
-
-interface NamingConvention {
-    Users_1_000___: string
-    users_2_000___: string
-    User_3_000___: string
-    user_4_000___: string
-    ISelect_6_000___?: string
-    select_5_000___?: string
 }
 
 interface InputConfig {
     uid: string
     templateName: string
     schema: Schema
-    namingConvention: NamingConvention
+    namingConvention: {
+        Users_1_000___: string
+        users_2_000___: string
+        User_3_000___: string
+        user_4_000___: string
+        use_generate_folder: boolean
+    }
 }
 
-export const generateModel = (inputJsonFile: string): string => {
-    const config: InputConfig = JSON.parse(inputJsonFile)
-    const { namingConvention, schema } = config
+export const generateAddComponentFile = (inputJsonFile: string): string => {
+    const { schema, namingConvention }: InputConfig =
+        JSON.parse(inputJsonFile) || {}
 
-    const modelName = namingConvention.User_3_000___ || 'Item'
-    const schemaVarName = `${namingConvention.user_4_000___ || 'item'}Schema`
+    const pluralPascalCase = namingConvention.Users_1_000___
+    const singularPascalCase = namingConvention.User_3_000___
+    const pluralLowerCase = namingConvention.users_2_000___
+    const interfaceName = `I${pluralPascalCase}`
+    const defaultInstanceName = `default${pluralPascalCase}`
+    const isUsedGenerateFolder = namingConvention.use_generate_folder
 
-    const mapToMongooseSchema = (type: string): string => {
-        const [typeName, options] = type.split('#')
+    const componentBodyStatements = new Set<string>()
 
-        const createEnumSchema = (
-            optionsStr: string | undefined,
-            defaultOptions: string[]
-        ): string => {
-            const enumValues = optionsStr
-                ? optionsStr
-                      .split(',')
-                      .map((option) => `'${option.trim()}'`)
-                      .join(', ')
-                : defaultOptions.map((opt) => `'${opt}'`).join(', ')
-            return `{ type: String, enum: [${enumValues}] }`
-        }
+    const toCamelCase = (str: string) => {
+        return str.replace(/-(\w)/g, (_, c) => c.toUpperCase())
+    }
 
-        const createMultiEnumSchema = (
-            optionsStr: string | undefined,
-            defaultOptions: string[]
-        ): string => {
-            const enumValues = optionsStr
-                ? optionsStr
-                      .split(',')
-                      .map((option) => `'${option.trim()}'`)
-                      .join(', ')
-                : defaultOptions.map((opt) => `'${opt}'`).join(', ')
-            return `{ type: [String], enum: [${enumValues}] }`
-        }
+    const generateOptionsVariable = (
+        key: string,
+        optionsString: string | undefined,
+        defaultOptions: { label: string; value: string }[]
+    ): string => {
+        const varName = `${toCamelCase(key)}Options`
+        const optionsArray = optionsString
+            ? optionsString.split(',').map((opt) => ({
+                  label: opt.trim(),
+                  value: opt.trim(),
+              }))
+            : defaultOptions
+
+        const optionsJsArrayString = `[\n${optionsArray
+            .map(
+                (opt) =>
+                    `        { label: '${opt.label}', value: '${opt.value}' }`
+            )
+            .join(',\n')}\n    ]`
+
+        componentBodyStatements.add(
+            `    const ${varName} = ${optionsJsArrayString};`
+        )
+        return varName
+    }
+
+    const generateFormFieldJsx = (key: string, type: string): string => {
+        const label = key
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, (l) => l.toUpperCase())
+
+        const [typeName, optionsString] = type.split('#')
+
+        const formFieldWrapper = (
+            label: string,
+            componentJsx: string,
+            alignTop: boolean = false
+        ): string => `
+                        <div className="grid grid-cols-1 md:grid-cols-4  ${
+                            alignTop ? 'items-start' : 'items-center'
+                        } gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right ${
+                                alignTop ? 'pt-3' : ''
+                            }">
+                                ${label}
+                            </Label>
+                            <div className="col-span-3">
+                                ${componentJsx}
+                            </div>
+                        </div>`
+
+        let componentJsx: string
+        let isTallComponent = false
 
         switch (typeName.toUpperCase()) {
             case 'STRING':
-                return `{ type: String }`
+                componentJsx = `<InputFieldForString id="${key}" placeholder="${label}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'EMAIL':
-                return `{
-                    type: String,
-                     match:  [/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please enter a valid email'],
-                }`
+                componentJsx = `<InputFieldForEmail id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'PASSWORD':
-                return `{ type: String, select: false }`
+                componentJsx = `<InputFieldForPassword id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'PASSCODE':
-                return `{ type: String, select: false }`
-            case 'SELECT':
-                return createEnumSchema(options, ['Option 1', 'Option 2'])
-            case 'DYNAMICSELECT':
-                return `[{ type: String }]` 
-            case 'IMAGES':
-                return `[{ type: String }]`
-            case 'IMAGE':
-                return `{ type: String }`
-            case 'DESCRIPTION':
-                return `{ type: String, trim: true }`
-            case 'INTNUMBER':
-                return `{ type: Number, validate: { validator: Number.isInteger, message: '{VALUE} is not an integer value' } }`
-            case 'FLOATNUMBER':
-                return `{ type: Number }`
-            case 'BOOLEAN':
-                return `{ type: Boolean, default: false }`
-            case 'DATE':
-                return `{ type: Date, default: Date.now }`
-            case 'TIME':
-                return `{ type: String }`
-            case 'DATERANGE':
-                return `{ start: { type: Date }, end: { type: Date } }`
-            case 'TIMERANGE':
-                return `{ start: { type: String }, end: { type: String } }`
-            case 'COLORPICKER':
-                return `{ type: String, match: [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please fill a valid color hex code'] }`
-            case 'PHONE':
-                return `{ type: String }`
+                componentJsx = `<InputFieldForPasscode id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
             case 'URL':
-                return `{ type: String, trim: true }`
+                componentJsx = `<UrlInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
+            case 'PHONE':
+                componentJsx = `<PhoneInputField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'DESCRIPTION':
+                isTallComponent = true
+                componentJsx = `<TextareaFieldForDescription id="${key}" value={new${singularPascalCase}['${key}']} onChange={(e) => handleFieldChange('${key}', e.target.value)} />`
+                break
             case 'RICHTEXT':
-            case 'AUTOCOMPLETE':
-                return `{ type: String }`
-            case 'RADIOBUTTON':
-                return `[{ type: String }]`
+                isTallComponent = true
+                componentJsx = `<RichTextEditorField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'INTNUMBER':
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
+                break
+            case 'FLOATNUMBER':
+                componentJsx = `<NumberInputFieldFloat id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
+                break
+            case 'BOOLEAN':
+                componentJsx = `<BooleanInputField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
             case 'CHECKBOX':
-                return `{ type: Boolean, default: false }`
-            case 'MULTICHECKBOX':
-                return `[{ type: String }]`
+                componentJsx = `<CheckboxField id="${key}" checked={new${singularPascalCase}['${key}']} onCheckedChange={(checked) => handleFieldChange('${key}', checked)} />`
+                break
+            case 'DATE':
+                componentJsx = `<DateField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(date) => handleFieldChange('${key}', date)} />`
+                break
+            case 'TIME':
+                componentJsx = `<TimeField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(time) => handleFieldChange('${key}', time)} />`
+                break
+            case 'DATERANGE':
+                componentJsx = `<DateRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
+            case 'TIMERANGE':
+                componentJsx = `<TimeRangePickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(range) => handleFieldChange('${key}', range)} />`
+                break
+            case 'COLORPICKER':
+                componentJsx = `<ColorPickerField id="${key}" value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                break
+            case 'SELECT':
+                const selectVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Option 1', value: 'Option 1' }]
+                )
+                componentJsx = `<SelectField options={${selectVarName}} value={new${singularPascalCase}['${key}']} onValueChange={(value) => handleFieldChange('${key}', value)} />`
+                break
+            case 'RADIOBUTTON':
+                const radioVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Choice A', value: 'Choice A' }]
+                )
+                componentJsx = `<RadioButtonGroupField options={${radioVarName}} value={new${singularPascalCase}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+                break
             case 'MULTIOPTIONS':
-                return createMultiEnumSchema(options, [
-                    'Default Option A',
-                    'Default Option B',
-                ])
+                const multiOptionsVarName = generateOptionsVariable(
+                    key,
+                    optionsString,
+                    [{ label: 'Default A', value: 'Default A' }]
+                )
+                componentJsx = `<MultiOptionsField options={${multiOptionsVarName}} value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'DYNAMICSELECT':
+                componentJsx = `<DynamicSelectField value={new${singularPascalCase}['${key}']} apiUrl='https://jsonplaceholder.typicode.com/users' onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
+            case 'IMAGE':
+                componentJsx = `<ImageUploadFieldSingle value={new${singularPascalCase}['${key}']} onChange={(url) => handleFieldChange('${key}', url)} />`
+                break
+            case 'IMAGES':
+                componentJsx = `<ImageUploadManager value={new${singularPascalCase}['${key}']} onChange={(urls) => handleFieldChange('${key}', urls)} />`
+                break
+            case 'MULTICHECKBOX':
+                isTallComponent = true
+                componentJsx = `<MultiCheckboxGroupField value={new${singularPascalCase}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
+                break
             case 'STRINGARRAY':
-                if (options) {
-                    const fields = options
-                        .split(',')
-                        .map((field) => field.trim())
-                        .filter(Boolean) 
-                    if (fields.length > 0) {
-                        const subSchemaFields = fields
-                            .map(
-                                (field) =>
-                                    `                "${field}": { type: String }`
-                            )
-                            .join(',\n')
-                        return `[\n            {\n${subSchemaFields}\n            }\n        ]`
-                    }
-                }
-                return `[{ type: String }]` 
-            case 'PUREJSON':
-                if (options) {
-                    try {
-                        JSON.parse(options)
-                        return options
-                    } catch (e) {
-                        console.error(
-                            'Invalid JSON provided for PUREJSON type:',
-                            options,
-                            e
-                        )
-                        return '{}'
-                    }
-                }
-                return '{}'
+                isTallComponent = true
+                componentJsx = `<StringArrayField />`
+                break
+            case 'AUTOCOMPLETE':
+                componentJsx = `<AutocompleteField id="${key}" value={new${singularPascalCase}['${key}']} />`
+                break
             default:
-                return `{ type: String }`
+                componentJsx = `<Input id="${key}" value={String(new${singularPascalCase}['${key}'] || '')} disabled placeholder="Unsupported type: ${typeName}" />`
+                break
+        }
+
+        return formFieldWrapper(label, componentJsx, isTallComponent)
+    }
+
+    const formFieldsJsx = Object.entries(schema)
+        .map(([key, value]) => {
+            if (typeof value === 'object' && !Array.isArray(value)) {
+                const label = key
+                    .replace(/-/g, ' ')
+                    .replace(/\b\w/g, (l) => l.toUpperCase())
+                const componentJsx = `<JsonTextareaField id="${key}" value={(new${singularPascalCase}['${key}'] || '')} onChange={(value) => handleFieldChange('${key}', value as string)} />`
+                return `
+                        <div className="grid grid-cols-4 items-start gap-4 pr-1">
+                            <Label htmlFor="${key}" className="text-right pt-3">
+                                ${label}
+                            </Label>
+                            <div className="col-span-3">
+                                ${componentJsx}
+                            </div>
+                        </div>`
+            }
+            return generateFormFieldJsx(key, value as string)
+        })
+        .join('')
+
+    const dynamicVariablesContent =
+        componentBodyStatements.size > 0
+            ? `${[...componentBodyStatements].sort().join('\n\n')}`
+            : ''
+
+    let reduxPath = ''
+    if (isUsedGenerateFolder) {
+        reduxPath = `../redux/rtk-api`
+    } else {
+        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
+    }
+
+    const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
+import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
+import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
+import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'
+import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'
+import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
+import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
+import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
+import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import JsonTextareaField from '@/components/dashboard-ui/JsonTextareaField'
+import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'
+import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
+import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
+import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
+import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import StringArrayField from '@/components/dashboard-ui/StringArrayField'
+import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
+import TimeField from '@/components/dashboard-ui/TimeField'
+import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
+import UrlInputField from '@/components/dashboard-ui/UrlInputField'
+import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
+import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
+import { DateField } from '@/components/dashboard-ui/DateField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import { SelectField } from '@/components/dashboard-ui/SelectField'`
+
+    return `import { useState } from 'react'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+// Static import for all possible form components
+${staticImports}
+
+import { use${pluralPascalCase}Store } from '../store/store'
+
+import { useAdd${pluralPascalCase}Mutation } from '${reduxPath}'
+import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
+import { formatDuplicateKeyError, handleError, handleSuccess, isApiErrorResponse } from './utils'
+
+const AddNextComponents: React.FC = () => {
+    const { toggleAddModal, isAddModalOpen, set${pluralPascalCase} } = use${pluralPascalCase}Store()
+    const [add${pluralPascalCase}, { isLoading }] = useAdd${pluralPascalCase}Mutation()
+    const [new${singularPascalCase}, setNew${singularPascalCase}] = useState<${interfaceName}>(${defaultInstanceName})
+
+    const handleFieldChange = (name: string, value: unknown) => {
+        setNew${singularPascalCase}(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleAdd${singularPascalCase} = async () => {
+        try {
+            const { _id, ...updateData } = new${singularPascalCase}
+            const added${singularPascalCase} = await add${pluralPascalCase}(updateData).unwrap()
+            set${pluralPascalCase}([added${singularPascalCase}]); // Example: update store, you might need a different strategy
+            toggleAddModal(false)
+            setNew${singularPascalCase}(${defaultInstanceName})
+            handleSuccess('Added Successfully')
+        } catch (error: unknown) {
+            console.error('Failed to add record:', error)
+            let errMessage: string = 'An unknown error occurred.'
+            if (isApiErrorResponse(error)) {
+                errMessage = formatDuplicateKeyError(error.data.message) || 'An API error occurred.'
+            } else if (error instanceof Error) {
+                errMessage = error.message
+            }
+            handleError(errMessage)
         }
     }
 
- 
-    const generateSchemaFields = (
-        currentSchema: Schema,
-        depth: number
-    ): string => {
-        const indent = '    '.repeat(depth)
-        return Object.entries(currentSchema)
-            .map(([key, value]) => {
-                const quotedKey = `"${key}"`
-                if (typeof value === 'object' && !Array.isArray(value)) {
-        
-                    return `${indent}${quotedKey}: {\n${generateSchemaFields(
-                        value,
-                        depth + 1
-                    )}\n${indent}}`
-                }
-               
-                return `${indent}${quotedKey}: ${mapToMongooseSchema(
-                    value as string
-                )}`
-            })
-            .join(',\n')
+${dynamicVariablesContent}
+
+    return (
+        <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
+            <DialogContent className="sm:max-w-[825px]">
+                <DialogHeader>
+                    <DialogTitle>Add New ${singularPascalCase}</DialogTitle>
+                </DialogHeader>
+
+                <ScrollArea className="h-[500px] w-full rounded-md border p-4">
+                    <div className="grid gap-4 py-4">
+                        ${formFieldsJsx}
+                    </div>
+                </ScrollArea>
+
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => toggleAddModal(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={isLoading}
+                        onClick={handleAdd${singularPascalCase}}
+                    >
+                        {isLoading ? 'Adding...' : 'Add ${singularPascalCase}'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+export default AddNextComponents
+`
+}
+
+```
+
+
+Add.tsx 
+```
+import { useState } from 'react'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+
+// Static import for all possible form components
+import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
+import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
+import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
+import ImageUploadFieldSingle from '@/components/dashboard-ui/ImageUploadFieldSingle'
+import ImageUploadManager from '@/components/dashboard-ui/ImageUploadManager'
+import InputFieldForEmail from '@/components/dashboard-ui/InputFieldForEmail'
+import InputFieldForPasscode from '@/components/dashboard-ui/InputFieldForPasscode'
+import InputFieldForPassword from '@/components/dashboard-ui/InputFieldForPassword'
+import InputFieldForString from '@/components/dashboard-ui/InputFieldForString'
+import JsonTextareaField from '@/components/dashboard-ui/JsonTextareaField'
+import MultiCheckboxGroupField from '@/components/dashboard-ui/MultiCheckboxGroupField'
+import MultiOptionsField from '@/components/dashboard-ui/MultiOptionsField'
+import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFloat'
+import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
+import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
+import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
+import StringArrayField from '@/app/dashboard/testa/all/components/others-fields-types/StringArrayField'
+import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
+import TimeField from '@/components/dashboard-ui/TimeField'
+import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
+import UrlInputField from '@/components/dashboard-ui/UrlInputField'
+import { BooleanInputField } from '@/components/dashboard-ui/BooleanInputField'
+import { CheckboxField } from '@/components/dashboard-ui/CheckboxField'
+import { DateField } from '@/components/dashboard-ui/DateField'
+import { RadioButtonGroupField } from '@/components/dashboard-ui/RadioButtonGroupField'
+import { SelectField } from '@/components/dashboard-ui/SelectField'
+
+import { useTestaStore } from '../store/store'
+
+import { useAddTestaMutation } from '@/redux/features/testa/testaSlice'
+import { ITesta, defaultTesta } from '../store/data/data'
+import {
+    formatDuplicateKeyError,
+    handleError,
+    handleSuccess,
+    isApiErrorResponse,
+} from './utils'
+
+const AddNextComponents: React.FC = () => {
+    const { toggleAddModal, isAddModalOpen, setTesta } = useTestaStore()
+    const [addTesta, { isLoading }] = useAddTestaMutation()
+    const [newTesta, setNewTesta] = useState<ITesta>(defaultTesta)
+
+    const handleFieldChange = (name: string, value: unknown) => {
+        setNewTesta((prev) => ({ ...prev, [name]: value }))
     }
 
-    const schemaContent = generateSchemaFields(schema, 1)
+    const handleAddTesta = async () => {
+        try {
+            const updateData = { ...newTesta }
+            delete updateData._id
+            updateData.students = updateData.students.map((i) => {
+                const r = { ...i }
+                delete r._id
+                return r
+            })
+            console.log('udpateData : ', updateData)
+            const addedTesta = await addTesta(updateData).unwrap()
+            setTesta([addedTesta]) // Example: update store, you might need a different strategy
+            toggleAddModal(false)
+            setNewTesta(defaultTesta)
+            handleSuccess('Added Successfully')
+        } catch (error: unknown) {
+            console.error('Failed to add record:', error)
+            let errMessage: string = 'An unknown error occurred.'
+            if (isApiErrorResponse(error)) {
+                errMessage =
+                    formatDuplicateKeyError(error.data.message) ||
+                    'An API error occurred.'
+            } else if (error instanceof Error) {
+                errMessage = error.message
+            }
+            handleError(errMessage)
+        }
+    }
 
-    return `import mongoose, { Schema } from 'mongoose'
+    return (
+        <Dialog open={isAddModalOpen} onOpenChange={toggleAddModal}>
+            <DialogContent className="sm:max-w-[825px]">
+                <DialogHeader>
+                    <DialogTitle>Add New Testa</DialogTitle>
+                </DialogHeader>
 
-const ${schemaVarName} = new Schema({
-${schemaContent}
-}, { timestamps: true })
+                <ScrollArea className="h-[500px] w-full rounded-md border p-4">
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4  items-center gap-4 pr-1">
+                            <Label htmlFor="title" className="text-right ">
+                                Title
+                            </Label>
+                            <div className="col-span-3">
+                                <InputFieldForString
+                                    id="title"
+                                    placeholder="Title"
+                                    value={newTesta['title']}
+                                    onChange={(value) =>
+                                        handleFieldChange(
+                                            'title',
+                                            value as string
+                                        )
+                                    }
+                                />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4  items-start gap-4 pr-1">
+                            <Label
+                                htmlFor="students"
+                                className="text-right pt-3"
+                            >
+                                Students
+                            </Label>
+                            <div className="col-span-3">
+                                <StringArrayField
+                                    value={newTesta['students']}
+                                    onChange={(value) =>
+                                        handleFieldChange('students', value)
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
 
-export default mongoose.models.${modelName} || mongoose.model('${modelName}', ${schemaVarName})
-`
-}```
-
-here is example of inputJsonFile 
-```
-{
-  "uid": "27687d59-c8ca-4a5b-adac-b622aada1cb7",
-  "templateName": "Basic Template",
-  "schema": {
-    "title": "STRING",
-    "students": "STRINGARRAY#Name:STRING, Class:STRING, Roll:NUMBER"
-  },
-  "namingConvention": {
-    "Users_1_000___": "Testa",
-    "users_2_000___": "testa",
-    "User_3_000___": "Testa",
-    "user_4_000___": "testa",
-    "ISelect_6_000___": "ISelect",
-    "select_5_000___": "select",
-    "use_generate_folder": false
-  }
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => toggleAddModal(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button disabled={isLoading} onClick={handleAddTesta}>
+                        {isLoading ? 'Adding...' : 'Add Testa'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
 }
+
+export default AddNextComponents
+
 ```
 
-some times it look like 
+
+here is example of inputJsonFile
 ```
 {
   "uid": "000",
@@ -244,7 +545,7 @@ some times it look like
     "policy": "CHECKBOX",
     "hobbies": "MULTICHECKBOX",
     "ideas": "MULTIOPTIONS#O 1, O 2, O 3, O 4",
-    "students": "STRINGARRAY#Name, Class, Roll",
+    "students": "STRINGARRAY#Name:STRING, Class:STRING, Roll:NUMBER",
     "complexValue": {
       "id": "STRING",
       "title": "STRING",
@@ -274,36 +575,4 @@ some times it look like
 }
 ```
 
-
-and here is the output for model 
-
-model.ts 
-```
-import mongoose, { Schema } from 'mongoose'
-
-const testaSchema = new Schema(
-    {
-        title: { type: String },
-        students: [
-            {
-                Name: { type: String },
-                Class: { type: String },
-                Roll: { type: Number },
-            },
-        ],
-    },
-    { timestamps: true }
-)
-
-export default mongoose.models.Testa || mongoose.model('Testa', testaSchema)
-```
-
-You have to update STRINGARRAY case so it can return """[
-            {
-                Name: { type: String },
-                Class: { type: String },
-                Roll: { type: Number },
-            },
-        ],""" 
-
-Now please update generate-model.ts
+Now update the generate-add.tsx so it can properly generate Add.tsx 

@@ -115,7 +115,7 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 componentJsx = `<RichTextEditorField id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
             case 'INTNUMBER':
-                componentJsx = `<NumberInputFieldInteger id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}',  value as number)} />`
+                componentJsx = `<NumberInputFieldInteger id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
                 break
             case 'FLOATNUMBER':
                 componentJsx = `<NumberInputFieldFloat id="${key}" value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value as number)} />`
@@ -178,13 +178,31 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                 )
                 componentJsx = `<MultiOptionsField options={${multiOptionsVarName}} value={${editedStateName}['${key}']} onChange={(values) => handleFieldChange('${key}', values)} />`
                 break
+
+            // ✅ UPDATED STRINGARRAY HANDLER
             case 'STRINGARRAY':
                 isTallComponent = true
-                componentJsx = `<StringArrayField />` // Note: This may need updating based on previous discussions
+                let fields: string[] = []
+                if (optionsString) {
+                    fields = optionsString.split(',').map((pair) => {
+                        const [field, fType] = pair
+                            .split(':')
+                            .map((v) => v.trim())
+                        return `{ label: '${field}', type: '${fType?.toUpperCase() || 'STRING'}' }`
+                    })
+                }
+                const arrayFieldsVar = `${toCamelCase(key)}Fields`
+                const arrayFieldsJs = `[${fields.join(', ')}]`
+                componentBodyStatements.add(
+                    `    const ${arrayFieldsVar} = ${arrayFieldsJs};`
+                )
+                componentJsx = `<StringArrayField fields={${arrayFieldsVar}} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
+
             case 'AUTOCOMPLETE':
                 componentJsx = `<AutocompleteField id="${key}" value={${editedStateName}['${key}']} />`
                 break
+
             default:
                 componentJsx = `<Input id="${key}" value={String(${editedStateName}['${key}'] || '')} disabled placeholder="Unsupported type: ${typeName}" />`
                 break
@@ -195,12 +213,10 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
 
     const formFieldsJsx = Object.entries(schema)
         .map(([key, value]) => {
-            // --- MODIFIED SECTION ---
             if (typeof value === 'object' && !Array.isArray(value)) {
                 const label = key
                     .replace(/-/g, ' ')
                     .replace(/\b\w/g, (l) => l.toUpperCase())
-                // Correctly bind the component to the state for editing.
                 const componentJsx = `<JsonTextareaField id="${key}" value={${editedStateName}['${key}'] || {}} onChange={(value) => handleFieldChange('${key}', value)} />`
                 return `
                         <div className="grid grid-cols-4 items-start gap-4 pr-1">
@@ -212,7 +228,6 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                             </div>
                         </div>`
             }
-            // --- END MODIFIED SECTION ---
             return generateFormFieldJsx(key, value as string)
         })
         .join('')
@@ -222,14 +237,12 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
             ? `${[...componentBodyStatements].sort().join('\n\n')}`
             : ''
 
-    let reduxPath = ''
-    if (isUsedGenerateFolder) {
-        reduxPath = `../redux/rtk-api`
-    } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
-    }
+    const reduxPath = isUsedGenerateFolder
+        ? `../redux/rtk-api`
+        : `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
 
-    const staticImports = `import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
+    const staticImports = `import StringArrayField from '@/app/dashboard/${pluralLowerCase}/all/components/others-field-type/StringArrayField'
+import AutocompleteField from '@/components/dashboard-ui/AutocompleteField'
 import ColorPickerField from '@/components/dashboard-ui/ColorPickerField'
 import DateRangePickerField from '@/components/dashboard-ui/DateRangePickerField'
 import DynamicSelectField from '@/components/dashboard-ui/DynamicSelectField'
@@ -246,7 +259,6 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/components/dashboard-ui/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'
@@ -271,7 +283,6 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 
-// Static import for all possible form components
 ${staticImports}
 
 import { ${interfaceName}, ${defaultInstanceName} } from '../store/data/data'
