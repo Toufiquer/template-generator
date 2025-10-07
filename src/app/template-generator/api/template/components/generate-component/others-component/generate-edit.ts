@@ -191,12 +191,8 @@ export const generateEditComponentFile = (inputJsonFile: string): string => {
                         return `{ label: '${field}', type: '${fType?.toUpperCase() || 'STRING'}' }`
                     })
                 }
-                const arrayFieldsVar = `${toCamelCase(key)}Fields`
-                const arrayFieldsJs = `[${fields.join(', ')}]`
-                componentBodyStatements.add(
-                    `    const ${arrayFieldsVar} = ${arrayFieldsJs};`
-                )
-                componentJsx = `<StringArrayField fields={${arrayFieldsVar}} value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
+
+                componentJsx = `<StringArrayField value={${editedStateName}['${key}']} onChange={(value) => handleFieldChange('${key}', value)} />`
                 break
 
             case 'AUTOCOMPLETE':

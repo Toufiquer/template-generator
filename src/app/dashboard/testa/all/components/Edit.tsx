@@ -89,7 +89,7 @@ const EditNextComponents: React.FC = () => {
         }
     }
 
-    const studentsFields = [{ label: 'Name', type: 'STRING' }, { label: 'Class', type: 'STRING' }, { label: 'Roll', type: 'NUMBER' }];
+
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={toggleEditModal}>
@@ -114,7 +114,7 @@ const EditNextComponents: React.FC = () => {
                                 Students
                             </Label>
                             <div className="col-span-3">
-                                <StringArrayField fields={studentsFields} value={editedTesta['students']} onChange={(value) => handleFieldChange('students', value)} />
+                                <StringArrayField value={editedTesta['students']} onChange={(value) => handleFieldChange('students', value)} />
                             </div>
                         </div>
                     </div>
