@@ -2,14 +2,12 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
     User_3_000___: string
     user_4_000___: string
 }
-
 
 interface InputConfig {
     uid: string
@@ -18,12 +16,11 @@ interface InputConfig {
     namingConvention: NamingConvention
 }
 
-
 function generateStoreTypeFile(inputJson: string): string {
     const config: InputConfig = JSON.parse(inputJson)
     const { namingConvention } = config
 
-    const template = `import { IUsers_1_000___ } from '../data/data'
+    const template = `import { IUsers_1_000___ } from './data/data'
 
 export interface Users_1_000___Store {
     queryPramsLimit: number
