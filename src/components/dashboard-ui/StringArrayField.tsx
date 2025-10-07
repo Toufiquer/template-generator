@@ -1,7 +1,7 @@
-import { DataItem } from '@/app/dashboard/testa/all/store/data/data'
 import { v4 as uuidv4 } from 'uuid'
 import React, { ChangeEvent, useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
+import { DataItem } from '@/app/string-array-example/dashboard/testa/all/components/ExportDialog'
 
 interface StringArrayFieldProps {
     value: DataItem[]
@@ -100,12 +100,12 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
             {/* -------------------- PART 1: DISPLAY -------------------- */}
             {!isEditing && (
                 <div className="w-full space-y-3">
-                    {value.length === 0 ? (
+                    {value?.length === 0 ? (
                         <p className="text-gray-400 text-sm text-center">
                             Nothing found.
                         </p>
                     ) : (
-                        value.map((item) => (
+                        value?.map((item) => (
                             <div
                                 key={item._id}
                                 className="flex justify-between items-center p-3 bg-gray-700 rounded-md shadow-md"
@@ -133,13 +133,13 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
             {/* -------------------- PART 2: EDIT FORM -------------------- */}
             {isEditing && (
                 <div className="flex flex-col gap-3 w-full mt-2">
-                    {editList.length === 0 && (
+                    {editList?.length === 0 && (
                         <p className="text-gray-400 text-sm text-center">
                             No students yet — add some below.
                         </p>
                     )}
 
-                    {editList.map((item) => (
+                    {editList?.map((item) => (
                         <div
                             key={item._id}
                             className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-gray-700 rounded-md shadow-md hover:bg-gray-600 transition-colors duration-200"
