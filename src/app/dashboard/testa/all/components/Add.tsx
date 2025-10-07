@@ -35,7 +35,18 @@ const AddNextComponents: React.FC = () => {
 
     const handleAddTesta = async () => {
         try {
-            const { _id, ...updateData } = newTesta
+            const { _id, ...updateDataWith_id } = newTesta
+
+            const updateData = {
+                ...updateDataWith_id,
+                students: updateDataWith_id.students.map(
+                    ({ _id, ...rest }) => rest
+                ),
+            }
+
+            console.log('newTesta :', newTesta)
+            console.log('updateData :', updateData)
+
             const addedTesta = await addTesta(updateData).unwrap()
             setTesta([addedTesta])
             toggleAddModal(false)

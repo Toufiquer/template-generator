@@ -1,9 +1,10 @@
 import { DateRange } from 'react-day-picker'
 
 export interface DataItem {
-    id: number
-    title: string
-    quantity: number
+    _id: string
+    Name: string
+    Class: string
+    Roll: number
 }
 
 export interface ITesta {

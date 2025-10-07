@@ -1,4 +1,5 @@
 import { DataItem } from '@/app/dashboard/testa/all/store/data/data'
+import { v4 as uuidv4 } from 'uuid'
 import React, { ChangeEvent, useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
 
@@ -21,29 +22,40 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
     }, [value])
 
     // 🔹 Handle field changes inside edit form
-    const handleTitleChange = (
-        id: number,
-        e: ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleNameChange = (id: string, e: ChangeEvent<HTMLInputElement>) => {
         const newTitle = e.target.value
         setEditList((prev) =>
             prev.map((item) =>
-                item.id === id ? { ...item, title: newTitle } : item
+                item._id === id ? { ...item, Name: newTitle } : item
             )
         )
     }
 
-    const handleQuantityChange = (
-        id: number,
+    const handleClassChange = (
+        id: string,
         e: ChangeEvent<HTMLInputElement>
     ) => {
-        const newQuantity = parseInt(e.target.value, 10)
+        const newClass = e.target.value
         setEditList((prev) =>
             prev.map((item) =>
-                item.id === id
+                item._id === id
                     ? {
                           ...item,
-                          quantity: isNaN(newQuantity) ? 0 : newQuantity,
+                          Class: newClass,
+                      }
+                    : item
+            )
+        )
+    }
+
+    const handleRollChange = (id: string, e: ChangeEvent<HTMLInputElement>) => {
+        const newRoll = parseInt(e.target.value, 10)
+        setEditList((prev) =>
+            prev.map((item) =>
+                item._id === id
+                    ? {
+                          ...item,
+                          Roll: isNaN(newRoll) ? 0 : newRoll,
                       }
                     : item
             )
@@ -52,14 +64,19 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
 
     // 🔹 Add & delete rows in form
     const handleAddListItem = () => {
-        const nextId =
-            editList.length > 0 ? Math.max(...editList.map((i) => i.id)) + 1 : 1
-        const newItem: DataItem = { id: nextId, title: '', quantity: 0 }
+        const nextId = uuidv4()
+
+        const newItem: DataItem = {
+            _id: nextId.toString(),
+            Name: '',
+            Class: '',
+            Roll: 0,
+        }
         setEditList([...editList, newItem])
     }
 
-    const handleDeleteListItem = (id: number) => {
-        setEditList((prev) => prev.filter((item) => item.id !== id))
+    const handleDeleteListItem = (id: string) => {
+        setEditList((prev) => prev.filter((item) => item._id !== id))
     }
 
     // 🔹 Submit updates to parent component
@@ -90,14 +107,15 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
                     ) : (
                         value.map((item) => (
                             <div
-                                key={item.id}
+                                key={item._id}
                                 className="flex justify-between items-center p-3 bg-gray-700 rounded-md shadow-md"
                             >
                                 <span className="text-white text-sm">
-                                    {item.title || 'Untitled'}
+                                    {item.Name || 'Untitled'}
                                 </span>
                                 <span className="text-gray-300 text-sm">
-                                    Qty: {item.quantity}
+                                    Class: {item.Class || 'Untitled'}
+                                    Roll: {item.Roll || 'Untitled'}
                                 </span>
                             </div>
                         ))
@@ -123,28 +141,33 @@ const StringArrayField: React.FC<StringArrayFieldProps> = ({
 
                     {editList.map((item) => (
                         <div
-                            key={item.id}
+                            key={item._id}
                             className="flex flex-col sm:flex-row items-center gap-2 p-3 bg-gray-700 rounded-md shadow-md hover:bg-gray-600 transition-colors duration-200"
                         >
                             <input
                                 type="text"
                                 className="flex-1 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
-                                value={item.title}
-                                onChange={(e) => handleTitleChange(item.id, e)}
+                                value={item.Name}
+                                onChange={(e) => handleNameChange(item._id, e)}
                                 placeholder="Student Name"
                             />
                             <input
                                 type="number"
                                 className="w-full sm:w-24 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
-                                value={item.quantity}
-                                onChange={(e) =>
-                                    handleQuantityChange(item.id, e)
-                                }
-                                placeholder="Qty"
+                                value={item.Class}
+                                onChange={(e) => handleClassChange(item._id, e)}
+                                placeholder="Class"
+                            />
+                            <input
+                                type="text"
+                                className="w-full sm:w-24 px-3 py-2 border border-gray-600 rounded-md bg-gray-800 text-white text-sm focus:border-blue-500 focus:outline-none placeholder-gray-400"
+                                value={item.Roll}
+                                onChange={(e) => handleRollChange(item._id, e)}
+                                placeholder="Roll"
                             />
                             <button
                                 className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 transition-colors duration-200 focus:outline-none"
-                                onClick={() => handleDeleteListItem(item.id)}
+                                onClick={() => handleDeleteListItem(item._id)}
                             >
                                 <FaTrash size={14} />
                             </button>
