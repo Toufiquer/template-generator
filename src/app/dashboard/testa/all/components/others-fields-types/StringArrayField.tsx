@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import React, { ChangeEvent, useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
-import { StringArrayData } from '../store/data/data'
+import { StringArrayData } from './types'
 
 interface StringArrayFieldProps {
     value: StringArrayData[]

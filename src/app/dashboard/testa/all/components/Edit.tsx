@@ -30,7 +30,7 @@ import NumberInputFieldFloat from '@/components/dashboard-ui/NumberInputFieldFlo
 import NumberInputFieldInteger from '@/components/dashboard-ui/NumberInputFieldInteger'
 import PhoneInputField from '@/components/dashboard-ui/PhoneInputField'
 import RichTextEditorField from '@/components/dashboard-ui/RichTextEditorField'
-import StringArrayField from '@/app/dashboard/testa/all/components/StringArrayField'
+import StringArrayField from '@/app/dashboard/testa/all/components/others-fields-types/StringArrayField'
 import TextareaFieldForDescription from '@/components/dashboard-ui/TextareaFieldForDescription'
 import TimeField from '@/components/dashboard-ui/TimeField'
 import TimeRangePickerField from '@/components/dashboard-ui/TimeRangePickerField'

@@ -1,9 +1,4 @@
-export interface StringArrayData {
-    _id?: string
-    Name: string
-    Class: string
-    Roll: number
-}
+import { StringArrayData } from '../../components/others-fields-types/types'
 
 export interface ITesta {
     title: string

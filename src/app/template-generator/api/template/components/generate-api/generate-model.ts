@@ -4,7 +4,6 @@ interface Schema {
     [key: string]: string | Schema
 }
 
-
 interface NamingConvention {
     Users_1_000___: string
     users_2_000___: string
@@ -12,6 +11,7 @@ interface NamingConvention {
     user_4_000___: string
     ISelect_6_000___?: string
     select_5_000___?: string
+    use_generate_folder?: boolean
 }
 
 interface InputConfig {
@@ -62,17 +62,16 @@ export const generateModel = (inputJsonFile: string): string => {
                 return `{ type: String }`
             case 'EMAIL':
                 return `{
-                    type: String,
-                     match:  [/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please enter a valid email'],
-                }`
+          type: String,
+          match: [/^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$/, 'Please enter a valid email'],
+        }`
             case 'PASSWORD':
-                return `{ type: String, select: false }`
             case 'PASSCODE':
                 return `{ type: String, select: false }`
             case 'SELECT':
                 return createEnumSchema(options, ['Option 1', 'Option 2'])
             case 'DYNAMICSELECT':
-                return `[{ type: String }]` 
+                return `[{ type: String }]`
             case 'IMAGES':
                 return `[{ type: String }]`
             case 'IMAGE':
@@ -113,23 +112,48 @@ export const generateModel = (inputJsonFile: string): string => {
                     'Default Option A',
                     'Default Option B',
                 ])
+
+            // ✅ UPDATED STRINGARRAY HANDLER
             case 'STRINGARRAY':
                 if (options) {
                     const fields = options
                         .split(',')
-                        .map((field) => field.trim())
-                        .filter(Boolean) 
+                        .map((f) => f.trim())
+                        .filter(Boolean)
+
                     if (fields.length > 0) {
+                        // Support both formats:
+                        // "Name:STRING, Class:STRING, Roll:NUMBER"
+                        // or "Name, Class, Roll" (default type = String)
                         const subSchemaFields = fields
-                            .map(
-                                (field) =>
-                                    `                "${field}": { type: String }`
-                            )
+                            .map((field) => {
+                                const [key, type] = field
+                                    .split(':')
+                                    .map((s) => s.trim())
+                                const fieldType = type
+                                    ? type.toUpperCase()
+                                    : 'STRING'
+
+                                // Reuse the same logic to infer correct Mongoose type
+                                switch (fieldType) {
+                                    case 'NUMBER':
+                                    case 'INTNUMBER':
+                                        return `                "${key}": { type: Number }`
+                                    case 'BOOLEAN':
+                                        return `                "${key}": { type: Boolean }`
+                                    case 'DATE':
+                                        return `                "${key}": { type: Date }`
+                                    default:
+                                        return `                "${key}": { type: String }`
+                                }
+                            })
                             .join(',\n')
+
                         return `[\n            {\n${subSchemaFields}\n            }\n        ]`
                     }
                 }
-                return `[{ type: String }]` 
+                return `[{ type: String }]`
+
             case 'PUREJSON':
                 if (options) {
                     try {
@@ -145,12 +169,12 @@ export const generateModel = (inputJsonFile: string): string => {
                     }
                 }
                 return '{}'
+
             default:
                 return `{ type: String }`
         }
     }
 
- 
     const generateSchemaFields = (
         currentSchema: Schema,
         depth: number
@@ -160,16 +184,9 @@ export const generateModel = (inputJsonFile: string): string => {
             .map(([key, value]) => {
                 const quotedKey = `"${key}"`
                 if (typeof value === 'object' && !Array.isArray(value)) {
-        
-                    return `${indent}${quotedKey}: {\n${generateSchemaFields(
-                        value,
-                        depth + 1
-                    )}\n${indent}}`
+                    return `${indent}${quotedKey}: {\n${generateSchemaFields(value, depth + 1)}\n${indent}}`
                 }
-               
-                return `${indent}${quotedKey}: ${mapToMongooseSchema(
-                    value as string
-                )}`
+                return `${indent}${quotedKey}: ${mapToMongooseSchema(value as string)}`
             })
             .join(',\n')
     }
