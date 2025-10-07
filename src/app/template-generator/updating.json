@@ -10,7 +10,6 @@
         "complexValue": {
             "id": "STRING",
             "title": "STRING",
-            "title_2": "STRING",
             "parent": {
                 "id": "STRING",
                 "title": "STRING",
