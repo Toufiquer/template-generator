@@ -2,24 +2,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
-
-// Define a type for the schema structure
-// This is a recursive type definition for a JSON schema that can contain nested objects
-type JsonSchema = {
-    [key: string]: string | JsonSchema
-}
-
-// Define the overall structure of your JSON template
-export interface JsonTemplate {
-    // Export this interface as it's used elsewhere
-    uid: string
-    templateName: string
-    schema: JsonSchema
-    namingConvention: {
-        [key: string]: string | boolean
-        use_generate_folder: boolean
-    }
-}
+import { JsonTemplate } from '../components/JsonEditor'
 
 // Define the type for an item stored in the JSON store
 export interface JsonTemplateItem {

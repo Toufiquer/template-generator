@@ -21,21 +21,24 @@ import ViewDataType, { allDataType } from './ViewDataType'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid' // Import uuidv4
 
-// Define a type for the schema structure
-// This is a recursive type definition for a JSON schema that can contain nested objects
-type JsonSchema = {
-    [key: string]: string | JsonSchema
+// Recursive type for schema definitions
+export type JsonSchema = {
+    [key: string]: string | JsonSchema // allows nested schema objects
 }
 
-// Define the overall structure of your JSON template
-interface JsonTemplate {
+// Define naming convention structure
+export interface NamingConvention {
+    [key: string]: string | boolean | string[]
+    use_generate_folder: boolean
+    bulk_action: string[]
+}
+
+// Define overall JSON template structure
+export interface JsonTemplate {
     uid: string
     templateName: string
     schema: JsonSchema
-    namingConvention: {
-        [key: string]: string | boolean
-        use_generate_folder: boolean
-    }
+    namingConvention: NamingConvention
 }
 
 // Success Popup Component
@@ -127,6 +130,7 @@ const initialJsonTemplate: JsonTemplate = {
         ISelect_6_000___: 'ISelect',
         select_5_000___: 'select',
         use_generate_folder: false,
+        bulk_action: ['title', 'area'],
     },
 }
 // --- END: PROGRAMMATIC AND READABLE INITIAL STATE ---
