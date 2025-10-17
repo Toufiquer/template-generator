@@ -5,15 +5,15 @@ import { generateStringArrayType } from './generate-string-array-type'
 const generateOthersFields = async (data: string) => {
     let folderName = 'example'
     let isUseGenerateFolder = false
-    const { namingConvention, schema } = JSON.parse(data) || {}
+    const { namingConvention } = JSON.parse(data) || {}
 
     if (namingConvention.users_2_000___) {
         folderName = namingConvention.users_2_000___
         isUseGenerateFolder = namingConvention.use_generate_folder
     }
 
-    const stringArrayField = generateStringArrayField(data)
-    const stringArrayType = generateStringArrayType(data)
+    const stringArrayField = generateStringArrayField()
+    const stringArrayType = generateStringArrayType()
 
     if (isUseGenerateFolder) {
         writeInFile(
