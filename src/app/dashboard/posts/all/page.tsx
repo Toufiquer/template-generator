@@ -1,19 +1,4 @@
-export const generateMainPageFile = (inputJsonFile: string): string => {
-    const { namingConvention } = JSON.parse(inputJsonFile) || {}
-
-    const pluralPascalCase = namingConvention.Users_1_000___
-    const pluralLowerCase = pluralPascalCase.toLowerCase()
-    const singularPascalCase = namingConvention.User_3_000___
-    const isUsedGenerateFolder = namingConvention.use_generate_folder
-
-    let reduxPath = ''
-    if (isUsedGenerateFolder) {
-        reduxPath = `./redux/rtk-api`
-    } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
-    }
-
-    return `'use client';
+'use client';
 
 import React, { useState, useMemo } from 'react';
 import { PlusIcon, XIcon, Settings2, RefreshCcw, Filter } from 'lucide-react';
@@ -32,14 +17,14 @@ import DeleteFile from './components/Delete';
 import BulkEditFile from './components/BulkEdit';
 import TooManyRequests from './components/TooManyRequest';
 import BulkDeleteFile from './components/BulkDelete';
-import View${pluralPascalCase}Table from './components/TableView';
-import BulkUpdate${pluralPascalCase} from './components/BulkUpdate';
-import BulkDynamicUpdate${pluralPascalCase} from './components/BulkDynamicUpdate';
+import ViewPostsTable from './components/TableView';
+import BulkUpdatePosts from './components/BulkUpdate';
+import BulkDynamicUpdatePosts from './components/BulkDynamicUpdate';
 import FilterDialog, { FilterPayload } from './components/FilterDialog';
 import Summary from './components/Summary';
 
-import { use${pluralPascalCase}Store } from './store/store';
-import { useGet${pluralPascalCase}Query } from '${reduxPath}';
+import { usePostsStore } from './store/store';
+import { useGetPostsQuery } from '@/redux/features/posts/postsSlice';
 import { handleSuccess } from './components/utils';
 
 const MainNextPage: React.FC = () => {
@@ -53,7 +38,7 @@ const MainNextPage: React.FC = () => {
     queryPramsQ,
     setQueryPramsPage,
     setQueryPramsQ,
-  } = use${pluralPascalCase}Store();
+  } = usePostsStore();
 
   const {
     data: getResponseData,
@@ -61,7 +46,7 @@ const MainNextPage: React.FC = () => {
     isLoading,
     refetch,
     status: statusCode,
-  } = useGet${pluralPascalCase}Query(
+  } = useGetPostsQuery(
     { q: queryPramsQ, page: queryPramsPage, limit: queryPramsLimit },
     {
       selectFromResult: ({ data, isSuccess, isLoading, status, error }) => ({
@@ -84,7 +69,7 @@ const MainNextPage: React.FC = () => {
         const [startDate, endDate] = datePart.split('_');
         return {
           isApplied: true,
-          displayText: \`Filtering from \${startDate} to \${endDate}\`,
+          displayText: `Filtering from ${startDate} to ${endDate}`,
         };
       } catch {
         return { isApplied: false, displayText: '' };
@@ -105,7 +90,7 @@ const MainNextPage: React.FC = () => {
 
   const handleApplyFilter = (filter: FilterPayload) => {
     const { start, end } = filter.value;
-    const filterQuery = \`createdAt:range:\${start}_\${end}\`;
+    const filterQuery = `createdAt:range:${start}_${end}`;
 
     setQueryPramsQ(filterQuery);
     setQueryPramsPage(1);
@@ -127,8 +112,8 @@ const MainNextPage: React.FC = () => {
     BulkEditFile,
     EditFile,
     DeleteFile,
-    BulkUpdate${pluralPascalCase},
-    BulkDynamicUpdate${pluralPascalCase},
+    BulkUpdatePosts,
+    BulkDynamicUpdatePosts,
   ];
 
   let renderUI = (
@@ -136,7 +121,7 @@ const MainNextPage: React.FC = () => {
       {/* Header + Toolbar */}
       <div className="flex flex-col md:flex-row gap-2 justify-between items-center mb-6">
         <h1 className="h2 w-full text-white">
-          ${singularPascalCase} Management{' '}
+          Post Management{' '}
           {isSuccess && (
             <sup className="text-xs text-gray-300">
               (total:{getResponseData?.data?.total || '00'})
@@ -158,7 +143,7 @@ const MainNextPage: React.FC = () => {
               className="p-6 space-y-5 bg-white/10 backdrop-blur-xl border-t border-white/20 shadow-lg rounded-t-2xl"
             >
               <SheetHeader>
-                <SheetTitle className="text-white text-lg font-medium text-center">${singularPascalCase} Actions</SheetTitle>
+                <SheetTitle className="text-white text-lg font-medium text-center">Post Actions</SheetTitle>
               </SheetHeader>
 
               <div className="flex flex-col gap-3">
@@ -182,7 +167,7 @@ const MainNextPage: React.FC = () => {
                 </Button>
 
                 <Button size="sm" variant="outlineGarden" onClick={() => toggleAddModal(true)} className="w-full">
-                  <PlusIcon className="w-4 h-4 mr-2" /> Add ${singularPascalCase}
+                  <PlusIcon className="w-4 h-4 mr-2" /> Add Post
                 </Button>
               </div>
             </SheetContent>
@@ -207,7 +192,7 @@ const MainNextPage: React.FC = () => {
             <IoReloadCircleOutline className="w-4 h-4 mr-2" /> Reload
           </Button>
           <Button size="sm" variant="outlineGarden" onClick={() => toggleAddModal(true)}>
-            <PlusIcon className="w-4 h-4 mr-2" /> Add ${singularPascalCase}
+            <PlusIcon className="w-4 h-4 mr-2" /> Add Post
           </Button>
         </div>
       </div>
@@ -234,7 +219,7 @@ const MainNextPage: React.FC = () => {
 
       {/* Table View (Glassmorphism card) */}
       <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl shadow-md border border-white/10">
-        <View${pluralPascalCase}Table />
+        <ViewPostsTable />
       </div>
 
       {/* Modals */}
@@ -253,5 +238,3 @@ const MainNextPage: React.FC = () => {
 };
 
 export default MainNextPage;
-`
-}
