@@ -148,7 +148,7 @@ const MainNextPage: React.FC = () => {
         <div className="w-full flex md:hidden justify-end">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outlineWater" size="icon" className="flex items-center justify-center" aria-label="Open actions">
+              <Button variant="outlineWater" size="icon" className="flex items-center justify-center  min-w-1" aria-label="Open actions">
                 <Settings2 className="w-5 h-5" />
               </Button>
             </SheetTrigger>
@@ -233,7 +233,7 @@ const MainNextPage: React.FC = () => {
       )}
 
       {/* Table View (Glassmorphism card) */}
-      <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl shadow-md border border-white/10">
+      <div className="bg-white/5 backdrop-blur-md md:p-4 rounded-2xl shadow-md border border-white/10">
         <View${pluralPascalCase}Table />
       </div>
 
