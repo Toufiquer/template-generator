@@ -1,100 +1,4 @@
-export const generateViewTableComponentFile = (
-    inputJsonFile: string
-): string => {
-    const { schema, namingConvention } = JSON.parse(inputJsonFile)
-
-    const pluralPascalCase = namingConvention.Users_1_000___
-    const pluralLowerCase = namingConvention.users_2_000___
-    const interfaceName = `I${pluralPascalCase}`
-    const displayableKeysTypeName = `Displayable${pluralPascalCase}Keys`
-    const isUsedGenerateFolder = namingConvention.use_generate_folder
-
-    let reduxPath = ''
-    if (isUsedGenerateFolder) {
-        reduxPath = `../redux/rtk-api`
-    } else {
-        reduxPath = `@/redux/features/${pluralLowerCase}/${pluralLowerCase}Slice`
-    }
-
-    const suitableTypes = [
-        'STRING',
-        'EMAIL',
-        'SELECT',
-        'RADIOBUTTON',
-        'INTNUMBER',
-        'FLOATNUMBER',
-        'BOOLEAN',
-        'CHECKBOX',
-        'DATE',
-        'TIME',
-    ]
-    const excludedKeys = [
-        'password',
-        'passcode',
-        'description',
-        'richtext',
-        'image',
-        'images',
-    ]
-
-    // helper: normalize key for V2-style (roleName -> name, authorEmail -> email)
-    const normalizeKey = (key: string) => {
-        const k = key.trim().toLowerCase()
-        if (k.includes('role') || k.includes('name')) return 'name'
-        if (k.includes('email')) return 'email'
-        // remove spaces and convert eventual "createdat" to createdAt
-        return key.replace(/\s+/g, '_')
-    }
-
-    // helper: humanize label
-    const humanizeLabel = (key: string) =>
-        key
-            .replace(/_/g, ' ')
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, (s) => s.toUpperCase())
-            .trim()
-
-    const rawHeaders = Object.entries(schema)
-        .filter(
-            ([key, type]) =>
-                typeof type === 'string' &&
-                !key.includes('-') &&
-                suitableTypes.includes(type.toUpperCase()) &&
-                !excludedKeys.includes(key.toLowerCase())
-        )
-        .slice(0, 7)
-        .map(([key]) => ({
-            origKey: key,
-            key: normalizeKey(key),
-            label: humanizeLabel(key),
-        }))
-
-    // ensure unique keys (in case normalization produced duplicates)
-    const seen = new Set<string>()
-    const tableHeaders = rawHeaders.filter((h) => {
-        if (seen.has(h.key)) return false
-        seen.add(h.key)
-        return true
-    })
-
-    // always ensure createdAt exists at end
-    if (!tableHeaders.some((h) => h.key === 'createdAt')) {
-        tableHeaders.push({
-            origKey: 'createdAt',
-            key: 'createdAt',
-            label: 'Created At',
-        })
-    }
-
-    const displayableKeys = tableHeaders.map((h) => h.key)
-
-    const displayableKeysType = `type ${displayableKeysTypeName} = \n    | '${displayableKeys
-        .map((k) => k)
-        .join("'\n    | '")}'`
-
-    const columnVisibilityStateType = `type ColumnVisibilityState = Record<${displayableKeysTypeName}, boolean>`
-
-    return `\`use client\`;
+`use client`;
 
 import { format } from 'date-fns';
 import React, { useState, useMemo } from 'react';
@@ -118,20 +22,23 @@ import {
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
-import { ${interfaceName} } from '../store/data/data';
+import { IRoles } from '../store/data/data';
 import { pageLimitArr } from '../store/store-constant';
-import { use${pluralPascalCase}Store } from '../store/store';
-import { useGet${pluralPascalCase}Query } from '${reduxPath}';
+import { useRolesStore } from '../store/store';
+import { useGetRolesQuery } from '@/redux/features/roles/rolesSlice';
 import Pagination from './Pagination';
 import ExportDialog from './ExportDialog';
 
-${displayableKeysType}
-${columnVisibilityStateType}
+type DisplayableRolesKeys = 
+    | 'name'
+    | 'email'
+    | 'createdAt'
+type ColumnVisibilityState = Record<DisplayableRolesKeys, boolean>
 
 const ViewTableNextComponents: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
-    key: ${displayableKeysTypeName};
+    key: DisplayableRolesKeys;
     direction: 'asc' | 'desc';
   } | null>(null);
 
@@ -139,7 +46,7 @@ const ViewTableNextComponents: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const {
-    setSelected${pluralPascalCase},
+    setSelectedRoles,
     toggleBulkEditModal,
     toggleBulkUpdateModal,
     toggleViewModal,
@@ -153,47 +60,37 @@ const ViewTableNextComponents: React.FC = () => {
     setQueryPramsLimit,
     setQueryPramsPage,
     toggleBulkDeleteModal,
-  } = use${pluralPascalCase}Store();
+  } = useRolesStore();
 
-    const {
-        data: getResponseData,
-        isLoading,
-        isError,
-        error,
-    } = useGet${pluralPascalCase}Query({
-        q: queryPramsQ,
-        limit: queryPramsLimit,
-        page: queryPramsPage,
-    })
+  const {
+    data: getResponseData,
+    isLoading,
+    isError,
+    error,
+  } = useGetRolesQuery({
+    q: queryPramsQ,
+    limit: queryPramsLimit,
+    page: queryPramsPage,
+  });
 
-    const allData = useMemo(
-        () => getResponseData?.data?.${pluralLowerCase} || [],
-        [getResponseData]
-    )
+  const allData = useMemo(() => getResponseData?.data?.roles || [], [getResponseData]);
 
-    const tableHeaders: { key: ${displayableKeysTypeName}; label: string }[] = [
-        ${tableHeaders.map((h) => `{ key: '${h.key}', label: '${h.label}' }`).join(',\n        ')}
-    ];
+  const tableHeaders: { key: DisplayableRolesKeys; label: string }[] = useMemo(
+    () => [
+      { key: 'name', label: 'Role Name' },
+      { key: 'email', label: 'Author Email' },
+      { key: 'createdAt', label: 'Created At' }
+    ],
+    [],
+  );
 
-    const [columnVisibility, setColumnVisibility] =
-        useState<ColumnVisibilityState>(() => {
-            const initialState = {} as ColumnVisibilityState
-            let counter = 0
-            for (const header of tableHeaders) {
-                if (counter > 3) {
-                    initialState[header.key] = false
-                } else {
-                    initialState[header.key] = true
-                }
-                counter++
-            }
-            return initialState
-        })
-            
-    const visibleHeaders = useMemo(
-        () => tableHeaders.filter(header => columnVisibility[header.key]),
-        [columnVisibility, tableHeaders]
-    );
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibilityState>(() => {
+    const initialState = {} as ColumnVisibilityState;
+    for (const header of tableHeaders) initialState[header.key] = true;
+    return initialState;
+  });
+
+  const visibleHeaders = useMemo(() => tableHeaders.filter(header => columnVisibility[header.key]), [columnVisibility, tableHeaders]);
 
   const formatDate = (date?: Date | string) => {
     if (!date) return 'N/A';
@@ -204,7 +101,7 @@ const ViewTableNextComponents: React.FC = () => {
     }
   };
 
-  const handleSort = (key: ${displayableKeysTypeName}) => {
+  const handleSort = (key: DisplayableRolesKeys) => {
     setSortConfig(prev => (prev?.key === key ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' } : { key, direction: 'asc' }));
   };
 
@@ -222,9 +119,9 @@ const ViewTableNextComponents: React.FC = () => {
   }, [allData, sortConfig]);
 
   const handleSelectAll = (isChecked: boolean) => setBulkData(isChecked ? allData : []);
-  const handleSelectRow = (isChecked: boolean, item: ${interfaceName}) => setBulkData(isChecked ? [...bulkData, item] : bulkData.filter(i => i._id !== item._id));
+  const handleSelectRow = (isChecked: boolean, item: IRoles) => setBulkData(isChecked ? [...bulkData, item] : bulkData.filter(i => i._id !== item._id));
 
-  const renderActions = (item: ${interfaceName}) => {
+  const renderActions = (item: IRoles) => {
     return (
       <div className="flex justify-end items-center">
         {/* ===== Desktop Actions ===== */}
@@ -234,7 +131,7 @@ const ViewTableNextComponents: React.FC = () => {
             className="min-w-[8px]"
             size="sm"
             onClick={() => {
-              setSelected${pluralPascalCase}(item);
+              setSelectedRoles(item);
               toggleViewModal(true);
             }}
           >
@@ -245,7 +142,7 @@ const ViewTableNextComponents: React.FC = () => {
             className="min-w-[8px]"
             size="sm"
             onClick={() => {
-              setSelected${pluralPascalCase}(item);
+              setSelectedRoles(item);
               toggleEditModal(true);
             }}
           >
@@ -256,7 +153,7 @@ const ViewTableNextComponents: React.FC = () => {
             className="min-w-[8px]"
             size="sm"
             onClick={() => {
-              setSelected${pluralPascalCase}(item);
+              setSelectedRoles(item);
               toggleDeleteModal(true);
             }}
           >
@@ -288,7 +185,7 @@ const ViewTableNextComponents: React.FC = () => {
                 variant="outlineWater"
                 size="sm"
                 onClick={() => {
-                  setSelected${pluralPascalCase}(item);
+                  setSelectedRoles(item);
                   toggleViewModal(true);
                   setOpen(false);
                 }}
@@ -300,7 +197,7 @@ const ViewTableNextComponents: React.FC = () => {
                 variant="outlineWater"
                 size="sm"
                 onClick={() => {
-                  setSelected${pluralPascalCase}(item);
+                  setSelectedRoles(item);
                   toggleEditModal(true);
                   setOpen(false);
                 }}
@@ -312,7 +209,7 @@ const ViewTableNextComponents: React.FC = () => {
                 variant="destructive"
                 size="sm"
                 onClick={() => {
-                  setSelected${pluralPascalCase}(item);
+                  setSelectedRoles(item);
                   toggleDeleteModal(true);
                   setOpen(false);
                 }}
@@ -327,7 +224,7 @@ const ViewTableNextComponents: React.FC = () => {
   };
 
   const renderTableRows = () =>
-    sortedData.map((item: ${interfaceName}) => (
+    sortedData.map((item: IRoles) => (
       <TableRow key={item._id}>
         <TableCell>
           <Checkbox onCheckedChange={checked => handleSelectRow(!!checked, item)} checked={bulkData.some(i => i._id === item._id)} />
@@ -486,45 +383,47 @@ const ViewTableNextComponents: React.FC = () => {
         </Table>
       )}
 
-            <Pagination
-                currentPage={queryPramsPage}
-                itemsPerPage={queryPramsLimit}
-                onPageChange={(page) => setQueryPramsPage(page)}
-                totalItems={getResponseData?.data?.total || 0}
-            />
+      <Pagination
+        currentPage={queryPramsPage}
+        itemsPerPage={queryPramsLimit}
+        onPageChange={page => setQueryPramsPage(page)}
+        totalItems={getResponseData?.data?.total || 0}
+      />
 
-             <div className="max-w-xs flex items-center self-center justify-between pl-2 gap-4 border rounded-lg w-full mx-auto mt-8">
-                <Label htmlFor="set-limit" className="text-right text-slate-500 font-normal pl-3">
-                    ${pluralPascalCase} per page
-                </Label>
-                <Select
-                    onValueChange={(value) => { setQueryPramsLimit(Number(value)); setQueryPramsPage(1); }}
-                    defaultValue={queryPramsLimit.toString()}
-                >
-                    <SelectTrigger className="border-0">
-                        <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {pageLimitArr.map((i) => (
-                            <SelectItem key={i} value={i.toString()} className="cursor-pointer">
-                                {i}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+      <div className="max-w-xs flex items-center self-center justify-between pl-2 gap-4 border rounded-lg w-full mx-auto mt-8">
+        <Label htmlFor="set-limit" className="text-right text-slate-300 font-normal pl-3">
+          Roles per page
+        </Label>
+        <Select
+          onValueChange={value => {
+            setQueryPramsLimit(Number(value));
+            setQueryPramsPage(1);
+          }}
+          defaultValue={queryPramsLimit.toString()}
+        >
+          <SelectTrigger className="border-0">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            {pageLimitArr.map(i => (
+              <SelectItem key={i} value={i.toString()} className="cursor-pointer">
+                {i}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-            {/* Render the ExportDialog and pass it the required props */}
-            <ExportDialog
-                isOpen={isExportDialogOpen}
-                onOpenChange={setExportDialogOpen}
-                headers={tableHeaders}
-                data={bulkData}
-                fileName={\`Exported_${pluralPascalCase}_\${new Date().toISOString()}.xlsx\`}
-            />
-        </div>
-    )
-}
-    export default ViewTableNextComponents
-`
-}
+      <ExportDialog
+        isOpen={isExportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        headers={tableHeaders}
+        data={bulkData}
+        fileName={`Exported_Roles_${new Date().toISOString()}.xlsx`}
+      />
+    </div>
+  );
+};
+
+export default ViewTableNextComponents;
+

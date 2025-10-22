@@ -253,7 +253,7 @@ const ${pluralPascalCase}Summary = () => {
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button  variant="outlineWater" size="sm">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     Summary
                 </Button>
